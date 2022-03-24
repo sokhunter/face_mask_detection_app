@@ -1,0 +1,312 @@
+{% extends "index.html" %}
+{% block content %}
+<h1 class="text-2xl text-gray-900 font-semibold mt-3">Lista de Usuarios</h1>
+<div class="flex justify-between">
+    <p class="text-sm text-gray-400 self-end">Mostrando <span class="text-sm text-gray-700">1-3</span> de <span
+            class="text-sm text-gray-700">3</span></p>
+    <div class="flex justify-end">
+        <input type="text" name="filter" id="filter"
+            class="w-50 text-sm border border-gray-300 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-indigo-500 py-1.5 px-3 shadow rounded-md placeholder-gray-500 placeholder-opacity-50"
+            placeholder="Buscar usuario" />
+        <div class="relative">
+            <div class="absolute right-1.5 top-1.5">
+                <button class="h-5 w-5 bg-white text-gray-900 focus:text-indigo-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd"
+                            d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                            clip-rule="evenodd" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="flex flex-col mt-3">
+    <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+        <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+            <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-white border-b-2 border-indigo-500">
+                        <tr>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-indigo-500 uppercase tracking-wider">
+                                Colaborador
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-indigo-500 uppercase tracking-wider">
+                                Usuario
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-indigo-500 uppercase tracking-wider">
+                                Rol
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-left text-xs font-medium text-indigo-500 uppercase tracking-wider">
+                                Número de Documento
+                            </th>
+                            <th scope="col"
+                                class="px-6 py-3 text-right text-xs font-medium text-indigo-500 uppercase tracking-wider">
+                                Opciones
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        {% for user in users %}
+                        <tr>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex">
+                                    {% if user.worker %}
+                                    <div class="flex-shrink-0 h-10 w-10">
+                                        {% if user.worker.photo.url %}
+                                        <img class="h-10 w-10 rounded-full" src="{{user.worker.photo.url}}"
+                                            alt="profile photo" height="40px">
+                                        {% endif %}
+                                    </div>
+                                    <div class="ml-4">
+                                        <a class="underline text-sm font-medium text-gray-900 leading-none"
+                                            href="{% url 'accounts:get_worker' id=user.worker.id %}">{{user.worker.names}}&nbsp;{{user.worker.surnames}}</a>
+                                        <div class="text-sm text-gray-500 leading-none">
+                                            {{user.worker.email}}
+                                        </div>
+                                    </div>
+                                    {% else %}
+                                    Vacío
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900">{{user.username}}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="text-sm text-gray-900">{{user.role.name}}</div>
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                {% if user.worker %}
+                                <div class="text-sm text-gray-900">{{user.worker.document}}</div>
+                                <div class="text-sm text-gray-500 uppercase">{{user.worker.document_type}}</div>
+                                {% else %}
+                                Vacío
+                                {% endif %}
+                            </td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <div class="flex gap-2 justify-end">
+                                    <a href="{% url 'accounts:get_user' id=user.id %}"
+                                        class="text-gray-900 hover:text-gray-700"><svg
+                                            xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+                                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+                                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                                        </svg></a>
+                                    <a href="{% url 'accounts:edit_user' id=user.id %}"
+                                        class="text-gray-900 hover:text-gray-700"><svg
+                                            xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                                            viewBox="0 0 24 24" stroke="currentColor">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+                                                d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                                        </svg></a>
+                                    {% if not user.is_blocked %}
+                                    <div x-data="{ 'showModal': false }" @keydown.escape="showModal = false">
+                                        <!-- Trigger for Modal -->
+                                        <button type="button" @click="showModal = true"
+                                            class="text-red-500 hover:text-red-400"><svg
+                                                xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                                                viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7"
+                                                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                            </svg></button>
+
+                                        <!-- Modal -->
+                                        <div class="fixed inset-0 z-30 flex items-center justify-center overflow-auto bg-black bg-opacity-75 transition-opacity"
+                                            x-show="showModal" x-transition:enter="transition ease-out duration-300"
+                                            x-transition:enter-start="transform opacity-0"
+                                            x-transition:enter-end="transform opacity-100"
+                                            x-transition:leave="transition ease-in duration-200"
+                                            x-transition:leave-start="transform opacity-100"
+                                            x-transition:leave-end="transform opacity-0">
+                                            <!-- Modal inner -->
+                                            <span class="hidden sm:inline-block sm:align-middle sm:h-screen"
+                                                aria-hidden="true">&#8203;</span>
+                                            <div class="inline-block align-bottom bg-white rounded-lg text-left shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
+                                                @click.away="showModal = false"
+                                                x-transition:enter="transition ease-out duration-300"
+                                                x-transition:enter-start="transform opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                                                x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                                                x-transition:leave="transition ease-in duration-200"
+                                                x-transition:leave-start="transform opacity-100 translate-y-0 sm:scale-100"
+                                                x-transition:leave-end="transform opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
+                                                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                                                    <div class="sm:flex sm:items-start">
+                                                        <div
+                                                            class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+                                                            <svg class="h-6 w-6 text-red-600"
+                                                                xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                                viewBox="0 0 24 24" stroke="currentColor"
+                                                                aria-hidden="true">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    stroke-width="2"
+                                                                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                                            </svg>
+                                                        </div>
+                                                        <div class="mt-3 text-left sm:mt-0 sm:ml-4 whitespace-normal">
+                                                            <h3 class="text-lg leading-6 font-medium text-gray-900"
+                                                                id="modal-title">
+                                                                Bloquear cuenta
+                                                            </h3>
+                                                            <p class="text-sm text-gray-500 mt-2">
+                                                                ¿Está seguro de bloquear al usuario "{{user}}"?
+                                                                <br>
+                                                                El usuario "{{user}}" ya no tendrá permisos para acceder
+                                                                a su cuenta.
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                                                    <a type="button"
+                                                        href="{% url 'accounts:block_user' action='true' id=user.id %}"
+                                                        class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
+                                                        Bloquear
+                                                    </a>
+                                                    <button type="button" @click="showModal = false"
+                                                        class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                                                        Cancelar
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% else %}
+                                    <div x-data="{ 'showModal': false }" @keydown.escape="showModal = false">
+                                        <!-- Trigger for Modal -->
+                                        <button type="button" @click="showModal = true"
+                                            class="text-green-500 hover:text-green-400"><svg
+                                                xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                                                viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7"
+                                                    d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
+                                            </svg></button>
+                                        <!-- Modal -->
+                                        <div class="fixed inset-0 z-30 flex items-center justify-center overflow-auto bg-black bg-opacity-75 transition-opacity"
+                                            x-show="showModal" x-transition:enter="transition ease-out duration-300"
+                                            x-transition:enter-start="transform opacity-0"
+                                            x-transition:enter-end="transform opacity-100"
+                                            x-transition:leave="transition ease-in duration-200"
+                                            x-transition:leave-start="transform opacity-100"
+                                            x-transition:leave-end="transform opacity-0">
+                                            <!-- Modal inner -->
+                                            <span class="hidden sm:inline-block sm:align-middle sm:h-screen"
+                                                aria-hidden="true">&#8203;</span>
+                                            <div class="inline-block align-bottom bg-white rounded-lg text-left shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
+                                                @click.away="showModal = false"
+                                                x-transition:enter="transition ease-out duration-300"
+                                                x-transition:enter-start="transform opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                                                x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                                                x-transition:leave="transition ease-in duration-200"
+                                                x-transition:leave-start="transform opacity-100 translate-y-0 sm:scale-100"
+                                                x-transition:leave-end="transform opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
+                                                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                                                    <div class="sm:flex sm:items-start">
+                                                        <div
+                                                            class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+                                                            <svg class="h-6 w-6 text-red-600"
+                                                                xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                                viewBox="0 0 24 24" stroke="currentColor"
+                                                                aria-hidden="true">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    stroke-width="2"
+                                                                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                                            </svg>
+                                                        </div>
+                                                        <div class="mt-3 text-left sm:mt-0 sm:ml-4 whitespace-normal">
+                                                            <h3 class="text-lg leading-6 font-medium text-gray-900"
+                                                                id="modal-title">
+                                                                Desbloquear cuenta
+                                                            </h3>
+                                                            <p class="text-sm text-gray-500 mt-2">
+                                                                ¿Está seguro de desbloquear al usuario "{{user}}"?
+                                                                <br>
+                                                                El usuario "{{user}}" obtendrá permisos para usar su
+                                                                cuenta.
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                                                    <a type="button"
+                                                        href="{% url 'accounts:block_user' action='false' id=user.id %}"
+                                                        class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
+                                                        Desbloquear
+                                                    </a>
+                                                    <button type="button" @click="showModal = false"
+                                                        class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                                                        Cancelar
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="flex justify-between mt-5">
+    <nav aria-label="Page navigation">
+        <ul class="inline-flex gap-2">
+            <li>
+                <button
+                    class="bg-white flex items-center justify-center w-10 h-10 text-indigo-600 duration-150 rounded-full focus:ring focus:ring-indigo-500 hover:bg-indigo-50 shadow">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd"
+                            d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                            clip-rule="evenodd" />
+                    </svg>
+                </button>
+            </li>
+            <li><button
+                    class="w-10 h-10 bg-white text-indigo-600 duration-150 rounded-full focus:ring focus:ring-indigo-500  hover:bg-indigo-50 shadow">1</button>
+            </li>
+            <li><button
+                    class="w-10 h-10 bg-white text-indigo-600 duration-150 rounded-full focus:ring focus:ring-indigo-500  hover:bg-indigo-50 shadow">2</button>
+            </li>
+            <li><button
+                    class="w-10 h-10 bg-indigo-600 text-white duration-150 border border-r-0 border-indigo-600 rounded-full focus:shadow-outline shadow">3</button>
+            </li>
+            <li>
+                <button
+                    class="bg-white flex items-center justify-center w-10 h-10 text-indigo-600 duration-150 rounded-full focus:ring focus:ring-indigo-500 hover:bg-indigo-50 shadow">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd"
+                            d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                            clip-rule="evenodd" />
+                    </svg>
+                </button>
+            </li>
+        </ul>
+    </nav>
+    <div class="flex justify-end gap-2">
+        <a href="{% url 'accounts:register_user' %}"
+            class="ring-offset-2 rounded-full shadow focus:ring focus:ring-indigo-500">
+            <div class="bg-indigo-600 h-10 w-10 rounded-full flex justify-center hover:bg-indigo-500 ">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white self-center" fill="none"
+                    viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7" d="M12 4v16m8-8H4" />
+                </svg>
+            </div>
+        </a>
+        <p class="self-center text-sm text-gray-600 ">Agregar</p>
+    </div>
+</div>
+
+
+
+
+{% endblock content %}

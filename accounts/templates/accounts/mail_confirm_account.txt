@@ -1,0 +1,3 @@
+Tu cuenta está casi lista, {{ user.username }}!
+Has click en este enlace para confirmar tu cuenta: {{ link }}
+El token expira a las {{ expiry|time:"TIME_FORMAT" }}

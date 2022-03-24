@@ -1,0 +1,9 @@
+{% extends "index.html" %}
+{% block content %}
+{% if request.user.is_authenticated %}
+<h3>Hola, {{request.user}}</h3>
+{% else %}
+<h3>Hola Mundo</h3>
+
+{% endif %}
+{% endblock content %}

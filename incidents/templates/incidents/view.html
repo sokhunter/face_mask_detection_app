@@ -1,0 +1,68 @@
+{% extends "index.html" %}
+{% block content %}
+<div class="w-2/3 mx-auto">
+    <h1 class="text-2xl text-gray-900 font-semibold mt-3">Incidencia / Incidencia #{{ incident.id|stringformat:"04d" }}
+    </h1>
+    <div class="bg-white shadow rounded-3xl p-5 mt-3">
+        <div class="grid grid-cols-2 gap-x-14 gap-y-6">
+            <div class="mx-auto w-40 whitespace-nowrap">
+                <label class="block text-base font-normal text-gray-600">Colaborador</label>
+                <div class="flex items-center mt-1">
+                    <div class="flex-shrink-0 h-10 w-10">
+                        {% if incident.worker.photo.url %}
+                        <img class="h-10 w-10 rounded-full" src="{{incident.worker.photo.url}}" alt="profile photo"
+                            height="40px">
+                        {% endif %}
+                    </div>
+                    <div class="ml-4">
+                        <div class="text-sm font-medium text-gray-900 leading-none">
+                            {{incident.worker.names}}&nbsp;{{incident.worker.surnames}}
+                        </div>
+                        <div class="text-sm text-gray-500 leading-none">
+                            {{incident.worker.email}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mx-auto w-40 whitespace-nowrap">
+                <label class="block text-base font-normal text-gray-600">Documento</label>
+                <div class="font-semibold">{{incident.worker.document}} ({{incident.worker.document_type}})</div>
+            </div>
+            <div class="mx-auto w-40 whitespace-nowrap">
+                <label class="block text-base font-normal text-gray-600">Fecha y Hora</label>
+                <div class="text-sm text-gray-500">{{incident.date_time}}</div>
+            </div>
+            <div class="mx-auto w-40 whitespace-nowrap">
+                <label class="block text-base font-normal text-gray-600">Categoría</label>
+                <div class="flex items-center gap-2">
+                    {% if incident.incident_category.color == 'green' %}
+                    <div class="w-6 h-6 bg-green-500 rounded-full">
+                        &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                    </div>
+                    {% elif incident.incident_category.color == 'blue' %}
+                    <div class="w-6 h-6 bg-blue-600 rounded-full">
+                        &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                    </div>
+                    {% elif incident.incident_category.color == 'yellow' %}
+                    <div class="w-6 h-6 bg-yellow-400 rounded-full">
+                        &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                    </div>
+                    {% elif incident.incident_category.color == 'red' %}
+                    <div class="w-6 h-6 bg-red-600 rounded-full">
+                        &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                    </div>
+                    {% endif %}
+                    <div class="text-sm text-gray-900 font-medium">
+                        {{incident.incident_category.name}}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="flex flex-col mx-auto w-40 mt-10">
+            <label class="block text-base font-normal text-gray-600 mx-auto">Imagen referencial</label>
+            <img src="{{incident.incident_category.image.url}}" alt="reference image"
+                class="rounded-md border border-gray-400 shadow w-40 h-40 mt-1">
+        </div>
+    </div>
+</div>
+{% endblock content %}

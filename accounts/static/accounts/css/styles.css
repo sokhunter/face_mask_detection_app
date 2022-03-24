@@ -1,0 +1,19 @@
+input:checked~.dot {
+    transform: translateX(100%);
+}
+
+input:checked~.block {
+    background-color: #48bb78;
+}
+
+img.auth-image {
+    height: 100vh;
+    width : 100%;
+}
+
+@media only screen and (max-width: 1400px) {
+    .responsive-captcha .g-recaptcha {
+        transform       : scale(0.75);
+        transform-origin: center;
+    }
+}
