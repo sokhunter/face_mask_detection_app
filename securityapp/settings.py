@@ -10,9 +10,9 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
+import os
 from datetime import timedelta
 from pathlib import Path
-import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -118,9 +118,9 @@ RECAPTCHA_PRIVATE_KEY = '6LeRVtQcAAAAADjuvRFI48NW0KbEelQG-DIGTeTq'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'securityDB',
-        'USER': 'postgres',
-        'PASSWORD': 'akira123',
+        'NAME': 'securitydb',
+        'USER': 'damian',
+        'PASSWORD': 'renzo',
         'HOST': '127.0.0.1',
         'PORT': '5432',
     }
