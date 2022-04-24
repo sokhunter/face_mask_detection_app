@@ -214,7 +214,7 @@ def edit_user_page(request, id):
                     admin_group.user_set.remove(user)
                     security_group.user_set.add(user)
                 if old_role != user.role:
-                    to_email, title, content = user.worker.email, "Rol Actualizado", "Su rol de usuario ha sido actualizado a " + user.role
+                    to_email, title, content = user.worker.email, "Rol Actualizado", "Su rol de usuario ha sido actualizado a " + user.role.name
                     if send_custom_email(to_email, title, content):
                         messages.success(
                             request, 'Se envió un correo al usuario')
