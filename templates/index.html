@@ -11,20 +11,22 @@
     <!-- % tailwind_css % -->
     <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
     <!-- load css -->
-    <link type="text/css" href='{% static "css/styles.css" %}' rel='stylesheet' />
-    <link type="text/css" href='{% static "accounts/css/styles.css" %}' rel='stylesheet' />
-
+    <link type="text/css" href="../static/css/styles.css" rel='stylesheet' />
+    <link type="text/css" href="../accounts/static/css/styles.css" rel='stylesheet' />
+    <link rel="stylesheet" href="styling.css">
     <title> {% block title %} SECURY {% endblock %}</title>
 </head>
 
 <body class="bg-gray-50">
     {% block navbar %}
-    <div class="bg-white shadow flex flex-shrink-0 justify-between gap-12 px-5">
-        <div class="flex flex-row gap-8">
-            <a href="{% url 'home' %}" class="font-bold text-4xl text-gray-900 py-2 mb-1">Secury</a>
+    <div class="bg-white shadow flex flex-end justify-between gap-12 px-5">
+        <div class="d11">
+            <a href="index.html" class="font-bold text-4xl text-gray-900 py-2 mb-1">Secury</a>
             {% if request.user.is_authenticated %}
-            <a href="{% url 'home' %}" class="flex flex-wrap flex-shrink-0 text-gray-600 hover:text-gray-500 content-center gap-2
-            focus:text-indigo-500 focus:border-b-2 focus:border-indigo-500 p-3">
+        </div>
+        <div class="d2">
+            <a href="../incidents/templates/incidents/dashboard.html" class="flex flex-wrap flex-shrink-0 text-gray-600 hover:text-gray-500 content-center gap-2
+            focus:text-indigo-500 focus:border-b-2 focus:border-indigo-500 p-3 width:100%">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                     stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
@@ -33,7 +35,7 @@
                 <p class="text-base">Dashboard</p>
             </a>
 
-            <a href="{% url 'incidents:list_incidents' %}" class="flex flex-wrap flex-shrink-0 text-gray-600 hover:text-gray-500 content-center gap-2
+            <a href="../incidents/templates/incidents/list.html" class="flex flex-wrap flex-shrink-0 text-gray-600 hover:text-gray-500 content-center gap-2
             focus:text-indigo-500 focus:border-b-2 focus:border-indigo-500 p-3">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                     stroke="currentColor">
@@ -43,7 +45,7 @@
                 <p class="text-base">Incidencias</p>
             </a>
             {% if request.user.role.name == "admin" %}
-            <a href="{% url 'accounts:list_workers' %}" class="flex flex-wrap flex-shrink-0 text-gray-600 hover:text-gray-500 content-center gap-2
+            <a href="../accounts/templates/accounts/workers/list.html" class="flex flex-wrap flex-shrink-0 text-gray-600 hover:text-gray-500 content-center gap-2
             focus:text-indigo-500 focus:border-b-2 focus:border-indigo-500 p-3">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                     stroke="currentColor">
@@ -52,7 +54,7 @@
                 </svg>
                 <p class="text-base">Colaboradores</p>
             </a>
-            <a href="{% url 'accounts:list_users' %}" class="flex flex-wrap flex-shrink-0 text-gray-600 hover:text-gray-500 content-center gap-2
+            <a href="../accounts/templates/accounts/users/list.html" class="flex flex-wrap flex-shrink-0 text-gray-600 hover:text-gray-500 content-center gap-2
             focus:text-indigo-500 focus:border-b-2 focus:border-indigo-500 p-3">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"
                     stroke="currentColor">
@@ -104,16 +106,17 @@
                             clip-rule="evenodd"></path>
                     </svg>
                 </button>
-                <div x-show="open" x-transition:enter="transition ease-out duration-100"
+                <div x-show="open"
+                     x-transition:enter="transition ease-out duration-100"
                     x-transition:enter-start="transform opacity-0 scale-95"
                     x-transition:enter-end="transform opacity-100 scale-100"
                     x-transition:leave="transition ease-in duration-75"
                     x-transition:leave-start="transform opacity-100 scale-100"
-                    x-transition:leave-end="transform opacity-0 scale-95" class="z-50 origin-top-right absolute right-0 mt-2 w-40 rounded-md shadow-lg bg-white 
+                    x-transition:leave-end="transform opacity-0 scale-95" class="z-50 origin-top-right absolute right-0 mt-2 w-40 rounded-md shadow-lg bg-white
                     ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical"
                     aria-labelledby="menu-button" tabindex="-1">
                     <div class="py-1" role="none">
-                        <a href="{% url 'accounts:my_profile'%}"
+                        <a href="../accounts/templates/accounts/users/my_profile.html"
                             class="text-gray-600 block px-4 py-2 text-sm hover:bg-gray-50" role="menuitem" tabindex="-1"
                             id="menu-item-0">Ver Perfil</a>
                     </div>
@@ -125,7 +128,7 @@
                 </div>
             </div>
             {% else %}
-            <a type="button" href="{% url 'accounts:login' %}"
+            <a type="button" href="../accounts/templates/accounts/users/login.html"
                 class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto sm:text-sm">
                 Iniciar Sesión
             </a>
@@ -138,7 +141,7 @@
         <div class="absolute bg-green-200">
             <ul class="messages">
                 {% for message in messages %}
-                <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+                <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}></li>
                     {% endfor %}
             </ul>
         </div>

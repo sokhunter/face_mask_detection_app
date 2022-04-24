@@ -1,0 +1,43 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+html{
+    box-sizing: border-box;
+    font-size: 62.5%;
+    min-height: 100%;
+}
+
+body{
+    min-height: 100%;
+}
+
+
+
+.b1{
+    background-color: lightgray;
+}
+.d1{
+    background-color: white;
+    display: flex;
+    justify-self: start;
+    gap: 12px;
+    x: 5px;
+}
+.d11{
+    display: flex;
+    justify-content: flex-start;
+    gap: 5px;
+    text-align: center;
+}
+.d2{
+    display: flex;
+    justify-content: flex-start;
+    gap: 5px;
+    max-width: 90%;
+}
+
+*, *:before, *:after {
+    box-sizing: inherit;
+}
