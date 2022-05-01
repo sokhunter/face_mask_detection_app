@@ -1,5 +1,6 @@
 from datetime import date
 from django.contrib import messages
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from django.shortcuts import get_object_or_404, redirect, render
 
@@ -9,9 +10,22 @@ from accounts.utils import on_email_changed
 
 
 def list_workers_page(request):
+    workers = Worker.objects.all()
+
+    page = request.GET.get('page', 1)
+    paginator = Paginator(workers, 10)
+
+    try:
+        workers = paginator.page(page)
+    except PageNotAnInteger:
+        workers = paginator.page(1)
+    except EmptyPage:
+        workers = paginator.page(paginator.num_pages)
+
     context = {
-        'workers': Worker.objects.all()
+        'workers': workers
     }
+
     return render(request, 'accounts/workers/list.html', context)
 
 

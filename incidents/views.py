@@ -1,9 +1,11 @@
-import random
+import random, csv
 from datetime import datetime
 
 from accounts.models import Worker
+from django.http import HttpResponse
 from django.http.response import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from incidents.models import Incident, IncidentCategory
 
@@ -33,6 +35,9 @@ def list_incidents_page(request):
     if not Incident.objects.all() or not IncidentCategory.objects.all():
         create_false_data()
 
+    fstart_date = None
+    fend_date = None
+
     if request.method == "POST":
         start_date = request.POST.get(request.POST['start-date'], False)
         end_date = request.POST.get(request.POST['end-date'], False)
@@ -58,10 +63,63 @@ def list_incidents_page(request):
     else:
         incidents = Incident.objects.all()
 
+    page = request.GET.get('page', 1)
+    paginator = Paginator(incidents, 10)
+
+    try:
+        incidents = paginator.page(page)
+    except PageNotAnInteger:
+        incidents = paginator.page(1)
+    except EmptyPage:
+        incidents = paginator.page(paginator.num_pages)
+
     context = {
-        'incidents': incidents
+        'incidents': incidents,
+        'start_date': fstart_date.strftime('%d/%m/%Y') if fstart_date is not None else '',
+        'end_date': fend_date.strftime('%d/%m/%Y') if fend_date is not None else ''
     }
+
     return render(request, 'incidents/list.html', context)
+
+
+def list_incidents_page_csv(request):
+    response = HttpResponse(
+        content_type = 'text/csv',
+        headers = {'Content-Disposition': 'attachment; filename="incidencias.csv"'},
+    )
+
+    if request.method == "GET":
+        start_date = request.GET.get(request.GET['start-date'], False)
+        end_date = request.GET.get(request.GET['end-date'], False)
+        if request.GET['start-date'] and request.GET['end-date']:
+            start_date = request.GET['start-date']
+            end_date = request.GET['end-date']
+            fstart_date = datetime.strptime(start_date, '%d/%m/%Y').date()
+            fend_date = datetime.strptime(end_date, '%d/%m/%Y').date()
+            incidents = Incident.objects.filter(
+                date_time__gte=fstart_date, date_time__lte=fend_date)
+        elif request.GET['start-date']:
+            start_date = request.GET['start-date']
+            fstart_date = datetime.strptime(start_date, '%d/%m/%Y').date()
+            incidents = Incident.objects.filter(
+                date_time__gte=fstart_date)
+        elif request.GET['end-date']:
+            end_date = request.GET['end-date']
+            fend_date = datetime.strptime(end_date, '%d/%m/%Y').date()
+            incidents = Incident.objects.filter(
+                date_time__lte=fend_date)
+        else:
+            incidents = Incident.objects.all()
+    else:
+        incidents = Incident.objects.all()
+
+    writer = csv.writer(response)
+    writer.writerow(['Nombre del colaborador', 'Correo del colaborador', 'Categoria', 'Fecha y hora'])
+
+    for incident in incidents:
+        writer.writerow([incident.worker.names + ' ' + incident.worker.surnames, incident.worker.email, incident.incident_category.name, incident.date_time.strftime('%d/%m/%Y %H:%M')])
+
+    return response
 
 
 def delete_incident_request(request, id):
