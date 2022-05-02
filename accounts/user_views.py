@@ -20,6 +20,7 @@ from django.utils.http import (is_safe_url, urlsafe_base64_decode,
                                urlsafe_base64_encode)
 from django.views.generic import CreateView, FormView
 from django_email_verification import send_email as send_verification_email
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from accounts.forms import (LoginForm, MyProfileEditForm, RecoverPasswordForm,
                             UserCreationForm, UserEditForm)
@@ -116,7 +117,7 @@ def reset_password_page(request, uidb64, token):
     except:
         return render(request, 'accounts/reset_password.html', {'success': False})
     if default_token_generator.check_token(user, token) == False:
-        return HttpResponse('Token expirado')
+        pass#return render(request, 'accounts/reset_password.html', {'success': False})
     if request.method == "POST":
         password_form = SetPasswordForm(user, request.POST)
         if password_form.is_valid():
@@ -127,6 +128,10 @@ def reset_password_page(request, uidb64, token):
             return redirect('accounts:login')
     else:
         password_form = SetPasswordForm(user=user)
+
+    for form_field in password_form.visible_fields():
+        form_field.field.widget.attrs['class'] = 'my-1 w-full text-sm border border-gray-300 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-indigo-500 py-1.5 px-3 shadow rounded-md'
+
     context = {
         'password_form': password_form,
         'success': True
@@ -181,9 +186,22 @@ class RegisterAdminView(CreateView):
 
 
 def list_users_page(request):
+    users = User.objects.all()
+
+    page = request.GET.get('page', 1)
+    paginator = Paginator(users, 10)
+
+    try:
+        users = paginator.page(page)
+    except PageNotAnInteger:
+        users = paginator.page(1)
+    except EmptyPage:
+        users = paginator.page(paginator.num_pages)
+
     context = {
-        'users': User.objects.all(),
+        'users': users
     }
+
     return render(request, 'accounts/users/list.html', context)
 
 
@@ -214,7 +232,7 @@ def edit_user_page(request, id):
                     admin_group.user_set.remove(user)
                     security_group.user_set.add(user)
                 if old_role != user.role:
-                    to_email, title, content = user.worker.email, "Rol Actualizado", "Su rol de usuario ha sido actualizado a " + user.role
+                    to_email, title, content = user.worker.email, "Rol Actualizado", "Su rol de usuario ha sido actualizado a " + user.role.name
                     if send_custom_email(to_email, title, content):
                         messages.success(
                             request, 'Se envió un correo al usuario')

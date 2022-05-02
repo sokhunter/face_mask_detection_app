@@ -13,6 +13,9 @@
             <div class="ml-4">
                 <p class="text-xl font-semibold text-gray-900 capitalize">
                     {{user.worker.names}}&nbsp;{{user.worker.surnames}}</p>
+                <div class="text-md text-gray-500 mt-1">
+                    {{user.username}}
+                </div>
                 <div class="text-sm text-gray-500 mt-1">
                     {{user.role}}
                 </div>
@@ -92,14 +95,6 @@
             <h1 class="text-gray-800 font-semibold text-xl">Información Personal</h1>
             <form method="post" enctype="multipart/form-data">
                 {% csrf_token %}
-                <label for="profile_form.email.html_name"
-                    class="block text-base font-normal text-gray-600 mt-3">Correo</label>
-                <input type="email" name="{{profile_form.email.html_name}}" id="{{profile_form.email.id_for_label}}"
-                    value="{{profile_form.email.value}}"
-                    class="mb-2 mt-1 w-full text-sm border border-gray-300 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-indigo-500 py-1.5 px-3 shadow rounded-full" />
-                <div class="text-base font-normal text-red-600">
-                    {{ profile_form.email.errors }}
-                </div>
                 <label for="profile_form.phone_number.html_name"
                     class="block text-base font-normal text-gray-600 mt-3">Celular</label>
                 <input type="text" name="{{profile_form.phone_number.html_name}}"

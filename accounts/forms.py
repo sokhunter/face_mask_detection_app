@@ -1,9 +1,10 @@
+from tkinter.tix import Form
 from captcha.fields import ReCaptchaField
 from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.db.models import Q
-from django.forms import ModelForm
+from django.forms import ModelForm, Form
 from django.utils.translation import gettext_lazy as _
 
 from .models import Worker
@@ -48,13 +49,13 @@ class LoginForm(AuthenticationForm):
     captcha = ReCaptchaField()
 
 
-class RecoverPasswordForm(ModelForm):
+class RecoverPasswordForm(Form):
     captcha = ReCaptchaField()
+    email = forms.EmailField(max_length=255, required=True)
 
-    class Meta:
-        model = Worker
-        fields = ['email']
-
+    def clean_email(self):
+        email = self.cleaned_data['email']
+        return email
 
 class MyProfileEditForm(ModelForm):
     class Meta:

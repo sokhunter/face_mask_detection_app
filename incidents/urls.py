@@ -4,7 +4,8 @@ from incidents.views import (delete_incident_request, get_incident_page,
                              get_incidents_by_category_and_day_chart_data,
                              get_incidents_by_category_chart_data,
                              get_incidents_by_worker_chart_data,
-                             get_incidents_chart_data, list_incidents_page)
+                             get_incidents_chart_data, list_incidents_page,
+                             list_incidents_page_csv)
 
 app_name = 'incidents'
 urlpatterns = [
@@ -22,4 +23,6 @@ urlpatterns = [
          name='get_incident'),
     path('delete/<int:id>/', delete_incident_request,
          name='delete_incident'),
+    path('list_incidents_page_csv/', list_incidents_page_csv,
+         name='list_incidents_page_csv'),
 ]

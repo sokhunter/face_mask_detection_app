@@ -1,13 +1,20 @@
 {% extends "index.html" %}
 
 {% load static %}
-{% block navbar %} {% endblock navbar %}
 
 {% block container %}
 {% if success %}
-<h5>{{ user.username }}, tu cuenta ha sido confirmada!</h5>
-<h5>Has click <a href="{% url 'accounts:login' %}">en este enlace</a> para iniciar sesión</h5>
+<h1 class="center">
+    <strong>
+        <p style="font-size: 24px;text-align:center;">{{ user.username }}, tu cuenta ha sido confirmada!</p>
+        <p style="font-size: 24px;text-align:center;">Has click <a style="color: -webkit-link;" href="{% url 'accounts:login' %}">en este enlace</a> para iniciar sesión</p>
+    </strong>
+</h1>
 {% else %}
-<h5>El token ya expiró.</h5>
+<h1 class="center">
+    <strong>
+        <p style="font-size: 24px">El token ya expiró.</p>
+    </strong>
+</h1>
 {% endif %}
 {% endblock container %}
