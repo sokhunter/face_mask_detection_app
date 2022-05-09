@@ -1,11 +1,11 @@
 {% extends "index.html" %}
 {% block content %}
 <!-- This example requires Tailwind CSS v2.0+ -->
-<h1 class="text-2xl text-gray-900 font-semibold mt-3">Lista de Incidencias</h1>
-<div class="flex justify-between">
-    <p class="text-sm text-gray-400 self-end">Mostrando <span class="text-sm text-gray-700">{{ incidents.start_index }}-{{ incidents.end_index }}</span> de <span
+<h1 class="text-2xl text-gray-900 font-semibold -mt-3 lg:mt-3 mx-2 mb-2">Lista de Incidencias</h1>
+<div class="grid grid-cols-2 md:flex justify-between">
+    <p class="text-sm text-gray-400 self-end col-span-2">Mostrando <span class="text-sm text-gray-700">{{ incidents.start_index }}-{{ incidents.end_index }}</span> de <span
             class="text-sm text-gray-700">{{ incidents.paginator.count }}</span></p>
-    <form method="post">
+    <form method="post" class="flex col-span-2">
         {% csrf_token %}
         <div class="flex items-center gap-x-2">
             <div class="relative">

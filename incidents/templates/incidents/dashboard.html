@@ -3,8 +3,8 @@
 {% if request.user.is_authenticated %}
 
 <div class="h-1/5">
-    <div class="flex gap-5">
-        <div class="w-1/4 bg-white p-3 rounded-lg shadow">
+    <div class="grid grid-cols-1 md:grid-cols-2 mx-5 xl:flex gap-5">
+        <div class="xl:w-1/4 bg-white p-5 rounded-lg shadow">
             <p class="text-base text-center font-medium">Incidencias del día</p>
             <div class="flex justify-center divide-x divide-gray-800">
                 <div class="w-2/3">
@@ -19,7 +19,7 @@
                 </div>
             </div>
         </div>
-        <div class="w-1/4 bg-white p-3 rounded-lg shadow">
+        <div class="xl:w-1/4 bg-white p-5 rounded-lg shadow">
             <p class="text-base text-center font-medium">Incidencias de la semana</p>
             <div class="flex justify-center divide-x divide-gray-800">
                 <div class="w-2/3">
@@ -35,7 +35,7 @@
             </div>
 
         </div>
-        <div class="w-1/4 bg-white p-3 rounded-lg shadow">
+        <div class="xl:w-1/4 bg-white p-3 rounded-lg shadow">
             <p class="text-base text-center font-medium">Incidencias del mes</p>
             <div class="flex justify-center divide-x divide-gray-800">
                 <div class="w-2/3">
@@ -50,7 +50,7 @@
                 </div>
             </div>
         </div>
-        <div class="w-1/4 bg-white p-3 rounded-lg shadow">
+        <div class="xl:w-1/4 bg-white p-3 rounded-lg shadow">
             <p class="text-base text-center font-medium">Incidencias del año</p>
             <div class="flex justify-center divide-x divide-gray-800">
                 <div class="w-2/3">
@@ -66,7 +66,7 @@
             </div>
         </div>
     </div>
-    <div class="flex gap-2 mt-2.5">
+    <div class="grid grid-cols-2 md:flex gap-2 mt-5 justify-center mx-2">
         <div @click.away="open = false" class="relative inline-block text-left" x-data="{ open: false }">
             <button @click="open = !open"
                 class="inline-flex justify-center content-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm 
@@ -173,18 +173,18 @@
         </div>
     </div>
 </div>
-<div class="flex gap-5 mt-5">
-    <div class="w-1/3 bg-white p-3 rounded-lg shadow">
+<div class="grid grid-cols-1 md:grid-cols-2 lg:flex gap-5 mt-5">
+    <div class="lg:w-1/3 bg-white p-3 rounded-lg shadow">
         <p class="text-base text-center font-medium">Cantidad de incidencias</p>
         <p class="text-sm text-center">Del lunes 11 al domingo 17 de Octubre</p>
         <canvas id="incidents-chart" data-url="{% url 'incidents:get_incidents' %}"></canvas>
     </div>
-    <div class="w-1/3 bg-white p-3 rounded-lg shadow">
+    <div class="lg:w-1/3 bg-white p-3 rounded-lg shadow">
         <p class="text-base text-center font-medium">Cantidad de incidencias por colaborador</p>
         <p class="text-sm text-center">Del lunes 11 al domingo 17 de Octubre</p>
         <canvas id="incidents-by-worker-chart" data-url="{% url 'incidents:get_incidents_by_worker' %}"></canvas>
     </div>
-    <div class="w-1/3 bg-white p-3 rounded-lg shadow">
+    <div class="lg:w-1/3 bg-white p-3 rounded-lg shadow md:mx-20 md:w-3/4 md:col-span-2 lg:mx-0">
         <p class="text-base text-center font-medium">Últimas incidencias</p>
         <div class="flex flex-col gap-5 my-3 overflow-y-scroll h-2/3 p-3">
             <div class="flex items-center">
@@ -252,14 +252,14 @@
         </div>
     </div>
 </div>
-<div class="flex gap-5 mt-5">
-    <div class="w-3/5 bg-white p-3 rounded-lg shadow">
+<div class="grid grid-cols-1 lg:flex gap-5 mt-5">
+    <div class="lg:w-3/5 bg-white p-3 rounded-lg shadow">
         <p class="text-base text-center font-medium">Cantidad de incidencias por categoría</p>
         <p class="text-sm text-center">Del lunes 11 al domingo 17 de Octubre</p>
-        <canvas id="incidents-by-category-bar-chart" data-url="{% url 'incidents:get_incidents_by_category_and_day' %}"
+        <canvas id="incidents-by-category-bar-chart" class="flex" data-url="{% url 'incidents:get_incidents_by_category_and_day' %}"
             height="100%"></canvas>
     </div>
-    <div class="w-2/5 bg-white p-3 rounded-lg shadow">
+    <div class="w-3/4 lg:w-2/5 mx-12 md:mx-20 lg:mx-0 bg-white p-3 rounded-lg shadow">
         <p class="text-base text-center font-medium">Cantidad de incidencias por categoría</p>
         <p class="text-sm text-center">Del lunes 11 al domingo 17 de Octubre</p>
         <canvas id="incidents-by-category-doughnut-chart" class="mt-3"
