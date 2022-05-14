@@ -2,13 +2,13 @@
 {% block content %}
 <!-- This example requires Tailwind CSS v2.0+ -->
 <h1 class="text-2xl text-gray-900 font-semibold -mt-3 lg:mt-3 mx-2 mb-2">Lista de Incidencias</h1>
-<div class="grid grid-cols-2 md:flex justify-between">
-    <p class="text-sm text-gray-400 self-end col-span-2">Mostrando <span class="text-sm text-gray-700">{{ incidents.start_index }}-{{ incidents.end_index }}</span> de <span
+<div class="flex flex-col md:flex-row justify-between">
+    <p class="text-sm text-gray-400 m-2">Mostrando <span class="text-sm text-gray-700">{{ incidents.start_index }}-{{ incidents.end_index }}</span> de <span
             class="text-sm text-gray-700">{{ incidents.paginator.count }}</span></p>
-    <form method="post" class="flex col-span-2">
+    <form method="post" class="flex flex-col">
         {% csrf_token %}
-        <div class="flex items-center gap-x-2">
-            <div class="relative">
+        <div class="flex flex-col md:flex-row items-center px-3 gap-x-2">
+            <div class="relative w-full m-2">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <svg class="w-5 h-5 text-gray-500" fill="currentColor" viewBox="0 0 20 20"
                         xmlns="http://www.w3.org/2000/svg">
@@ -21,10 +21,7 @@
                     class="bg-white border border-gray-300 text-gray-900 sm:text-sm rounded-lg duration-150 focus:border-transparent focus:outline-none focus:ring focus:ring-indigo-500 block w-full pl-10 p-2.5"
                     placeholder="Fecha inicio" name="start-date">
             </div>
-            <div class="text-sm text-gray-500">
-                Hasta
-            </div>
-            <div class="relative">
+            <div class="relative w-full m-2">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                     <svg class="w-5 h-5 text-gray-500" fill="currentColor" viewBox="0 0 20 20"
                         xmlns="http://www.w3.org/2000/svg">
@@ -38,7 +35,7 @@
                     placeholder="Fecha fin" name="end-date">
             </div>
             <button type="submit"
-                class="w-10 h-10 flex justify-center items-center bg-indigo-600 rounded-lg shadow-sm hover:bg-indigo-500 focus:bg-indigo-700 duration-150 focus:ring focus:ring-indigo-500">
+                class="w-20 h-10 flex justify-center items-center bg-indigo-600 rounded-lg shadow-sm hover:bg-indigo-500 focus:bg-indigo-700 duration-150 focus:ring focus:ring-indigo-500">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" viewBox="0 0 20 20"
                     fill="currentColor">
                     <path fill-rule="evenodd"
@@ -276,7 +273,7 @@
             {% endif %}
         {% endif %}
     </nav>
-    <div class="flex justify-end gap-2">
+    <div class="flex justify-end gap-2 mx-3">
         <a href="{% url 'incidents:list_incidents_page_csv'%}?start-date={{ start_date }}&end-date={{ end_date }}" class="ring-offset-2 rounded-full shadow focus:ring focus:ring-indigo-500">
             <div class="bg-indigo-600 h-10 w-10 rounded-full flex justify-center hover:bg-indigo-500">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white self-center" fill="none"
