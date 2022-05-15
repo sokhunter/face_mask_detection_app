@@ -1,6 +1,7 @@
 from accounts.models import Worker, User
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django.utils import timezone
 
 # COLORS = (
 #     ("green", _("Verde")),
@@ -40,5 +41,5 @@ class Incident(models.Model):
 
     @property
     def date_time_truncated(self):
-        return self.date_time.replace(hour=0, minute=0, second=0, microsecond=0)
+        return timezone.localtime(self.date_time).replace(hour=0, minute=0, second=0, microsecond=0)
 

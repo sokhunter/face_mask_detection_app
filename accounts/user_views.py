@@ -190,7 +190,12 @@ class RegisterAdminView(CreateView):
 
 
 def list_users_page(request):
+    search = request.GET.get('search', False)
+
     users = User.objects.all()
+
+    if search:
+        users = users.filter(username__icontains=search)
 
     page = request.GET.get('page', 1)
     paginator = Paginator(users, 10)

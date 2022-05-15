@@ -13,7 +13,7 @@ from django.utils import timezone
 from incidents.models import Incident, IncidentCategory, Camera
 from django.views.decorators.csrf import csrf_exempt
 
-from incidents.functions import get_incidents_by_request
+from incidents.functions import get_incidents_by_request, get_incidents_by_date_range
 
 def create_false_data():
     if not IncidentCategory.objects.all():
@@ -75,7 +75,7 @@ def list_incidents_page_csv(request):
     writer.writerow(['Nombre del colaborador', 'Correo del colaborador', 'Categoria', 'Fecha y hora'])
 
     for incident in incidents:
-        writer.writerow([incident.worker.names + ' ' + incident.worker.surnames, incident.worker.email, incident.incident_category.name, incident.date_time.strftime('%d/%m/%Y %H:%M')])
+        writer.writerow([incident.worker.names + ' ' + incident.worker.surnames, incident.worker.email, incident.incident_category.name, timezone.localtime(incident.date_time).strftime('%d/%m/%Y %H:%M')])
 
     return response
 
@@ -101,8 +101,8 @@ def get_incidents_chart_data(request):
     data = []
     labels = []
 
-    current_date = timezone.make_aware(datetime.combine(fstart_date, datetime.min.time())) if fstart_date != None else sorted_counter_keys[0]
-    last_date = timezone.make_aware(datetime.combine(fend_date, datetime.min.time())) if fend_date != None else sorted_counter_keys[len(sorted_counter_keys) - 1]
+    current_date = fstart_date if fstart_date != None else sorted_counter_keys[0]
+    last_date = fend_date if fend_date != None else sorted_counter_keys[len(sorted_counter_keys) - 1]
 
     while current_date <= last_date:
         data.append(counter[current_date])
@@ -141,7 +141,16 @@ def get_incidents_by_worker_chart_data(request):
 
 
 def get_incidents_by_category_and_day_chart_data(request):
+    if request.method == "GET":
+        category = request.GET.get('category-selected', False)
+    elif request.method == "POST":
+        category = request.POST.get('category-selected', False)
+
     incident_categories = IncidentCategory.objects.all()
+
+    if category and category != 'False' and category != 'all':
+        incident_categories = incident_categories.filter(id=category)
+
     incidents, fstart_date, fend_date = get_incidents_by_request(request, "GET")
 
     labels = None
@@ -151,8 +160,8 @@ def get_incidents_by_category_and_day_chart_data(request):
 
     counter = collections.Counter(list(map(lambda x: x.date_time_truncated, incidents)))
     sorted_counter_keys = sorted(counter.keys())
-    current_date_temp = timezone.make_aware(datetime.combine(fstart_date, datetime.min.time())) if fstart_date != None else sorted_counter_keys[0]
-    last_date = timezone.make_aware(datetime.combine(fend_date, datetime.min.time())) if fend_date != None else sorted_counter_keys[len(sorted_counter_keys) - 1]
+    current_date_temp = fstart_date if fstart_date != None else sorted_counter_keys[0]
+    last_date = fend_date if fend_date != None else sorted_counter_keys[len(sorted_counter_keys) - 1]
 
     for category in incident_categories:
         data_labels.append(category.name)
@@ -188,11 +197,20 @@ def get_incidents_by_category_and_day_chart_data(request):
 
 
 def get_incidents_by_category_chart_data(request):
+    if request.method == "GET":
+        category = request.GET.get('category-selected', False)
+    elif request.method == "POST":
+        category = request.POST.get('category-selected', False)
+
     incidents, fstart_date, fend_date = get_incidents_by_request(request, "GET")
 
     total = incidents.count()
     counter = collections.Counter(list(map(lambda x: x.incident_category, incidents)))
+
     incident_categories = IncidentCategory.objects.all()
+
+    if category and category != 'False' and category != 'all':
+        incident_categories = incident_categories.filter(id=category)
 
     data = []
     labels = []
@@ -212,6 +230,100 @@ def get_incidents_by_category_chart_data(request):
 
     return JsonResponse(context)
 
+
+def get_incidents_summary_charts(request):
+    incident_categories = IncidentCategory.objects.all()
+
+    data_colors = []
+    data_labels = []
+
+    for incident_category in incident_categories:
+        data_colors.append(incident_category.color)
+        data_labels.append(incident_category.name)
+
+    date_now = timezone.now().replace(hour=0, minute=0, second=0, microsecond=0)
+
+    day_start = timezone.make_aware(datetime.combine(date_now, datetime.min.time()))
+    day_end = timezone.make_aware(datetime.combine(date_now, datetime.max.time()))
+
+    prev_day_start = timezone.make_aware(datetime.combine(date_now - timedelta(days=1), datetime.min.time()))
+    prev_day_end = timezone.make_aware(datetime.combine(date_now - timedelta(days=1), datetime.max.time()))
+
+    week_start = timezone.make_aware(datetime.combine(date_now - timedelta(days=date_now.weekday()), datetime.min.time()))
+    week_end = timezone.make_aware(datetime.combine(week_start + timedelta(days=6), datetime.max.time()))
+
+    prev_week_start = timezone.make_aware(datetime.combine(week_start - timedelta(days=7), datetime.min.time()))
+    prev_week_end = timezone.make_aware(datetime.combine(week_start - timedelta(days=1), datetime.max.time()))
+
+    month_start = timezone.make_aware(datetime.combine(date_now.replace(day=1), datetime.min.time()))
+    
+    month_end = month_start.replace(day=28) + timedelta(days=4)
+    month_end = timezone.make_aware(datetime.combine(month_end - timedelta(days=month_end.day), datetime.max.time()))
+
+    prev_month_end = timezone.make_aware(datetime.combine(month_start - timedelta(days=1), datetime.max.time()))
+    prev_month_start = timezone.make_aware(datetime.combine(prev_month_end.replace(day=1), datetime.min.time()))
+
+    year_start = timezone.make_aware(datetime.combine(date_now.replace(day=1,month=1), datetime.min.time()))
+    year_end = timezone.make_aware(datetime.combine(date_now.replace(day=31,month=12), datetime.max.time()))
+
+    prev_year_start = timezone.make_aware(datetime.combine(date_now.replace(day=1,month=1,year=date_now.year-1), datetime.min.time()))
+    prev_year_end = timezone.make_aware(datetime.combine(date_now.replace(day=31,month=12,year=date_now.year-1), datetime.max.time()))
+
+    context = {
+        'labels': ['Incidencias'],
+        'data_colors': data_colors,
+        'data_labels': data_labels,
+        'summary': {}
+    }
+
+    cats = ['day', 'week', 'month', 'year']
+
+    for cat in cats:
+        if cat == 'day':
+            date_start = day_start.strftime('%d/%m/%Y')
+            date_end = day_end.strftime('%d/%m/%Y')
+            prev_date_start = prev_day_start.strftime('%d/%m/%Y')
+            prev_date_end = prev_day_end.strftime('%d/%m/%Y')
+        elif cat == 'week':
+            date_start = week_start.strftime('%d/%m/%Y')
+            date_end = week_end.strftime('%d/%m/%Y')
+            prev_date_start = prev_week_start.strftime('%d/%m/%Y')
+            prev_date_end = prev_week_end.strftime('%d/%m/%Y')
+        elif cat == 'month':
+            date_start = month_start.strftime('%d/%m/%Y')
+            date_end = month_end.strftime('%d/%m/%Y')
+            prev_date_start = prev_month_start.strftime('%d/%m/%Y')
+            prev_date_end = prev_month_end.strftime('%d/%m/%Y')
+        elif cat == 'year':
+            date_start = year_start.strftime('%d/%m/%Y')
+            date_end = year_end.strftime('%d/%m/%Y')
+            prev_date_start = prev_year_start.strftime('%d/%m/%Y')
+            prev_date_end = prev_year_end.strftime('%d/%m/%Y')
+
+        incidents, fstart_date, fend_date = get_incidents_by_date_range(request, date_start, date_end, False, False)
+        prev_incidents, prev_fstart_date, prev_fend_date = get_incidents_by_date_range(request, prev_date_start, prev_date_end, False, False)
+
+        counter = collections.Counter(list(map(lambda x: x.incident_category, incidents)))
+
+        data_colors = []
+        data = []
+
+        if prev_incidents.count() == 0:
+            change = incidents.count() * 100
+        else:
+            change = ((((incidents.count() / prev_incidents.count())) - 1) * 100)
+
+        change = round(change, 2)
+
+        for incident_category in incident_categories:
+            local = counter[incident_category]
+            data.append(local)
+
+        context['summary'][cat] = {'data': data, 'count': incidents.count(), 'change': change}
+
+    return JsonResponse(context)
+
+
 @csrf_exempt
 def camera_request(request, id):
     context = {
@@ -223,53 +335,49 @@ def camera_request(request, id):
         image_data = request.POST['image']
         dni = request.POST['dni']
 
+        try:
+            worker = Worker.objects.get(document=dni)
+        except ObjectDoesNotExist:
+            context['success'] = False
+            context['recommendation'] = "DNI Invalido"
+
         api_url = 'https://yolo-mask-api.herokuapp.com/detect'
         response = requests.post(api_url, json={"base64String": image_data})
 
         if len(response.json()):
             category = response.json()[0]['name']
-            if category != 'With_Mask':
-                try:
-                    worker = Worker.objects.get(document=dni)
-                    context['category'] = category
-                    camera = Camera.objects.get(id=id)
+            worker = Worker.objects.get(document=dni)
+            context['category'] = category
+            camera = Camera.objects.get(id=id)
 
-                    #Cubre solo boca y nariz -> 1
-                    #Cubre solo boca y barbilla -> 2
-                    #Bajo la barbilla -> 3
-                    #Sin mascarilla -> 4
+            #Con mascarilla -> 1
+            #Mascarilla mal puesta -> 3
+            #Sin mascarilla -> 4
 
-                    #Verde -> Tiene
-                    #Amarillo -> Incorrecta
-                    #Rojo -> No tiene
+            #Verde -> Tiene
+            #Amarillo -> Incorrecta
+            #Rojo -> No tiene
 
-                    #Validar selector de fecha
-                    #Selector de área va a ser selector de cámara
+            #Implementar búsqueda de usuarios y colaboradores
 
-                    #Últimas incidencias -> Mostrar 5 últimas del día actual
+            if category == 'Incorrect_Mask':
+                context['recommendation'] = 'Recomendacion mascara incorrecta'
+                incident_category = IncidentCategory.objects.get(id=3)
+                context['success'] = False
+            elif category == 'Without_Mask':
+                context['recommendation'] = 'Recomendacion sin mascara'
+                incident_category = IncidentCategory.objects.get(id=4)
+                context['success'] = False
+            elif category == 'With_Mask':
+                context['recommendation'] = 'Tiene la mascarilla puesta correctamente'
+                incident_category = IncidentCategory.objects.get(id=1)
+                context['success'] = True
 
-                    #Para usuario de seguridad filtrar los resultados de incidencias
-
-                    #El rango de fechas por defecto del dashboard debe ser la semana actual
-
-                    #Implementar búsqueda de usuarios y colaboradores
-
-                    #Añadir conteo de 3 segundos al momento de tomar foto
-
-                    if category == 'Incorrect_Mask':
-                        context['recommendation'] = 'Recomendacion mascara incorrecta'
-                        incident_category = IncidentCategory.objects.get(id=1)
-                    elif category == 'Without_Mask':
-                        context['recommendation'] = 'Recomendacion sin mascara'
-                        incident_category = IncidentCategory.objects.get(id=4)
-
-                    Incident(incident_category=incident_category, worker=worker, camera=camera, security_user=camera.security_user,
-                             image="incident_images/test_incident.jpg", date_time=timezone.now()).save()
-
-                    context['success'] = False
-                except ObjectDoesNotExist:
-                    context['success'] = False
-                    context['recommendation'] = "DNI Invalido"
+            Incident(incident_category=incident_category, worker=worker, camera=camera, security_user=camera.security_user,
+                        image="incident_images/test_incident.jpg", date_time=timezone.now()).save()
+        else:
+            context['success'] = False
+            context['recommendation'] = "Error en la validacion, por favor mire bien a la camara e intentelo de nuevo"
 
     return JsonResponse(context)
 
