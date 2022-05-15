@@ -45,10 +45,11 @@
             {{ form.captcha.errors }}
         </div>
         <br>
+        <input type="hidden" name="next" value="{% url 'accounts:camera_selector' %}">
         <button type='submit'
             class='w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500'>Ingresar</button>
-        <a type='button' href="{% url 'accounts:login_security' %}"
-            class='mt-2 w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500'>Ir al login de seguridad</a>
+        <a type='button' href="{% url 'accounts:login' %}"
+            class='mt-2 w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500'>Regresar al login normal</a>
             {% endif %}
         {% if cooloff_time %}
         <div class="text-base font-normal text-red-600 mb-2">

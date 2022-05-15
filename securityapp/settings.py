@@ -220,7 +220,7 @@ EMAIL_FROM_ADDRESS = os.environ['EMAIL_ID']
 EMAIL_MAIL_SUBJECT = 'Verifica tu cuenta'
 EMAIL_MAIL_HTML = 'accounts/mail_confirm_account.html'
 EMAIL_MAIL_PLAIN = 'accounts/mail_confirm_account.txt'
-EMAIL_TOKEN_LIFE = 60 * 60  # one hour
+EMAIL_TOKEN_LIFE = 60 * 60 * 24  # one day
 EMAIL_PAGE_TEMPLATE = 'accounts/account_confirmation.html'
 EMAIL_PAGE_DOMAIN = 'http://127.0.0.1:8000/'
 

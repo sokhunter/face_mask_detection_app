@@ -27,6 +27,10 @@ from accounts.forms import (LoginForm, MyProfileEditForm, RecoverPasswordForm,
 from accounts.models import UserPasswordHistory
 from accounts.utils import on_email_changed, send_custom_email
 
+from incidents.forms import CameraSelectionForm
+from incidents.models import Camera
+from incidents.views import camera_instance
+
 User = get_user_model()
 
 if connection.introspection.table_names():
@@ -271,15 +275,10 @@ def my_profile_page(request):
     password_form = SetPasswordForm(user=user)
     if request.method == "POST":
         if 'profile-form' in request.POST:
-            previous_email = user.worker.email
             profile_form = MyProfileEditForm(
                 request.POST, request.FILES, instance=user.worker)
             if profile_form.is_valid():
                 profile_form.save()
-                if on_email_changed(request, previous_email, profile_form.cleaned_data['email']):
-                    messages.success(
-                        request, 'Se envió a su correo el link de confirmación de su cuenta')
-                    return redirect("accounts:logout")
                 messages.success(
                     request, 'Se actualizó los datos correctamente!')
                 return redirect('accounts:my_profile')
@@ -297,6 +296,22 @@ def my_profile_page(request):
         'password_form': password_form,
     }
     return render(request, 'accounts/users/my_profile.html', context)
+
+
+def camera_selector(request):
+    if request.method == 'POST' and 'cameras' in request.POST:
+        camera_id = request.POST['cameras']
+        return redirect('incidents:camera_instance', id=camera_id)
+
+    security_user = request.user
+    camera_form = CameraSelectionForm(security_user)
+
+    context = {
+        'security_user': security_user,
+        'cameras_form': camera_form
+    }
+
+    return render(request, 'accounts/users/camera_selector.html', context)
 
 
 def delete_user_request(request, id):

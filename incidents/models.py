@@ -1,4 +1,4 @@
-from accounts.models import Worker
+from accounts.models import Worker, User
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -23,8 +23,22 @@ class IncidentCategory(models.Model):
         return name_display
 
 
+class Camera(models.Model):
+    address = models.CharField(_('Direccion'), max_length=100)
+    security_user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+
 class Incident(models.Model):
     worker = models.ForeignKey(Worker, on_delete=models.CASCADE)
     incident_category = models.ForeignKey(
         IncidentCategory, on_delete=models.CASCADE)
+    camera = models.ForeignKey(Camera, on_delete=models.CASCADE)
+    security_user = models.ForeignKey(User, on_delete=models.CASCADE)
+    image = models.ImageField(_('Imagen de la Incidencia'),
+                              blank=True, upload_to='incident_images')
     date_time = models.DateTimeField(_('Fecha y Hora de Incidencia'))
+
+    @property
+    def date_time_truncated(self):
+        return self.date_time.replace(hour=0, minute=0, second=0, microsecond=0)
+

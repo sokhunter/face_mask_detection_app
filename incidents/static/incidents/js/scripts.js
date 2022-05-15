@@ -1,3 +1,10 @@
+colors = {
+    yellow: '#FCD34D',
+    red: '#EF4444',
+    blue: '#6366F1',
+    green: '#34D399'
+}
+
 $(function () {
     var $chart = $("#incidents-chart");
     $.ajax({
@@ -140,27 +147,17 @@ $(function () {
         url: $chart3.data("url"),
         success: function (data) {
             var ctx = $chart3[0].getContext("2d");
+            var datasets = []
+
+            for (let i = 0; i < data.data.length; ++i) {
+                datasets.push({label: data.data_labels[i], backgroundColor: colors[data.data_colors[i]], data: data.data[i]});
+            }
+
             new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels: data.labels,
-                    datasets: [{
-                        label: data.data_labels[0],
-                        backgroundColor: '#EF4444',
-                        data: data.data[0]
-                    }, {
-                        label: data.data_labels[1],
-                        backgroundColor: "#FCD34D",
-                        data: data.data[1]
-                    }, {
-                        label: data.data_labels[2],
-                        backgroundColor: '#6366F1',
-                        data: data.data[2]
-                    }, {
-                        label: data.data_labels[3],
-                        backgroundColor: '#34D399',
-                        data: data.data[3]
-                    }]
+                    datasets: datasets
                 },
                 options: {
                     responsive: true,
@@ -188,7 +185,7 @@ $(function () {
                     labels: data.labels,
                     datasets: [{
                         label: 'Incidents',
-                        backgroundColor: ['#EF4444', "#FCD34D", '#6366F1', '#34D399'],
+                        backgroundColor: data.data_colors.map(e => colors[e]),
                         data: data.data,
                     }]
                 },

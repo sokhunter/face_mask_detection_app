@@ -5,7 +5,8 @@ from incidents.views import (delete_incident_request, get_incident_page,
                              get_incidents_by_category_chart_data,
                              get_incidents_by_worker_chart_data,
                              get_incidents_chart_data, list_incidents_page,
-                             list_incidents_page_csv)
+                             list_incidents_page_csv, camera_instance,
+                             camera_request)
 
 app_name = 'incidents'
 urlpatterns = [
@@ -16,6 +17,7 @@ urlpatterns = [
          name='get_incidents_by_category_and_day'),
     path('incidents-by-category-chart/', get_incidents_by_category_chart_data,
          name='get_incidents_by_category'),
+    path('camera_request/<int:id>/', camera_request, name='camera_request'),
 
     path('', list_incidents_page,
          name='list_incidents'),
@@ -25,4 +27,5 @@ urlpatterns = [
          name='delete_incident'),
     path('list_incidents_page_csv/', list_incidents_page_csv,
          name='list_incidents_page_csv'),
+    path('camera_instance/<int:id>/', camera_instance, name='camera_instance')
 ]
