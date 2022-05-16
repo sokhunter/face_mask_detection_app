@@ -118,9 +118,17 @@ RECAPTCHA_PRIVATE_KEY = '6LeRVtQcAAAAADjuvRFI48NW0KbEelQG-DIGTeTq'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+
+       # 'NAME': 'securityDB',
+       # 'USER': 'postgres',
+       # 'PASSWORD': '1234',
+       # 'NAME': 'securityDb',
+       # 'USER': 'josue',
+       # 'PASSWORD': 'cuentas',
         'NAME': 'securityDB',
         'USER': 'postgres',
         'PASSWORD': '1234',
+
         'HOST': '127.0.0.1',
         'PORT': '5432',
     }
@@ -216,6 +224,10 @@ def email_query(User, email):
 EMAIL_QUERY = email_query
 
 EMAIL_VERIFIED_CALLBACK = verified_callback
+
+#EMAIL_FROM_ADDRESS = 'upcpry2021274dc@gmail.com'
+#EMAIL_FROM_ADDRESS = 'jrasta305@gmail.com'
+
 EMAIL_FROM_ADDRESS = 'upcpry2021274dc@gmail.com'
 EMAIL_MAIL_SUBJECT = 'Verifica tu cuenta'
 EMAIL_MAIL_HTML = 'accounts/mail_confirm_account.html'
@@ -227,6 +239,11 @@ EMAIL_PAGE_DOMAIN = 'http://127.0.0.1:8000/'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
+#EMAIL_HOST_USER = 'upcpry2021274dc@gmail.com'
+#EMAIL_HOST_PASSWORD = 'UPC12345'
+=======
+#EMAIL_HOST_USER = 'jrasta305@gmail.com'
+#EMAIL_HOST_PASSWORD = 'XPe01Mil!'
 EMAIL_HOST_USER = 'upcpry2021274dc@gmail.com'
 EMAIL_HOST_PASSWORD = 'UPC12345'
 EMAIL_USE_TLS = True
