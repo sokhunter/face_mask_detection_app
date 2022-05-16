@@ -1,7 +1,8 @@
 from datetime import date
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-
+from django.db.models import Value as V
+from django.db.models.functions import Concat
 from django.shortcuts import get_object_or_404, redirect, render
 
 from accounts.forms import WorkerCreationForm, WorkerEditForm
@@ -10,7 +11,12 @@ from accounts.utils import on_email_changed
 
 
 def list_workers_page(request):
+    search = request.GET.get('search', False)
+
     workers = Worker.objects.all()
+
+    if search:
+        workers = workers.annotate(search_str=Concat('names', V(' '), 'surnames')).filter(search_str__icontains=search)
 
     page = request.GET.get('page', 1)
     paginator = Paginator(workers, 10)

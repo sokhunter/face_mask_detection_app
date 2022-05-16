@@ -10,7 +10,7 @@
             placeholder="Buscar usuario" />
         <div class="relative">
             <div class="absolute right-1.5 top-1.5">
-                <button class="h-5 w-5 bg-white text-gray-900 focus:text-indigo-600">
+                <button onclick="search_user()" class="h-5 w-5 bg-white text-gray-900 focus:text-indigo-600">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                         <path fill-rule="evenodd"
                             d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
@@ -338,8 +338,15 @@
         <p class="self-center text-sm text-gray-600 ">Agregar</p>
     </div>
 </div>
-
-
-
-
+<script>
+    function search_user() {
+        let seach_string = document.getElementById('filter').value;
+        window.location.href = "{% url 'accounts:list_users' %}?search=" + seach_string;
+    }
+    document.getElementById('filter').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            search_user();
+        }
+    })
+</script>
 {% endblock content %}

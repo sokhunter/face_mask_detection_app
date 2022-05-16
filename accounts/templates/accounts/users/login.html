@@ -41,21 +41,24 @@
                     <div class="flex justify-center responsive-captcha">
                         {{ form.captcha }}
                     </div>
+                    
                     <div class="text-base font-normal text-red-600">
                         {{ form.captcha.errors }}
                     </div>
                     <br>
                     <button type='submit'
-                            class='w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500'>
-                        Ingresar
-                    </button>
-                {% endif %}
-                {% if cooloff_time %}
+                        class='w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500'>Ingresar</button>
+                    <a type='button' href="{% url 'accounts:login_security' %}"
+                        class='mt-2 w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500'>Ir al login de seguridad</a>
+                        {% endif %}
+                    {% if cooloff_time %}
                     <div class="text-base font-normal text-red-600 mb-2">
-                        Realizó varios intentos fallidos. Debe esperar {{ cooloff_timedelta }} minutos.
+                        Realizó varios intentos fallidos. Debe esperar {{cooloff_timedelta}} minutos.
                     </div>
-                {% endif %}
-            </form>
-        </div>
+                    {% endif %}
+                </form>
+            </div>
+
     </div>
+
 {% endblock auth %}
