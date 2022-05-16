@@ -177,6 +177,48 @@ $(function () {
         }
     });
 
+    var $chart3_2 = $("#incidents-by-category-bar-chart-2");
+    $.ajax({
+        url: $chart3_2.data("url"),
+        success: function (data) {
+            var ctx = $chart3_2[0].getContext("2d");
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: data.labels,
+                    datasets: [{
+                        label: data.data_labels[0],
+                        backgroundColor: '#EF4444',
+                        data: data.data[0]
+                    }, {
+                        label: data.data_labels[1],
+                        backgroundColor: "#FCD34D",
+                        data: data.data[1]
+                    }, {
+                        label: data.data_labels[2],
+                        backgroundColor: '#6366F1',
+                        data: data.data[2]
+                    }, {
+                        label: data.data_labels[3],
+                        backgroundColor: '#34D399',
+                        data: data.data[3]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    legend: {
+                        display: true,
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+    });
+
     var $chart4 = $("#incidents-by-category-doughnut-chart");
     $.ajax({
         url: $chart4.data("url"),
