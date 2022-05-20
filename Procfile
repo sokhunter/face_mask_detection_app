@@ -1,1 +1,1 @@
-web: gunicorn securyapp1.wsgi --log-file -
+web: gunicorn securyapp.wsgi --log-file -
