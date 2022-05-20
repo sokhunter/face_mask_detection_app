@@ -10,6 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
+import dj_database_url
+from decouple import config
 from datetime import timedelta
 from pathlib import Path
 import os
@@ -25,9 +27,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'NULL'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -62,8 +64,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
     'axes.middleware.AxesMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'securityapp.urls'
@@ -115,25 +117,22 @@ RECAPTCHA_PRIVATE_KEY = '6LeRVtQcAAAAADjuvRFI48NW0KbEelQG-DIGTeTq'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#        'NAME': 'securityDB',
+#        'USER': 'postgres',
+#        'PASSWORD': '1234',
+#        'HOST': '127.0.0.1',
+#        'PORT': '5432',
+#    }
+#}
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-
-       # 'NAME': 'securityDB',
-       # 'USER': 'postgres',
-       # 'PASSWORD': '1234',
-       # 'NAME': 'securityDb',
-       # 'USER': 'josue',
-       # 'PASSWORD': 'cuentas',
-        'NAME': 'securityDB',
-        'USER': 'postgres',
-        'PASSWORD': '1234',
-
-        'HOST': '127.0.0.1',
-        'PORT': '5432',
-    }
+    'default': dj_database_url.config(
+        default=config('DATABASE_URL')
+    )
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
@@ -171,7 +170,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'es'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'America/Lima'
 
 USE_I18N = True
 
@@ -194,6 +193,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 # py manage.py tailwind start
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 STATIC_URL = '/static/'
 
@@ -224,10 +225,6 @@ def email_query(User, email):
 EMAIL_QUERY = email_query
 
 EMAIL_VERIFIED_CALLBACK = verified_callback
-
-#EMAIL_FROM_ADDRESS = 'upcpry2021274dc@gmail.com'
-#EMAIL_FROM_ADDRESS = 'jrasta305@gmail.com'
-
 EMAIL_FROM_ADDRESS = 'upcpry2021274dc@gmail.com'
 EMAIL_MAIL_SUBJECT = 'Verifica tu cuenta'
 EMAIL_MAIL_HTML = 'accounts/mail_confirm_account.html'
@@ -239,11 +236,6 @@ EMAIL_PAGE_DOMAIN = 'http://127.0.0.1:8000/'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-#EMAIL_HOST_USER = 'upcpry2021274dc@gmail.com'
-#EMAIL_HOST_PASSWORD = 'UPC12345'
-=======
-#EMAIL_HOST_USER = 'jrasta305@gmail.com'
-#EMAIL_HOST_PASSWORD = 'XPe01Mil!'
 EMAIL_HOST_USER = 'upcpry2021274dc@gmail.com'
 EMAIL_HOST_PASSWORD = 'UPC12345'
 EMAIL_USE_TLS = True
@@ -252,3 +244,5 @@ EMAIL_USE_TLS = True
 # Password settings
 
 PASSWORD_RESET_TIMEOUT_DAYS = 1  # Amount of days will take a token to expire
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
