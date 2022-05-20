@@ -43,3 +43,4 @@ tzdata==2022.1
 urllib3==1.26.7
 virtualenv==20.14.1
 virtualenv-clone==0.5.7
+whitenoise==6.1.0
