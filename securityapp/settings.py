@@ -111,8 +111,8 @@ AXES_LOCKOUT_TEMPLATE = "accounts/users/login.html"
 # https://blog.webmatrices.com/django-recaptcha-v3/#Install_and_configure_django-recaptcha_lib
 # https://github.com/praekelt/django-recaptcha
 
-RECAPTCHA_PUBLIC_KEY = '6LdC4AcgAAAAAHT_z37hYeelV3A4XzoMfVjMRDME'
-RECAPTCHA_PRIVATE_KEY = '6LdC4AcgAAAAAJSMaHb_AOCytjM5GqQ2OdJLA3tC'
+RECAPTCHA_PUBLIC_KEY = config('RECAPTCHA_PUBLIC_KEY')
+RECAPTCHA_PRIVATE_KEY = config('RECAPTCHA_PRIVATE_KEY')
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
