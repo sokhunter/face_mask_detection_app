@@ -3,7 +3,7 @@ import random, csv, requests, collections
 from datetime import datetime, timedelta
 
 from django.core.exceptions import ObjectDoesNotExist
-from accounts.models import Worker
+from accounts.models import UserPasswordHistory, Worker, User
 from django.http import HttpResponse
 from django.http.response import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
@@ -17,11 +17,9 @@ from incidents.functions import get_incidents_by_request, get_incidents_by_date_
 
 def create_false_data():
     if not IncidentCategory.objects.all():
-        IncidentCategory(name="Cubre solo boca y nariz",
+        IncidentCategory(name="Con mascarilla",
                          color="green", image="incident_categories/no_jaw.png").save()
-        IncidentCategory(name="Cubre solo boca y barbilla",
-                         color="blue", image="incident_categories/no_nose.png").save()
-        IncidentCategory(name="Bajo la barbilla", color="yellow",
+        IncidentCategory(name="Mascarilla mal puesta", color="yellow",
                          image="incident_categories/only_jaw.png").save()
         IncidentCategory(name="Sin mascarilla", color="red",
                          image="incident_categories/no_mask.png").save()
@@ -29,8 +27,8 @@ def create_false_data():
     if not Incident.objects.all():
         incidents_categories = IncidentCategory.objects.all()
         workers = Worker.objects.all()
-        camera = Camera.objects.filter(id=1)
-        security_user = Worker.objects.filter(id=1)
+        camera = Camera.objects.get(id=1)
+        security_user = User.objects.get(id=1)
         for i, worker in enumerate(workers):
             date_time = datetime(year=2021, month=random.randint(10, 11),
                                  day=random.randint(1, 30), hour=random.randint(10, 19), minute=random.randint(0, 59), second=random.randint(0, 59))
@@ -351,27 +349,25 @@ def camera_request(request, id):
             camera = Camera.objects.get(id=id)
 
             #Con mascarilla -> 1
-            #Mascarilla mal puesta -> 3
-            #Sin mascarilla -> 4
+            #Mascarilla mal puesta -> 2
+            #Sin mascarilla -> 3
 
             #Verde -> Tiene
             #Amarillo -> Incorrecta
             #Rojo -> No tiene
 
-            #Implementar búsqueda de usuarios y colaboradores
-
-            if category == 'Incorrect_Mask':
-                context['recommendation'] = 'Recomendacion mascara incorrecta'
-                incident_category = IncidentCategory.objects.get(id=3)
-                context['success'] = False
-            elif category == 'Without_Mask':
-                context['recommendation'] = 'Recomendacion sin mascara'
-                incident_category = IncidentCategory.objects.get(id=4)
-                context['success'] = False
-            elif category == 'With_Mask':
+            if category == 'With_Mask':
                 context['recommendation'] = 'Tiene la mascarilla puesta correctamente'
                 incident_category = IncidentCategory.objects.get(id=1)
                 context['success'] = True
+            elif category == 'Incorrect_Mask':
+                context['recommendation'] = 'Recomendacion mascara incorrecta'
+                incident_category = IncidentCategory.objects.get(id=2)
+                context['success'] = False
+            elif category == 'Without_Mask':
+                context['recommendation'] = 'Recomendacion sin mascara'
+                incident_category = IncidentCategory.objects.get(id=3)
+                context['success'] = False
 
             Incident(incident_category=incident_category, worker=worker, camera=camera, security_user=camera.security_user,
                         image="incident_images/test_incident.jpg", date_time=timezone.now()).save()
