@@ -246,4 +246,4 @@ EMAIL_USE_TLS = True
 
 PASSWORD_RESET_TIMEOUT_DAYS = 1  # Amount of days will take a token to expire
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
