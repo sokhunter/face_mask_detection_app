@@ -196,13 +196,14 @@ USE_TZ = True
 # py manage.py tailwind start
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-MEDIA_ROOT = os.path.join(BASE_DIR, 'staticfiles/media')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'static/media')
 
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'static'),
+    os.path.join(BASE_DIR, 'static/media'),
 )
 
 # Default primary key field type
