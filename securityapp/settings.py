@@ -241,7 +241,6 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 #EMAIL_HOST_USER = 'upcpry2021274dc@gmail.com'
 #EMAIL_HOST_PASSWORD = 'UPC12345'
-=======
 #EMAIL_HOST_USER = 'jrasta305@gmail.com'
 #EMAIL_HOST_PASSWORD = 'XPe01Mil!'
 EMAIL_HOST_USER = 'upcpry2021274dc@gmail.com'
