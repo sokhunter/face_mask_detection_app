@@ -18,8 +18,7 @@ $(function () {
                 if (e > 2) {
                     data1.push(maxIncidents)
                     data2.push(e - maxIncidents)
-                }
-                else {
+                } else {
                     data1.push(e)
                     data2.push(0)
                 }
@@ -86,8 +85,7 @@ $(function () {
                 if (e > 2) {
                     data1.push(maxIncidents)
                     data2.push(e - maxIncidents)
-                }
-                else {
+                } else {
                     data1.push(e)
                     data2.push(0)
                 }
@@ -150,7 +148,11 @@ $(function () {
             var datasets = []
 
             for (let i = 0; i < data.data.length; ++i) {
-                datasets.push({label: data.data_labels[i], backgroundColor: colors[data.data_colors[i]], data: data.data[i]});
+                datasets.push({
+                    label: data.data_labels[i],
+                    backgroundColor: colors[data.data_colors[i]],
+                    data: data.data[i]
+                });
             }
 
             new Chart(ctx, {
@@ -182,7 +184,11 @@ $(function () {
             var datasets = []
 
             for (let i = 0; i < data.data.length; ++i) {
-                datasets.push({label: data.data_labels[i], backgroundColor: colors[data.data_colors[i]], data: data.data[i]});
+                datasets.push({
+                    label: data.data_labels[i],
+                    backgroundColor: colors[data.data_colors[i]],
+                    data: data.data[i]
+                });
             }
 
             new Chart(ctx, {
@@ -242,7 +248,7 @@ $(function () {
                 var ctx = document.getElementById(e + '-incidents-chart').getContext('2d');
                 var count = document.getElementById(e + '-count');
                 var increment = document.getElementById(e + '-increment');
-                
+
                 count.innerHTML = data.summary[e].count
 
                 var change = data.summary[e].change
@@ -261,9 +267,13 @@ $(function () {
                 var datasets = []
 
                 for (let i = 0; i < data.data_labels.length; ++i) {
-                    datasets.push({label: data.data_labels[i], backgroundColor: colors[data.data_colors[i]], data: [data.summary[e].data[i]]});
+                    datasets.push({
+                        label: data.data_labels[i],
+                        backgroundColor: colors[data.data_colors[i]],
+                        data: [data.summary[e].data[i]]
+                    });
                 }
-    
+
                 new Chart(ctx, {
                     type: 'bar',
                     data: {
@@ -271,7 +281,16 @@ $(function () {
                         datasets: datasets
                     },
                     plugins: [ChartDataLabels],
+                    // plugins: {
+                    //     [ChartDataLabels]: {
+                    //         display: function (context) {
+                    //             return context.dataset.data[context.dataIndex] > 0;
+                    //         },
+                    //         color: "white"
+                    //     },
+                    // },
                     options: {
+                        borderRadius: 5,
                         aspectRatio: 6,
                         indexAxis: 'y',
                         plugins: {
@@ -300,7 +319,7 @@ $(function () {
                             }
                         }
                     }
-                });    
+                });
             })
         }
     });
