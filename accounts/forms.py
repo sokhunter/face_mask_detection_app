@@ -1,4 +1,3 @@
-from tkinter.tix import Form
 from captcha.fields import ReCaptchaField
 from django import forms
 from django.contrib.auth import get_user_model
