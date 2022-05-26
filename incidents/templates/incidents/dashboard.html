@@ -1,312 +1,242 @@
 {% extends "index.html" %}
 {% block content %}
-{% if request.user.is_authenticated %}
+    {% if request.user.is_authenticated %}
 
-{% if invalid_date_range %}
-<div x-data="{ 'showModal': true }" @keydown.escape="showModal = false">
-    <!-- Modal -->
-    <div class="fixed inset-0 z-30 flex items-center justify-center overflow-auto bg-black bg-opacity-75 transition-opacity" x-show="showModal" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="transform opacity-0" x-transition:enter-end="transform opacity-100" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="transform opacity-100" x-transition:leave-end="transform opacity-0">
-        <!-- Modal inner -->
-        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&ZeroWidthSpace;</span>
-        <div class="inline-block align-bottom bg-white rounded-lg text-left shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full" @click.away="showModal = false" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="transform opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100" x-transition:leave="transition ease-in duration-200" x-transition:leave-start="transform opacity-100 translate-y-0 sm:scale-100" x-transition:leave-end="transform opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
-            <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                <div class="sm:flex sm:items-start">
-                    <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-                        <svg class="h-6 w-6 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
-                        </svg>
-                    </div>
-                    <div class="mt-3 text-left sm:mt-0 sm:ml-4 whitespace-normal">
-                        <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
-                            Rango de fechas inválido
-                        </h3>
-                        <p class="text-sm text-gray-500 mt-2">
-                            Ha seleccionado un rango de fechas inválido
-                            <br>
-                            Se regresará al rango de fechas por defecto
-                        </p>
+        {% if invalid_date_range %}
+            <div x-data="{ 'showModal': true }" @keydown.escape="showModal = false">
+                <!-- Modal -->
+                <div class="fixed inset-0 z-30 flex items-center justify-center overflow-auto bg-black bg-opacity-75 transition-opacity"
+                     x-show="showModal" x-transition:enter="transition ease-out duration-300"
+                     x-transition:enter-start="transform opacity-0" x-transition:enter-end="transform opacity-100"
+                     x-transition:leave="transition ease-in duration-200"
+                     x-transition:leave-start="transform opacity-100" x-transition:leave-end="transform opacity-0">
+                    <!-- Modal inner -->
+                    <span class="hidden sm:inline-block sm:align-middle sm:h-screen"
+                          aria-hidden="true">&ZeroWidthSpace;</span>
+                    <div class="inline-block align-bottom bg-white rounded-lg text-left shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
+                         @click.away="showModal = false" x-transition:enter="transition ease-out duration-300"
+                         x-transition:enter-start="transform opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                         x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                         x-transition:leave="transition ease-in duration-200"
+                         x-transition:leave-start="transform opacity-100 translate-y-0 sm:scale-100"
+                         x-transition:leave-end="transform opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
+                        <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                            <div class="sm:flex sm:items-start">
+                                <div class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+                                    <svg class="h-6 w-6 text-red-600" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                         viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                                    </svg>
+                                </div>
+                                <div class="mt-3 text-left sm:mt-0 sm:ml-4 whitespace-normal">
+                                    <h3 class="text-lg leading-6 font-medium text-gray-900" id="modal-title">
+                                        Rango de fechas inválido
+                                    </h3>
+                                    <p class="text-sm text-gray-500 mt-2">
+                                        Ha seleccionado un rango de fechas inválido
+                                        <br>
+                                        Se regresará al rango de fechas por defecto
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                            <button @click="showModal = false"
+                                    class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                                Cancelar
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                <button @click="showModal = false" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
-                    Cancelar
+        {% endif %}
+
+        <div class="h-1/5">
+            <div class="grid grid-cols-1 md:grid-cols-2 mx-5 xl:flex gap-5" id="incidents-summary-charts"
+                 data-url="{% url 'incidents:get_incidents_summary_charts' %}">
+                <div class="xl:w-1/4 bg-white p-5 rounded-lg shadow">
+                    <p class="text-base text-center font-medium">Incidencias del día</p>
+                    <div class="flex justify-center divide-x divide-gray-800">
+                        <div class="w-2/3 lg:w-1/2 xl:w-2/3">
+                            <p class="text-center font-normal text-3xl" id="day-count">0</p>
+                            <div class="w-48">
+                                <canvas id="day-incidents-chart"></canvas>
+                            </div>
+                        </div>
+                        <div class="text-center lg:px-4 xl:px-4">
+                            <p class="text-red-500 text-xl" id="day-increment">+0%</p>
+                            <p class="font-light text-xs leading-4 text-gray-700">respecto al día anterior</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="xl:w-1/4 bg-white p-5 rounded-lg shadow">
+                    <p class="text-base text-center font-medium">Incidencias de la semana</p>
+                    <div class="flex justify-center divide-x divide-gray-800">
+                        <div class="w-2/3 lg:w-1/2 xl:w-2/3">
+                            <p class="text-center font-normal text-3xl" id="week-count">0</p>
+                            <div class="w-48">
+                                <canvas id="week-incidents-chart"></canvas>
+                            </div>
+                        </div>
+                        <div class="text-center lg:pl-4 xl:px-4">
+                            <p class="text-red-500 text-xl" id="week-increment">+0%</p>
+                            <p class="font-light text-xs leading-4 text-gray-700">respecto a la semana anterior</p>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="xl:w-1/4 bg-white p-5 rounded-lg shadow">
+                    <p class="text-base text-center font-medium">Incidencias del mes</p>
+                    <div class="flex justify-center divide-x divide-gray-800">
+                        <div class="w-2/3 lg:w-1/2 xl:w-2/3">
+                            <p class="text-center font-normal text-3xl" id="month-count">0</p>
+                            <div class="w-48">
+                                <canvas id="month-incidents-chart"></canvas>
+                            </div>
+                        </div>
+                        <div class="text-center lg:px-4 xl:px-4">
+                            <p class="text-red-500 text-xl" id="month-increment">+0%</p>
+                            <p class="font-light text-xs leading-4 text-gray-700">respecto al mes anterior</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="xl:w-1/4 bg-white p-5 rounded-lg shadow">
+                    <p class="text-base text-center font-medium">Incidencias del año</p>
+                    <div class="flex justify-center divide-x divide-gray-800">
+                        <div class="w-2/3 lg:w-1/2 xl:w-2/3">
+                            <p class="text-center font-normal text-3xl" id="year-count">0</p>
+                            <div class="w-48">
+                                <canvas id="year-incidents-chart"></canvas>
+                            </div>
+                        </div>
+                        <div class="text-center lg:px-4 xl:px-4">
+                            <p class="text-red-500 text-xl" id="year-increment">+0%</p>
+                            <p class="font-light text-xs leading-4 text-gray-700">respecto al año anterior</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-col md:grid md:grid-cols-2 gap-x-8 lg:gap-x-4 gap-y-3 lg:flex lg:flex-row w-4/5 lg:w-4/5 xl:w-3/5 mt-5 justify-center mx-auto">
+                <input datepicker datepicker-autohide datepicker-format="dd/mm/yyyy" type="text"
+                       value="{{ start_date }}"
+                       class="lg:w-4/5 xl:w-1/2 bg-white border border-gray-300 text-gray-900 sm:text-sm rounded-lg shadow duration-150 focus:border-transparent focus:outline-none focus:ring focus:ring-indigo-500 block w-full px-3 py-1.5 datepicker-input"
+                       placeholder="Fecha inicio" id="start-date">
+                <input datepicker datepicker-autohide datepicker-format="dd/mm/yyyy" type="text"
+                       value="{{ end_date }}"
+                       class="lg:w-4/5 xl:w-1/2 bg-white border border-gray-300 text-gray-900 sm:text-sm rounded-lg shadow duration-150 focus:border-transparent focus:outline-none focus:ring focus:ring-indigo-500 block w-full px-3 py-1.5 datepicker-input"
+                       placeholder="Fecha fin" id="end-date">
+                <select id="camera" style="min-width: 200px"
+                        class="border border-gray-300 w-full focus:border-transparent focus:outline-none focus:ring-2 focus:ring-indigo-500 py-1.5 px-3 shadow rounded-md">
+                    <option value="all" {% if camera_selected|slugify == "all"|slugify %}selected{% endif %}>Seleccionar
+                        cámara / Todas
+                    </option>
+                    {% for camera in cameras %}
+                        <option value="{{ camera.id }}"
+                                {% if camera_selected|slugify == camera.id|slugify %}selected{% endif %}>{{ camera.address }}</option>
+                    {% endfor %}
+                </select>
+                <select id="category" style="min-width: 200px"
+                        class="border border-gray-300 w-full focus:border-transparent focus:outline-none focus:ring-2 focus:ring-indigo-500 py-1.5 px-3 shadow rounded-md">
+                    <option value="all" {% if category_selected == "all" %}selected{% endif %}>Seleccionar categoría /
+                        Todas
+                    </option>
+                    {% for category in incident_categories %}
+                        <option value="{{ category.id }}"
+                                {% if category_selected|slugify == category.id|slugify %}selected{% endif %}>{{ category.name }}</option>
+                    {% endfor %}
+                </select>
+                <button type="button" onclick="reload()"
+                        class="mx-auto w-20 md:w-28 lg:w-56 xl:w-48 h-10 flex justify-center md:col-span-2 items-center bg-indigo-600 rounded-lg shadow-sm hover:bg-indigo-500 focus:bg-indigo-700 duration-150 focus:ring focus:ring-indigo-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" viewBox="0 0 20 20"
+                         fill="currentColor">
+                        <path fill-rule="evenodd"
+                              d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                              clip-rule="evenodd"/>
+                    </svg>
                 </button>
             </div>
         </div>
-    </div>
-</div>
-{% endif %}
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:flex gap-5 mt-5">
+            <div class="lg:w-1/3 bg-white p-3 rounded-lg shadow">
+                <p class="text-base text-center font-medium">Cantidad de incidencias</p>
+                <p class="text-sm text-center">{% if start_date %}Del {{ start_date }}{% endif %}{% if end_date %} Hasta
+                    el {{ end_date }}{% endif %}</p>
+                <canvas id="incidents-chart"
+                        data-url="{% url 'incidents:get_incidents' %}?start-date={{ start_date }}&end-date={{ end_date }}&camera-selected={{ camera_selected }}&category-selected={{ category_selected }}"></canvas>
+            </div>
+            <div class="lg:w-1/3 bg-white p-3 rounded-lg shadow">
+                <p class="text-base text-center font-medium">Cantidad de incidencias por colaborador</p>
+                <p class="text-sm text-center">{% if start_date %}Del {{ start_date }}{% endif %}{% if end_date %} Hasta
+                    el {{ end_date }}{% endif %}</p>
+                <canvas id="incidents-by-worker-chart"
+                        data-url="{% url 'incidents:get_incidents_by_worker' %}?start-date={{ start_date }}&end-date={{ end_date }}&camera-selected={{ camera_selected }}&category-selected={{ category_selected }}"></canvas>
+            </div>
+            <div class="lg:w-1/3 h-72 bg-white p-3 rounded-lg shadow md:mx-20 md:w-3/4 md:col-span-2 lg:mx-0">
+                <p class="text-base text-center font-medium">Últimas incidencias</p>
+                <div class="flex flex-col gap-5 my-3 overflow-y-scroll h-2/3 p-3">
+                    {% for incident in incidents %}
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0 h-10 w-10">
+                                <img class="h-10 w-10 rounded-full" src="{{ incident.worker.photo.url }}"
+                                     alt="profile photo" height="40px">
+                            </div>
+                            <div class="ml-4">
+                                <p class="text-sm font-normal text-gray-800 leading-5">
+                                    <a class="font-semibold"> {{ incident.worker.names }} {{ incident.worker.surnames }} </a>
+                                    incidencia por
+                                    <a class="font-semibold text-{{ incident.incident_category.color }}-500"> {{ incident.incident_category.name|lower }} </a>
+                                </p>
+                                <p class="text-sm text-gray-500 leading-5">
+                                    {{ incident.date_time }}
+                                </p>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="flex justify-center mt-4">
+                    <a type='button' href="{% url 'incidents:list_incidents' %}"
+                       class='w-40 inline-flex justify-center rounded-full border border-transparent shadow-sm px-4 py-1 bg-indigo-200 text-sm font-medium text-indigo-800 hover:text-white hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'>Ver
+                        todo</a>
+                </div>
+            </div>
+        </div>
+        <div class="grid grid-cols-1 lg:flex gap-5 mt-5">
+            <div class="lg:w-3/5 hidden md:block bg-white p-3 rounded-lg shadow">
+                <p class="text-base text-center font-medium">Cantidad de incidencias por categoría</p>
+                <p class="text-sm text-center">{% if start_date %}Del {{ start_date }}{% endif %}{% if end_date %} Hasta
+                    el {{ end_date }}{% endif %}</p>
+                <canvas id="incidents-by-category-bar-chart"
+                        data-url="{% url 'incidents:get_incidents_by_category_and_day' %}?start-date={{ start_date }}&end-date={{ end_date }}&camera-selected={{ camera_selected }}&category-selected={{ category_selected }}"
+                        height="100%"></canvas>
 
-<div class="h-1/5">
-    <div class="grid grid-cols-1 md:grid-cols-2 mx-5 xl:flex gap-5" id="incidents-summary-charts" data-url="{% url 'incidents:get_incidents_summary_charts' %}">
-        <div class="xl:w-1/4 bg-white p-5 rounded-lg shadow">
-            <p class="text-base text-center font-medium">Incidencias del día</p>
-            <div class="flex justify-center divide-x divide-gray-800">
-                <div class="w-2/3 lg:w-1/2 xl:w-2/3">
-                    <p class="text-center font-normal text-3xl" id="day-count">0</p>
-                    <div class="w-48">
-                        <canvas id="day-incidents-chart"></canvas>
-                    </div>
-                </div>
-                <div class="text-center lg:px-4 xl:px-4">
-                    <p class="text-red-500 text-xl" id="day-increment">+0%</p>
-                    <p class="font-light text-xs leading-4 text-gray-700">respecto al día anterior</p>
-                </div>
+            </div>
+            <div class="lg:w-3/5 md:hidden bg-white p-3 rounded-lg shadow">
+                <p class="text-base text-center font-medium">Cantidad de incidencias por categoría</p>
+                <p class="text-sm text-center">{% if start_date %}Del {{ start_date }}{% endif %}{% if end_date %} Hasta
+                    el {{ end_date }}{% endif %}</p>
+                <canvas id="incidents-by-category-bar-chart-2"
+                        data-url="{% url 'incidents:get_incidents_by_category_and_day' %}?start-date={{ start_date }}&end-date={{ end_date }}&camera-selected={{ camera_selected }}&category-selected={{ category_selected }}"
+                ></canvas>
+            </div>
+            <div class="md:w-3/4 lg:w-2/5 md:mx-20 lg:mx-0 bg-white p-3 rounded-lg shadow">
+                <p class="text-base text-center font-medium">Cantidad de incidencias por categoría</p>
+                <p class="text-sm text-center">{% if start_date %}Del {{ start_date }}{% endif %}{% if end_date %} Hasta
+                    el {{ end_date }}{% endif %}</p>
+                <canvas id="incidents-by-category-doughnut-chart" class="mt-3"
+                        data-url="{% url 'incidents:get_incidents_by_category' %}?start-date={{ start_date }}&end-date={{ end_date }}&camera-selected={{ camera_selected }}&category-selected={{ category_selected }}"></canvas>
             </div>
         </div>
-        <div class="xl:w-1/4 bg-white p-5 rounded-lg shadow">
-            <p class="text-base text-center font-medium">Incidencias de la semana</p>
-            <div class="flex justify-center divide-x divide-gray-800">
-                <div class="w-2/3 lg:w-1/2 xl:w-2/3">
-                    <p class="text-center font-normal text-3xl" id="week-count">0</p>
-                    <div class="w-48">
-                        <canvas id="week-incidents-chart"></canvas>
-                    </div>
-                </div>
-                <div class="text-center lg:pl-4 xl:px-4">
-                    <p class="text-red-500 text-xl" id="week-increment">+0%</p>
-                    <p class="font-light text-xs leading-4 text-gray-700">respecto a la semana anterior</p>
-                </div>
-            </div>
+        <script>
+            function reload() {
+                let start_date = document.getElementById('start-date').value
+                let end_date = document.getElementById('end-date').value
+                let camera_selected = document.getElementById('camera').value
+                let category_selected = document.getElementById('category').value
 
-        </div>
-        <div class="xl:w-1/4 bg-white p-5 rounded-lg shadow">
-            <p class="text-base text-center font-medium">Incidencias del mes</p>
-            <div class="flex justify-center divide-x divide-gray-800">
-                <div class="w-2/3 lg:w-1/2 xl:w-2/3">
-                    <p class="text-center font-normal text-3xl" id="month-count">0</p>
-                    <div class="w-48">
-                        <canvas id="month-incidents-chart"></canvas>
-                    </div>
-                </div>
-                <div class="text-center lg:px-4 xl:px-4">
-                    <p class="text-red-500 text-xl" id="month-increment">+0%</p>
-                    <p class="font-light text-xs leading-4 text-gray-700">respecto al mes anterior</p>
-                </div>
-            </div>
-        </div>
-        <div class="xl:w-1/4 bg-white p-5 rounded-lg shadow">
-            <p class="text-base text-center font-medium">Incidencias del año</p>
-            <div class="flex justify-center divide-x divide-gray-800">
-                <div class="w-2/3 lg:w-1/2 xl:w-2/3">
-                    <p class="text-center font-normal text-3xl" id="year-count">0</p>
-                    <div class="w-48">
-                        <canvas id="year-incidents-chart"></canvas>
-                    </div>
-                </div>
-                <div class="text-center lg:px-4 xl:px-4">
-                    <p class="text-red-500 text-xl" id="year-increment">+0%</p>
-                    <p class="font-light text-xs leading-4 text-gray-700">respecto al año anterior</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="grid grid-cols-2 md:flex gap-2 mt-5 justify-center mx-2">
-        <div @click.away="open = false" class="relative inline-block text-left" x-data="{ open: false }">
-            <button @click="open = !open"
-                class="inline-flex justify-center content-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm
-                    font-medium text-gray-600 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500">
-                <span>Rango de fechas</span>
-                <svg fill="currentColor" viewBox="0 0 20 20" :class="{'rotate-180': open, 'rotate-0': !open}"
-                    class="ml-1 h-5 w-5 transition-transform duration-200 transform">
-                    <path fill-rule="evenodd"
-                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                        clip-rule="evenodd"></path>
-                </svg>
-            </button>
-            <div x-show="open" x-transition:enter="transition ease-out duration-100"
-                x-transition:enter-start="transform opacity-0 scale-95"
-                x-transition:enter-end="transform opacity-100 scale-100"
-                x-transition:leave="transition ease-in duration-75"
-                x-transition:leave-start="transform opacity-100 scale-100"
-                x-transition:leave-end="transform opacity-0 scale-95" class="z-50 origin-top-right absolute right-0 mt-2 w-40 rounded-md shadow-lg bg-white
-                    ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical"
-                aria-labelledby="menu-button" tabindex="-1">
-                <div class="py-1" role="none">
-                    <a href="#" class="text-gray-600 block px-4 py-2 text-sm hover:bg-gray-50" role="menuitem"
-                        tabindex="-1" id="menu-item-0">Por definir...</a>
-                </div>
-            </div>
-        </div>
-        <div @click.away="open = false" class="relative inline-block text-left" x-data="{ open: false }">
-            <button @click="open = !open"
-                class="inline-flex justify-center content-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm
-                    font-medium text-gray-600 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500">
-                <span>Rango de horas</span>
-                <svg fill="currentColor" viewBox="0 0 20 20" :class="{'rotate-180': open, 'rotate-0': !open}"
-                    class="ml-1 h-5 w-5 transition-transform duration-200 transform">
-                    <path fill-rule="evenodd"
-                        d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
-                        clip-rule="evenodd"></path>
-                </svg>
-            </button>
-            <div x-show="open" x-transition:enter="transition ease-out duration-100"
-                x-transition:enter-start="transform opacity-0 scale-95"
-                x-transition:enter-end="transform opacity-100 scale-100"
-                x-transition:leave="transition ease-in duration-75"
-                x-transition:leave-start="transform opacity-100 scale-100"
-                x-transition:leave-end="transform opacity-0 scale-95" class="z-50 origin-top-right absolute right-0 mt-2 w-40 rounded-md shadow-lg bg-white
-                    ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical"
-                aria-labelledby="menu-button" tabindex="-1">
-                <div class="py-1" role="none">
-                    <a href="#" class="text-gray-600 block px-4 py-2 text-sm hover:bg-gray-50" role="menuitem"
-                        tabindex="-1" id="menu-item-0">Por definir...</a>
-                </div>
-            </div>
-            <input datepicker datepicker-autohide datepicker-format="dd/mm/yyyy" type="text" value="{{ start_date }}"
-                class="bg-white border border-gray-300 text-gray-900 sm:text-sm rounded-lg duration-150 focus:border-transparent focus:outline-none focus:ring focus:ring-indigo-500 block w-full pl-10 p-2.5"
-                placeholder="Fecha inicio" id="start-date">
-        </div>
-        <div @click.away="open = false" class="relative inline-block text-left" x-data="{ open: false }">
-            <button @click="open = !open"
-                class="inline-flex justify-center content-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm
-                    font-medium text-gray-600 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500">
-                <span>Área</span>
-                <svg fill="currentColor" viewBox="0 0 20 20" :class="{'rotate-180': open, 'rotate-0': !open}"
-                    class="ml-1 h-5 w-5 transition-transform duration-200 transform">
-                    <path fill-rule="evenodd"
-                        d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                        clip-rule="evenodd"></path>
-                </svg>
-            </button>
-            <div x-show="open" x-transition:enter="transition ease-out duration-100"
-                x-transition:enter-start="transform opacity-0 scale-95"
-                x-transition:enter-end="transform opacity-100 scale-100"
-                x-transition:leave="transition ease-in duration-75"
-                x-transition:leave-start="transform opacity-100 scale-100"
-                x-transition:leave-end="transform opacity-0 scale-95" class="z-50 origin-top-right absolute right-0 mt-2 w-40 rounded-md shadow-lg bg-white
-                    ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical"
-                aria-labelledby="menu-button" tabindex="-1">
-                <div class="py-1" role="none">
-                    <a href="#" class="text-gray-600 block px-4 py-2 text-sm hover:bg-gray-50" role="menuitem"
-                        tabindex="-1" id="menu-item-0">Por definir...</a>
-                </div>
-            </div>
-        </div>
-        <div @click.away="open = false" class="relative inline-block text-left" x-data="{ open: false }">
-            <button @click="open = !open"
-                class="inline-flex justify-center content-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm
-                    font-medium text-gray-600 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500">
-                <span>Categoría</span>
-                <svg fill="currentColor" viewBox="0 0 20 20" :class="{'rotate-180': open, 'rotate-0': !open}"
-                    class="ml-1 h-5 w-5 transition-transform duration-200 transform">
-                    <path fill-rule="evenodd"
-                        d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
-                        clip-rule="evenodd"></path>
-                </svg>
-            </button>
-            <div x-show="open" x-transition:enter="transition ease-out duration-100"
-                x-transition:enter-start="transform opacity-0 scale-95"
-                x-transition:enter-end="transform opacity-100 scale-100"
-                x-transition:leave="transition ease-in duration-75"
-                x-transition:leave-start="transform opacity-100 scale-100"
-                x-transition:leave-end="transform opacity-0 scale-95" class="z-50 origin-top-right absolute right-0 mt-2 w-40 rounded-md shadow-lg bg-white
-                    ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical"
-                aria-labelledby="menu-button" tabindex="-1">
-                <div class="py-1" role="none">
-                    <a href="#" class="text-gray-600 block px-4 py-2 text-sm hover:bg-gray-50" role="menuitem"
-                        tabindex="-1" id="menu-item-0">Por definir...</a>
-                </div>
-            </div>
-            <input datepicker datepicker-autohide datepicker-format="dd/mm/yyyy" type="text" value="{{ end_date }}"
-                class="bg-white border border-gray-300 text-gray-900 sm:text-sm rounded-lg duration-150 focus:border-transparent focus:outline-none focus:ring focus:ring-indigo-500 block w-full pl-10 p-2.5"
-                placeholder="Fecha fin" id="end-date">
-        </div>    
-        <select id="camera" style="min-width: 200px"
-        class="mb-2 mt-1 text-sm border border-gray-300 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-indigo-500 py-1.5 px-3 shadow rounded-md">
-        <option value="all" {% if camera_selected|slugify == "all"|slugify %}selected{% endif %}>Seleccionar cámara / Todas</option>
-        {% for camera in cameras %}
-        <option value="{{ camera.id }}" {% if camera_selected|slugify == camera.id|slugify %}selected{% endif %}>{{ camera.address }}</option>
-        {% endfor %}
-        </select>
-        <select id="category" style="min-width: 200px"
-        class="mb-2 mt-1 text-sm border border-gray-300 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-indigo-500 py-1.5 px-3 shadow rounded-md">
-        <option value="all" {% if category_selected == "all" %}selected{% endif %}>Seleccionar categoría / Todas</option>
-        {% for category in incident_categories %}
-        <option value="{{ category.id }}" {% if category_selected|slugify == category.id|slugify %}selected{% endif %}>{{ category.name }}</option>
-        {% endfor %}
-        </select>
-        <button type="button" onclick="reload()"
-            class="w-10 h-10 flex justify-center items-center bg-indigo-600 rounded-lg shadow-sm hover:bg-indigo-500 focus:bg-indigo-700 duration-150 focus:ring focus:ring-indigo-500">
-            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" viewBox="0 0 20 20"
-                fill="currentColor">
-                <path fill-rule="evenodd"
-                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                    clip-rule="evenodd" />
-            </svg>
-        </button>
-    </div>
-</div>
-<div class="grid grid-cols-1 md:grid-cols-2 lg:flex gap-5 mt-5">
-    <div class="lg:w-1/3 bg-white p-3 rounded-lg shadow">
-        <p class="text-base text-center font-medium">Cantidad de incidencias</p>
-        <p class="text-sm text-center">{% if start_date %}Del {{ start_date }}{% endif %}{% if end_date %} Hasta el {{ end_date }}{% endif %}</p>
-        <canvas id="incidents-chart" data-url="{% url 'incidents:get_incidents' %}?start-date={{ start_date }}&end-date={{ end_date }}&camera-selected={{ camera_selected }}&category-selected={{ category_selected }}"></canvas>
-    </div>
-    <div class="lg:w-1/3 bg-white p-3 rounded-lg shadow">
-        <p class="text-base text-center font-medium">Cantidad de incidencias por colaborador</p>
-        <p class="text-sm text-center">{% if start_date %}Del {{ start_date }}{% endif %}{% if end_date %} Hasta el {{ end_date }}{% endif %}</p>
-        <canvas id="incidents-by-worker-chart" data-url="{% url 'incidents:get_incidents_by_worker' %}?start-date={{ start_date }}&end-date={{ end_date }}&camera-selected={{ camera_selected }}&category-selected={{ category_selected }}"></canvas>
-    </div>
-    <div class="lg:w-1/3 h-72 bg-white p-3 rounded-lg shadow md:mx-20 md:w-3/4 md:col-span-2 lg:mx-0">
-        <p class="text-base text-center font-medium">Últimas incidencias</p>
-        <div class="flex flex-col gap-5 my-3 overflow-y-scroll h-2/3 p-3">
-            {% for incident in incidents %}
-            <div class="flex items-center">
-                <div class="flex-shrink-0 h-10 w-10">               
-                    <img class="h-10 w-10 rounded-full" src="{{ incident.worker.photo.url }}" alt="profile photo" height="40px">
-                </div>
-                <div class="ml-4">
-                    <p class="text-sm font-normal text-gray-800 leading-5">
-                        <a class="font-semibold"> {{ incident.worker.names }} {{ incident.worker.surnames }} </a>
-                        incidencia por
-                        <a class="font-semibold text-{{ incident.incident_category.color }}-500"> {{ incident.incident_category.name|lower }} </a>
-                    </p>
-                    <p class="text-sm text-gray-500 leading-5">
-                        {{ incident.date_time }}
-                    </p>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-        <div class="flex justify-center mt-4">
-            <a type='button' href="{% url 'incidents:list_incidents' %}"
-                class='w-40 inline-flex justify-center rounded-full border border-transparent shadow-sm px-4 py-1 bg-indigo-200 text-sm font-medium text-indigo-800 hover:text-white hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'>Ver todo</a>
-        </div>
-    </div>
-</div>
-<div class="grid grid-cols-1 lg:flex gap-5 mt-5">
-    <div class="lg:w-3/5 hidden md:block bg-white p-3 rounded-lg shadow">
-        <p class="text-base text-center font-medium">Cantidad de incidencias por categoría</p>
-        <p class="text-sm text-center">{% if start_date %}Del {{ start_date }}{% endif %}{% if end_date %} Hasta el {{ end_date }}{% endif %}</p>
-        <canvas id="incidents-by-category-bar-chart" data-url="{% url 'incidents:get_incidents_by_category_and_day' %}?start-date={{ start_date }}&end-date={{ end_date }}&camera-selected={{ camera_selected }}&category-selected={{ category_selected }}"
-            height="100%"></canvas>
-
-    </div>
-    <div class="lg:w-3/5 md:hidden bg-white p-3 rounded-lg shadow">
-        <p class="text-base text-center font-medium">Cantidad de incidencias por categoría</p>
-        <p class="text-sm text-center">Del lunes 11 al domingo 17 de Octubre</p>
-        <canvas id="incidents-by-category-bar-chart-2" data-url="{% url 'incidents:get_incidents_by_category_and_day' %}">
-        </canvas>
-    </div>
-    <div class="md:w-3/4 lg:w-2/5 md:mx-20 lg:mx-0 bg-white p-3 rounded-lg shadow">
-        <p class="text-base text-center font-medium">Cantidad de incidencias por categoría</p>
-        <p class="text-sm text-center">{% if start_date %}Del {{ start_date }}{% endif %}{% if end_date %} Hasta el {{ end_date }}{% endif %}</p>
-        <canvas id="incidents-by-category-doughnut-chart" class="mt-3"
-            data-url="{% url 'incidents:get_incidents_by_category' %}?start-date={{ start_date }}&end-date={{ end_date }}&camera-selected={{ camera_selected }}&category-selected={{ category_selected }}"></canvas>
-    </div>
-</div>
-<script>
-    function reload() {
-        let start_date = document.getElementById('start-date').value
-        let end_date = document.getElementById('end-date').value
-        let camera_selected = document.getElementById('camera').value
-        let category_selected = document.getElementById('category').value
-
-        window.location.href = "{% url 'home' %}?start-date=" + start_date + "&end-date=" + end_date + "&camera-selected=" + camera_selected + "&category-selected=" + category_selected;
-    }
-</script>
-{% endif %}
+                window.location.href = "{% url 'home' %}?start-date=" + start_date + "&end-date=" + end_date + "&camera-selected=" + camera_selected + "&category-selected=" + category_selected;
+            }
+        </script>
+    {% endif %}
 {% endblock content %}
