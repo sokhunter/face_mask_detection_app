@@ -58,18 +58,10 @@
                 </div>
             </div>
         </div>
-        <div class="grid grid-cols-2">
-            <div class="mx-auto w-80 mt-10">
-                <label class="block text-base font-normal text-gray-600 mx-auto text-center">Imagen referencial</label>
-                <img src="{{incident.incident_category.image.url}}" alt="reference image"
-                    class="rounded-md border border-gray-400 shadow w-80 h-80 mt-1">
-            </div>
-            <div class="mx-auto w-80 mt-10">
-                <label class="block text-base font-normal text-gray-600 mx-auto text-center">Imagen de la incidencia</label>
-                <img src="{{incident.image.url}}" alt="reference image"
-                    class="rounded-md border border-gray-400 shadow w-80 h-80 mt-1">
-            </div>
-        </div>
+        <div class="flex flex-col mx-auto w-80 mt-10">
+            <label class="block text-base font-normal text-gray-600 mx-auto">Imagen de la incidencia</label>
+            <img src="{{incident.image.url}}" alt="incident image"
+                class="rounded-md border border-gray-400 shadow w-80 h-80 mt-1">
     </div>
 </div>
 {% endblock content %}
