@@ -1,4 +1,4 @@
-import random, csv, requests, collections
+import random, csv, requests, collections, uuid, base64
 
 from datetime import datetime, timedelta
 
@@ -8,6 +8,7 @@ from django.http import HttpResponse
 from django.http.response import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.files.base import ContentFile
 from django.utils import timezone
 
 from incidents.models import Incident, IncidentCategory, Camera
@@ -17,10 +18,10 @@ from incidents.functions import get_incidents_by_request, get_incidents_by_date_
 
 def create_false_data():
     if not IncidentCategory.objects.all():
-        IncidentCategory(name="Con mascarilla",
-                         color="green", image="incident_categories/no_jaw.png").save()
+        IncidentCategory(name="Con mascarilla", color="green",
+                         image="incident_categories/correct_mask.png").save()
         IncidentCategory(name="Mascarilla mal puesta", color="yellow",
-                         image="incident_categories/only_jaw.png").save()
+                         image="incident_categories/incorrect_mask.png").save()
         IncidentCategory(name="Sin mascarilla", color="red",
                          image="incident_categories/no_mask.png").save()
 
@@ -239,7 +240,7 @@ def get_incidents_summary_charts(request):
         data_colors.append(incident_category.color)
         data_labels.append(incident_category.name)
 
-    date_now = timezone.now().replace(hour=0, minute=0, second=0, microsecond=0)
+    date_now = timezone.localtime(timezone.now()).replace(hour=0, minute=0, second=0, microsecond=0)
 
     day_start = timezone.make_aware(datetime.combine(date_now, datetime.min.time()))
     day_end = timezone.make_aware(datetime.combine(date_now, datetime.max.time()))
@@ -370,8 +371,15 @@ def camera_request(request, id):
                 incident_category = IncidentCategory.objects.get(id=3)
                 context['success'] = False
 
-            Incident(incident_category=incident_category, worker=worker, camera=camera, security_user=camera.security_user,
-                        image="incident_images/test_incident.jpg", date_time=timezone.now()).save()
+            format, imgstr = image_data.split(';base64,')
+            ext = format.split('/')[-1]
+            data = ContentFile(base64.b64decode(imgstr))  
+            file_name = uuid.uuid4().hex + '.' + ext
+
+            incident = Incident(incident_category=incident_category, worker=worker, camera=camera, security_user=camera.security_user,
+                        date_time=timezone.now())
+            incident.image.save(file_name, data, save=True)
+            incident.save()
         else:
             context['success'] = False
             context['recommendation'] = "Error en la validacion, por favor mire bien a la camara e intentelo de nuevo"
