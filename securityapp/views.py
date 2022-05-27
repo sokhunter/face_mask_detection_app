@@ -21,7 +21,7 @@ def home_page(request):
         camera = request.POST.get('camera-selected', False)
         category = request.POST.get('category-selected', False)
 
-    date_now = timezone.now()
+    date_now = timezone.localtime(timezone.now())
 
     start_date_condition = start_date != False
     end_date_condition = end_date != False

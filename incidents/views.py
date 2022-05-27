@@ -1,4 +1,9 @@
-import random, csv, requests, collections
+import random, csv, requests, collections, uuid, base64, urllib.request, json
+import pandas as pd
+
+from django.conf import settings
+
+from pathlib import Path
 
 from datetime import datetime, timedelta
 
@@ -8,6 +13,7 @@ from django.http import HttpResponse
 from django.http.response import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.files.base import ContentFile
 from django.utils import timezone
 
 from incidents.models import Incident, IncidentCategory, Camera
@@ -17,10 +23,10 @@ from incidents.functions import get_incidents_by_request, get_incidents_by_date_
 
 def create_false_data():
     if not IncidentCategory.objects.all():
-        IncidentCategory(name="Con mascarilla",
-                         color="green", image="incident_categories/no_jaw.png").save()
+        IncidentCategory(name="Con mascarilla", color="green",
+                         image="incident_categories/correct_mask.png").save()
         IncidentCategory(name="Mascarilla mal puesta", color="yellow",
-                         image="incident_categories/only_jaw.png").save()
+                         image="incident_categories/incorrect_mask.png").save()
         IncidentCategory(name="Sin mascarilla", color="red",
                          image="incident_categories/no_mask.png").save()
 
@@ -229,6 +235,69 @@ def get_incidents_by_category_chart_data(request):
     return JsonResponse(context)
 
 
+@csrf_exempt
+def get_covid_database(request):
+    try:
+        static_dir_path = settings.STATICFILES_DIRS
+        context_file_path = Path(static_dir_path[0] + '\\context')
+        cached_data_file_path = Path(static_dir_path[0] + '\\cached_data.csv')
+
+        with open(context_file_path, 'r') as f:
+            content = f.readlines()
+
+        date_now = timezone.make_naive(timezone.localtime(timezone.now()).replace(hour=0, minute=0, second=0, microsecond=0))
+
+        last_update_date = datetime.combine(datetime.strptime(content[0], '%Y%m%d').date(), datetime.min.time())
+
+        if date_now > last_update_date:
+            data = []
+
+            storage_csv_headers = ['DEATHS_WEEK', 'DEATHS_MONTH']
+            minsa_contagion_metadata = json.loads(urllib.request.urlopen('https://www.datosabiertos.gob.pe/api/3/action/package_show?id=3423d336-63b5-4a73-af54-7f9836a9bb26').read())
+            minsa_deaths_metadata = json.loads(urllib.request.urlopen('https://www.datosabiertos.gob.pe/api/3/action/package_show?id=b44c937b-7f6d-4165-be78-f7d55651ee28').read())
+            #contagion_data = pd.read_csv(minsa_contagion_metadata['result'][0]['resources'][0]['url'], sep=';')
+            deaths_data = pd.read_csv(minsa_deaths_metadata['result'][0]['resources'][0]['url'], sep=';')
+            deaths_count = deaths_data.groupby('FECHA_FALLECIMIENTO').size().reset_index(name='COUNT')
+            deaths_count['FECHA_FALLECIMIENTO'] = pd.to_numeric(deaths_count['FECHA_FALLECIMIENTO'])
+
+            week_start = datetime.combine(date_now - timedelta(days=date_now.weekday()), datetime.min.time())
+            week_end = datetime.combine(week_start + timedelta(days=6), datetime.max.time())
+
+            deaths_week = deaths_count.loc[(deaths_count['FECHA_FALLECIMIENTO'] >= int(week_start.strftime('%Y%m%d'))) & (deaths_count['FECHA_FALLECIMIENTO'] <= int(week_end.strftime('%Y%m%d')))].sum()['COUNT']
+
+            data.append(str(deaths_week))
+            data.append(str(42))
+
+            with open(context_file_path, 'w') as f:
+                f.truncate()
+                f.write(date_now.strftime('%Y%m%d'))
+
+            with open(cached_data_file_path, 'w') as f:
+                f.truncate()
+                f.writelines([','.join(storage_csv_headers), '\n', ','.join(data)])
+    except:
+        pass
+
+    context = {
+        'data': {}
+    }
+
+    with open(cached_data_file_path, 'r') as f:
+        csvreader = csv.reader(f)
+        headers = next(csvreader)
+        line = []
+
+        #There will only be one row
+        for row in csvreader:
+            line.append(row)
+
+        line = line[0]
+        for i, header in enumerate(headers):
+            context['data'][header] = line[i]
+
+    return JsonResponse(context)
+
+
 def get_incidents_summary_charts(request):
     incident_categories = IncidentCategory.objects.all()
 
@@ -239,7 +308,7 @@ def get_incidents_summary_charts(request):
         data_colors.append(incident_category.color)
         data_labels.append(incident_category.name)
 
-    date_now = timezone.now().replace(hour=0, minute=0, second=0, microsecond=0)
+    date_now = timezone.localtime(timezone.now()).replace(hour=0, minute=0, second=0, microsecond=0)
 
     day_start = timezone.make_aware(datetime.combine(date_now, datetime.min.time()))
     day_end = timezone.make_aware(datetime.combine(date_now, datetime.max.time()))
@@ -370,8 +439,15 @@ def camera_request(request, id):
                 incident_category = IncidentCategory.objects.get(id=3)
                 context['success'] = False
 
-            Incident(incident_category=incident_category, worker=worker, camera=camera, security_user=camera.security_user,
-                        image="incident_images/test_incident.jpg", date_time=timezone.now()).save()
+            format, imgstr = image_data.split(';base64,')
+            ext = format.split('/')[-1]
+            data = ContentFile(base64.b64decode(imgstr))  
+            file_name = uuid.uuid4().hex + '.' + ext
+
+            incident = Incident(incident_category=incident_category, worker=worker, camera=camera, security_user=camera.security_user,
+                        date_time=timezone.now())
+            incident.image.save(file_name, data, save=True)
+            incident.save()
         else:
             context['success'] = False
             context['recommendation'] = "Error en la validacion, por favor mire bien a la camara e intentelo de nuevo"
