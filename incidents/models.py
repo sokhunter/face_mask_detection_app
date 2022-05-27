@@ -38,6 +38,7 @@ class Incident(models.Model):
     image = models.ImageField(_('Imagen de la Incidencia'),
                               blank=True, upload_to='incident_images')
     date_time = models.DateTimeField(_('Fecha y Hora de Incidencia'))
+    is_reviewed = models.BooleanField(default=False)
 
     @property
     def date_time_truncated(self):
