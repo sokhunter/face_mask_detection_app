@@ -1,11 +1,11 @@
 {% extends "index.html" %}
 {% block content %}
-<div class="w-2/3 mx-auto">
-    <h1 class="text-2xl text-gray-900 font-semibold mt-3">Incidencia / Incidencia #{{ incident.id|stringformat:"04d" }}
+<div class="w-4/5 mx-auto">
+    <h1 class="text-2xl lg:mx-28 xl:mx-36 text-gray-900 font-semibold -mt-1">Incidencia / Incidencia #{{ incident.id|stringformat:"04d" }}
     </h1>
-    <div class="bg-white shadow rounded-3xl p-5 mt-3">
-        <div class="grid grid-cols-2 gap-x-14 gap-y-6">
-            <div class="mx-auto w-40 whitespace-nowrap">
+    <div class="bg-white lg:mx-28 xl:mx-36 shadow rounded-3xl p-5 mt-3">
+        <div class="flex flex-col md:grid md:grid-cols-2 gap-x-14 gap-y-6">
+            <div class="w-full whitespace-nowrap px-5">
                 <label class="block text-base font-normal text-gray-600">Colaborador</label>
                 <div class="flex items-center mt-1">
                     <div class="flex-shrink-0 h-10 w-10">
@@ -24,31 +24,31 @@
                     </div>
                 </div>
             </div>
-            <div class="mx-auto w-40 whitespace-nowrap">
+            <div class="w-full whitespace-nowrap px-5">
                 <label class="block text-base font-normal text-gray-600">Documento</label>
-                <div class="font-semibold">{{incident.worker.document}} ({{incident.worker.document_type}})</div>
+                <div class="font-semibold leading-10">{{incident.worker.document}} ({{incident.worker.document_type}})</div>
             </div>
-            <div class="mx-auto w-40 whitespace-nowrap">
+            <div class="w-full whitespace-nowrap px-5">
                 <label class="block text-base font-normal text-gray-600">Fecha y Hora</label>
                 <div class="text-sm text-gray-500">{{incident.date_time}}</div>
             </div>
-            <div class="mx-auto w-40 whitespace-nowrap">
+            <div class="w-full whitespace-nowrap px-5">
                 <label class="block text-base font-normal text-gray-600">Categoría</label>
                 <div class="flex items-center gap-2">
                     {% if incident.incident_category.color == 'green' %}
-                    <div class="w-6 h-6 bg-green-500 rounded-full">
+                    <div class="w-5 h-5 bg-green-500 rounded-full">
                         &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
                     </div>
                     {% elif incident.incident_category.color == 'blue' %}
-                    <div class="w-6 h-6 bg-blue-600 rounded-full">
+                    <div class="w-5 h-5 bg-blue-600 rounded-full">
                         &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
                     </div>
                     {% elif incident.incident_category.color == 'yellow' %}
-                    <div class="w-6 h-6 bg-yellow-400 rounded-full">
+                    <div class="w-5 h-5 bg-yellow-400 rounded-full">
                         &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
                     </div>
                     {% elif incident.incident_category.color == 'red' %}
-                    <div class="w-6 h-6 bg-red-600 rounded-full">
+                    <div class="w-5 h-5 bg-red-600 rounded-full">
                         &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
                     </div>
                     {% endif %}
