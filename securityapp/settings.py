@@ -36,15 +36,14 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    'channels',
     'captcha',
-
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
     'django_email_verification',
     # 'tailwind',
     # 'theme',
@@ -52,6 +51,17 @@ INSTALLED_APPS = [
     'accounts',
     'incidents',
 ]
+
+ASGI_APPLICATION = 'securityapp.asgi.application'
+
+CHANNEL_LAYERS = {
+    'default': {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+    }
+}
 
 AUTH_USER_MODEL = 'accounts.User'
 
