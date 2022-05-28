@@ -354,7 +354,7 @@
 </html>
 
 <script type="text/javascript">
-    var notificationsWsUrl = `ws://${window.location.host}/ws/socket-server/`;
+    var notificationsWsUrl = `wss://${window.location.host}/ws/socket-server/`;
     const notificationsSocket = new WebSocket(notificationsWsUrl);
     function playNotificationSound() {
         const audio = new Audio('{% static '/media/notification.mp3' %}');
