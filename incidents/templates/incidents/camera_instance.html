@@ -90,7 +90,6 @@
         recommendationsText.innerHTML = response.recommendation
 
         accept_button.disabled = false
-        console.log(response);
     }
 
     function sendData(image) {
@@ -101,7 +100,7 @@
         form_data.append('dni', dni.value);
 
         xhr.open("POST", '{% url 'incidents:camera_request' id=camera_id %}', true);
-        xhr.setRequestHeader('x-csrf-token', '{{ csrf_token  }}');
+        xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token  }}');
         xhr.onreadystatechange = function() {
             if (xhr.readyState === 4) {
                 processResponse(xhr.response);
