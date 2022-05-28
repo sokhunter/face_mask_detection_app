@@ -353,6 +353,7 @@
 
 </html>
 
+{% block notification_web_socket %}
 <script type="text/javascript">
     var notificationsWsUrl = `ws://${window.location.host}/ws/socket-server/`;
     const notificationsSocket = new WebSocket(notificationsWsUrl);
@@ -408,7 +409,9 @@
 
             playNotificationSound();
 
-            $('#notification_list').find('.notification-item').last().parent().remove();
+            if ($('#notification_list').find('.notification-item').length >= 5) {
+                $('#notification_list').find('.notification-item').last().parent().remove();
+            }
 
             prependNotification(incident_data);
 
@@ -420,3 +423,4 @@
         }
     };
 </script>
+{% endblock %}
