@@ -1,1 +1,1 @@
-web: gunicorn securityapp.wsgi --log-file -
+web: daphne securityapp.asgi:application --port $PORT --bind 0.0.0.0
