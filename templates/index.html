@@ -1,4 +1,5 @@
 {% load static %}
+{% load incident_tags %}
 <!-- % load static tailwind_tags % -->
 <!DOCTYPE html>
 <html lang="es">
@@ -13,7 +14,25 @@
     <!-- load css -->
     <link type="text/css" href='{% static "css/styles.css" %}' rel='stylesheet'/>
     <link type="text/css" href='{% static "accounts/css/styles.css" %}' rel='stylesheet'/>
+    <style>
+        .notification-item:hover {
+            color: #000 !important;
+            background-color: lightgray !important;
+            box-shadow: 5px 5px rgba(211, 211, 211, 0.432) inset;
+        }
+        .number-circle {
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            background: rgb(255, 255, 255);
+            border: 2px solid #f00;
+            padding-top: 2px;
+            color: #666;
+            text-align: center;
+            font: 12px Arial, sans-serif;
+        }
 
+    </style>
     <title> {% block title %} SECURY {% endblock %}</title>
 </head>
 
@@ -66,7 +85,6 @@
                     {% endif %}
                 </ul>
             </div>
-
             <ul class="md:flex md:items-center z-[-1] md:z-auto md:static absolute bg-white w-full left-0 md:w-auto md:py-0 py-4 md:pl-0 pl-7 md:block hidden top-[-400px] transition-all ease-in duration-500">
                 {% if request.user.is_authenticated %}
                     <li class="mx-2 my-6 md:my-0">
@@ -117,16 +135,67 @@
                         </li>
                     {% endif %}
                 {% endif %}
-
                 {% if request.user.is_authenticated %}
                     <li class="mx-2 my-6 md:my-0">
-                        <button class="flex flex-col items-center xl:flex-row flex-shrink-0 text-gray-600 hover:text-gray-500 content-center gap-2 focus:text-indigo-500 focus:border-b-2 focus:border-indigo-500 p-3">
-                            <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                 stroke="currentColor" aria-hidden="true">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                                      d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
-                            </svg>
-                        </button>
+                        <div @click.away="open = false" class="relative inline-block text-left"
+                             x-data="{ open: false }">
+                             <button @click="open = !open" class="flex flex-col items-center xl:flex-row flex-shrink-0 text-gray-600 hover:text-gray-500 content-center gap-2 focus:text-indigo-500 focus:border-b-2 focus:border-indigo-500 p-3">
+                                <div class="absolute" style="left: 28px; bottom: 28px">
+                                    <div class="number-circle notification-count-cl">{% get_notification_count request.user.id %}</div>
+                                </div>
+                                <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                     stroke="currentColor" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                          d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+                                </svg>
+                            </button>
+                            <a href="" id="notification-template" style="display: none">
+                                <div class="flex items-center justify-center notification-item mt-2 mb-2">
+                                    <div class="flex-shrink-0 h-10 w-10">
+                                        <img class="h-10 w-10 rounded-full image-cl" src=""
+                                             alt="profile photo" height="40px">
+                                    </div>
+                                    <div class="ml-4">
+                                        <p class="text-sm font-normal text-gray-800 leading-5">
+                                            <div style="font-weight: 600; font-size: 14px;" class="name-cl"></div>
+                                            <div class="font-semibold category-cl" style="font-size: 14px !important;"></div>
+                                        </p>
+                                        <p class="text-sm text-gray-500 leading-5">
+                                            <div style="font-size: 13px;" class="date-cl"></div>
+                                        </p>
+                                    </div>
+                                </div>    
+                             </a>
+                            <div x-show="open" x-transition:enter="transition ease-out duration-100"
+                                 x-transition:enter-start="transform opacity-0 scale-95"
+                                 x-transition:enter-end="transform opacity-100 scale-100"
+                                 x-transition:leave="transition ease-in duration-75"
+                                 x-transition:leave-start="transform opacity-100 scale-100"
+                                 x-transition:leave-end="transform opacity-0 scale-95" class="z-50 origin-top-right absolute right-0 mt-2 w-80 rounded-md shadow-lg bg-white
+                    ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical"
+                                 aria-labelledby="menu-button" tabindex="-1" style="display: none" id="notification_list">
+                                 {% get_latest_unreviewed_incidents request.user.id 5 as incidents %}
+                                 {% for incident in incidents %}
+                                 <a href="{% url 'incidents:get_incident' id=incident.id %}">
+                                    <div class="flex items-center justify-center notification-item mt-2 mb-2">
+                                        <div class="flex-shrink-0 h-10 w-10">
+                                            <img class="h-10 w-10 rounded-full image-cl" src="{{ incident.worker.photo.url }}"
+                                                 alt="profile photo" height="40px">
+                                        </div>
+                                        <div class="ml-4">
+                                            <p class="text-sm font-normal text-gray-800 leading-5">
+                                                <div style="font-weight: 600; font-size: 14px;" class="name-cl"> {{ incident.worker.names }} {{ incident.worker.surnames }} </div>
+                                                <div class="font-semibold text-{{ incident.incident_category.color }}-500 category-cl" style="font-size: 14px !important;"> {{ incident.incident_category.name|lower }} </div>
+                                            </p>
+                                            <p class="text-sm text-gray-500 leading-5">
+                                                <div style="font-size: 13px;" class="date-cl">{{ incident.date_time }}</div>
+                                            </p>
+                                        </div>
+                                    </div>    
+                                 </a>
+                                {% endfor %}
+                            </div>
+                        </div>
                     </li>
                     <li class="mx-2 my-6 md:my-0">
                         <div @click.away="open = false" class="relative inline-block text-left"
@@ -285,5 +354,69 @@
 </html>
 
 <script type="text/javascript">
+    var notificationsWsUrl = `ws://${window.location.host}/ws/socket-server/`;
+    const notificationsSocket = new WebSocket(notificationsWsUrl);
+    function playNotificationSound() {
+        const audio = new Audio('{% static '/media/notification.mp3' %}');
+        audio.play();
+    };
+    function reloadNotifications() {
+        var xhr = new XMLHttpRequest();
 
+        var form_data = new FormData();
+
+        xhr.open("GET", '{% url 'incidents:get_last_unchecked_incidents' %}' + '?count=5', true);
+        xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token  }}');
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4) {
+                processResponse(xhr.response);
+            }
+        }
+        xhr.send(form_data);
+    }
+    function processResponse(response) {
+        response = JSON.parse(response)
+
+        if (response.data) {
+            $("#notification_list").empty()
+
+            response.data.reverse().forEach(e => {
+                prependNotification(e);
+            })
+        }
+    }
+    function prependNotification(notification_data) {
+        notification_template = $('#notification-template').clone();
+
+        notification_template.find('.name-cl').text(notification_data.name);
+        notification_template.find('.category-cl').text(notification_data.category);
+        notification_template.find('.category-cl').addClass(`text-${notification_data.color}-500`);
+        notification_template.find('.date-cl').text(notification_data.date);
+        notification_template.find('.image-cl').attr("src", notification_data.image);
+
+        notification_template.show();
+
+        $('#notification_list').prepend(notification_template);
+    }
+    notificationsSocket.onmessage = function(e) {
+        let data = JSON.parse(e.data);
+
+        notification_count_elem = $(".notification-count-cl");
+
+        if (data.type === 'incident_received') {
+            let incident_data = data.message;
+
+            playNotificationSound();
+
+            $('#notification_list').find('.notification-item').last().parent().remove();
+
+            prependNotification(incident_data);
+
+            notification_count_elem.text(parseInt(notification_count_elem.text()) + 1);
+
+        } else if (data.type === 'notification_read') {
+            reloadNotifications();
+            notification_count_elem.text(parseInt(notification_count_elem.text()) - 1);
+        }
+    };
 </script>

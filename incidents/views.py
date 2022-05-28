@@ -2,6 +2,8 @@ import random, csv, requests, collections, uuid, base64, urllib.request, json
 import pandas as pd
 
 from django.conf import settings
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
 
 from pathlib import Path
 
@@ -14,9 +16,11 @@ from django.http.response import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.files.base import ContentFile
-from django.utils import timezone
+from django.utils import timezone, formats
 
 from incidents.models import Incident, IncidentCategory, Camera
+from django.db.models import Q
+
 from django.views.decorators.csrf import csrf_exempt
 
 from incidents.functions import get_incidents_by_request, get_incidents_by_date_range, get_period_ranges
@@ -91,9 +95,21 @@ def delete_incident_request(request, id):
 
 
 def get_incident_page(request, id):
+    incident = get_object_or_404(Incident, id=id)
+
     context = {
-        'incident': get_object_or_404(Incident, id=id),
+        'incident': incident,
     }
+
+    if not incident.is_reviewed:
+        incident.is_reviewed = True
+        incident.save()
+
+        async_to_sync(get_channel_layer().group_send)(
+            'noti' + str(request.user.id),
+            {'type': 'notification_read'}
+        )
+
     return render(request, 'incidents/view.html', context)
 
 def get_incidents_chart_data(request):
@@ -235,7 +251,6 @@ def get_incidents_by_category_chart_data(request):
     return JsonResponse(context)
 
 
-@csrf_exempt
 def get_covid_database(request):
     try:
         static_dir_path = settings.STATICFILES_DIRS
@@ -407,7 +422,6 @@ def get_incidents_summary_charts(request):
     return JsonResponse(context)
 
 
-@csrf_exempt
 def camera_request(request, id):
     context = {
         'camera_id': id,
@@ -464,6 +478,20 @@ def camera_request(request, id):
                         date_time=timezone.now())
             incident.image.save(file_name, data, save=True)
             incident.save()
+
+            incident_date = timezone.make_aware(timezone.make_naive(incident.date_time))
+            incident_context = {
+                'name': incident.worker.names + ' ' + incident.worker.surnames,
+                'category': incident.incident_category.name.lower(),
+                'color': incident.incident_category.color,
+                'image': incident.worker.photo.url,
+                'date': formats.date_format(incident_date) + ' a las ' + formats.time_format(incident_date)
+            }
+
+            async_to_sync(get_channel_layer().group_send)(
+                'noti' + str(request.user.id),
+                {'type': 'notification', 'incident_context': incident_context}
+            )
         else:
             context['success'] = False
             context['recommendation'] = "Error en la validacion, por favor mire bien a la camara e intentelo de nuevo"
@@ -471,9 +499,36 @@ def camera_request(request, id):
     return JsonResponse(context)
 
 
-def camera_instance(request, id):
+def get_last_unchecked_incidents(request):
+    if request.method == 'GET' and 'count' in request.GET:
+        incidents_unchecked = Incident.objects.filter(Q(security_user=request.user) & Q(is_reviewed=False)).order_by('-date_time')[0:int(request.GET['count'])]
+    else:
+        incidents_unchecked = Incident.objects.filter(Q(security_user=request.user) & Q(is_reviewed=False)).order_by('-date_time')
+
+    incident_contexts = []
+
+    for incident in incidents_unchecked:
+        incident_date = timezone.make_aware(timezone.make_naive(incident.date_time))
+        incident_contexts.append({
+            'name': incident.worker.names + ' ' + incident.worker.surnames,
+            'category': incident.incident_category.name.lower(),
+            'color': incident.incident_category.color,
+            'image': incident.worker.photo.url,
+            'date': formats.date_format(incident_date) + ' a las ' + formats.time_format(incident_date)
+        })
+
     context = {
-        'camera_id': id
+        'data': incident_contexts
+    }
+
+    return JsonResponse(context)
+
+
+def camera_instance(request, id):
+    camera = get_object_or_404(Camera, id=id, security_user=request.user)
+
+    context = {
+        'camera_id': camera.id
     }
 
     return render(request, 'incidents/camera_instance.html', context)
