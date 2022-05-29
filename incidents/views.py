@@ -92,10 +92,13 @@ def delete_incident_request(request, id):
     incident = get_object_or_404(Incident, id=id)
 
     if not incident.is_reviewed:
-        async_to_sync(get_channel_layer().group_send)(
-            'noti' + str(incident.security_user.id),
-            {'type': 'notification_read'}
-        )
+        try:
+            async_to_sync(get_channel_layer().group_send)(
+                'noti' + str(incident.security_user.id),
+                {'type': 'notification_read'}
+            )
+        except:
+            pass
 
     incident.delete()
 
@@ -113,10 +116,13 @@ def get_incident_page(request, id):
         incident.is_reviewed = True
         incident.save()
 
-        async_to_sync(get_channel_layer().group_send)(
-            'noti' + str(incident.security_user.id),
-            {'type': 'notification_read'}
-        )
+        try:
+            async_to_sync(get_channel_layer().group_send)(
+                'noti' + str(incident.security_user.id),
+                {'type': 'notification_read'}
+            )
+        except:
+            pass
 
     return render(request, 'incidents/view.html', context)
 
@@ -497,10 +503,13 @@ def camera_request(request, id):
                 'date': formats.date_format(incident_date) + ' a las ' + formats.time_format(incident_date)
             }
 
-            async_to_sync(get_channel_layer().group_send)(
-                'noti' + str(request.user.id),
-                {'type': 'notification', 'incident_context': incident_context}
-            )
+            try:
+                async_to_sync(get_channel_layer().group_send)(
+                    'noti' + str(request.user.id),
+                    {'type': 'notification', 'incident_context': incident_context}
+                )
+            except:
+                pass
         else:
             context['success'] = False
             context['recommendation'] = "Error en la validacion, por favor mire bien a la camara e intentelo de nuevo"
