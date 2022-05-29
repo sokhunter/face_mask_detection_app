@@ -6,7 +6,8 @@ from incidents.views import (delete_incident_request, get_incident_page,
                              get_incidents_by_worker_chart_data,
                              get_incidents_chart_data, get_incidents_summary_charts,
                              list_incidents_page, list_incidents_page_csv,
-                             camera_instance, camera_request, get_covid_database)
+                             camera_instance, camera_request, get_covid_database,
+                             get_last_unchecked_incidents)
 
 app_name = 'incidents'
 urlpatterns = [
@@ -20,6 +21,7 @@ urlpatterns = [
     path('incidents-summary-charts', get_incidents_summary_charts, name='get_incidents_summary_charts'),
     path('camera_request/<int:id>/', camera_request, name='camera_request'),
     path('get_covid_database/', get_covid_database, name='get_covid_database'),
+    path('get_last_unchecked_incidents/', get_last_unchecked_incidents, name='get_last_unchecked_incidents'),
 
     path('', list_incidents_page,
          name='list_incidents'),

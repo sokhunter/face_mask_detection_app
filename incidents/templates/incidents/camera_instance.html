@@ -64,6 +64,8 @@
         <button disabled style="top: 105% !important;" type="button" id="take-photo" class="center mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">Tomar foto</button>    
     </div>
 </div>
+{% block notification_web_socket %}
+{% endblock %}
 <script>
     let camera_button = document.querySelector("#start-camera");
     let video = document.querySelector("#video");
@@ -78,7 +80,7 @@
     let worker_controllers = document.querySelector("#worker-controllers");
     let dni = document.querySelector("#dni");
 
-    function processResponse(response) {
+    function processReconResponse(response) {
         response = JSON.parse(response)
 
         if (response.success) {
@@ -90,7 +92,6 @@
         recommendationsText.innerHTML = response.recommendation
 
         accept_button.disabled = false
-        console.log(response);
     }
 
     function sendData(image) {
@@ -101,10 +102,10 @@
         form_data.append('dni', dni.value);
 
         xhr.open("POST", '{% url 'incidents:camera_request' id=camera_id %}', true);
-        xhr.setRequestHeader('x-csrf-token', '{{ csrf_token  }}');
+        xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token  }}');
         xhr.onreadystatechange = function() {
             if (xhr.readyState === 4) {
-                processResponse(xhr.response);
+                processReconResponse(xhr.response);
             }
         }
         xhr.send(form_data);
