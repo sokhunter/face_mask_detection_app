@@ -1,4 +1,5 @@
 {% load static %}
+{% load incident_tags %}
 <!-- % load static tailwind_tags % -->
 <!DOCTYPE html>
 <html lang="es">
@@ -11,178 +12,359 @@
     <!-- % tailwind_css % -->
     <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
     <!-- load css -->
-    <link type="text/css" href='{% static "css/styles.css" %}' rel='stylesheet' />
-    <link type="text/css" href='{% static "accounts/css/styles.css" %}' rel='stylesheet' />
+    <link type="text/css" href='{% static "css/styles.css" %}' rel='stylesheet'/>
+    <link type="text/css" href='{% static "accounts/css/styles.css" %}' rel='stylesheet'/>
+    <style>
+        .notification-item:hover {
+            color: #000 !important;
+            background-color: lightgray !important;
+            box-shadow: 5px 5px rgba(211, 211, 211, 0.432) inset;
+        }
+        .number-circle {
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            background: rgb(255, 255, 255);
+            border: 2px solid #f00;
+            padding-top: 2px;
+            color: #666;
+            text-align: center;
+            font: 12px Arial, sans-serif;
+        }
 
+    </style>
     <title> {% block title %} SECURY {% endblock %}</title>
 </head>
 
-<body class="bg-gray-50">
-    {% block navbar %}
-    <div class="bg-white shadow flex flex-shrink-0 justify-between gap-12 px-5">
-        <div class="flex flex-row gap-8">
-            <a href="{% url 'home' %}" class="font-bold text-4xl text-gray-900 py-2 mb-1">Secury</a>
-            {% if request.user.is_authenticated %}
-            <a href="{% url 'home' %}" class="flex flex-wrap flex-shrink-0 text-gray-600 hover:text-gray-500 content-center gap-2
-            focus:text-indigo-500 focus:border-b-2 focus:border-indigo-500 p-3">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                        d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
-                </svg>
-                <p class="text-base">Dashboard</p>
-            </a>
-
-            <a href="{% url 'incidents:list_incidents' %}" class="flex flex-wrap flex-shrink-0 text-gray-600 hover:text-gray-500 content-center gap-2
-            focus:text-indigo-500 focus:border-b-2 focus:border-indigo-500 p-3">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                        d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
-                </svg>
-                <p class="text-base">Incidencias</p>
-            </a>
-            {% if request.user.role.name == "admin" %}
-            <a href="{% url 'accounts:list_workers' %}" class="flex flex-wrap flex-shrink-0 text-gray-600 hover:text-gray-500 content-center gap-2
-            focus:text-indigo-500 focus:border-b-2 focus:border-indigo-500 p-3">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                        d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                </svg>
-                <p class="text-base">Colaboradores</p>
-            </a>
-            <a href="{% url 'accounts:list_users' %}" class="flex flex-wrap flex-shrink-0 text-gray-600 hover:text-gray-500 content-center gap-2
-            focus:text-indigo-500 focus:border-b-2 focus:border-indigo-500 p-3">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                        d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z" />
-                </svg>
-                <p class="text-base">Usuarios</p>
-            </a>
-            {% endif %}
-            {% endif %}
-        </div>
-        <div class="flex flex-row gap-8 items-center">
-            {% if request.user.is_authenticated %}
-            <button type="button"
-                class="h-6 w-6 rounded-full text-gray-600 hover:text-gray-500 focus:outline-none focus:text-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-offset-4 focus:ring-offset-gray-100">
-                <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                        d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                </svg>
-            </button>
-            <button type="button"
-                class="h-6 w-6 rounded-full text-gray-600 hover:text-gray-500 focus:outline-none focus:text-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-offset-4 focus:ring-offset-gray-100">
-                <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                        d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
-                </svg>
-            </button>
-            <button type="button"
-                class="h-6 w-6 rounded-full text-gray-600 hover:text-gray-500 focus:outline-none focus:text-indigo-500 focus:ring focus:ring-indigo-500 focus:ring-offset-4 focus:ring-offset-gray-100">
-                <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                        d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                </svg>
-            </button>
-            <div @click.away="open = false" class="relative inline-block text-left" x-data="{ open: false }">
-                <button @click="open = !open"
-                    class="inline-flex justify-center content-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm 
-                    font-medium text-gray-600 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500">
-                    <span>{{request.user}}</span>
-                    <svg fill="currentColor" viewBox="0 0 20 20" :class="{'rotate-180': open, 'rotate-0': !open}"
-                        class="ml-1 h-5 w-5 transition-transform duration-200 transform">
-                        <path fill-rule="evenodd"
-                            d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                            clip-rule="evenodd"></path>
+<body x-data="{navOpen: false}" class="bg-gray-50" :class="{'overflow-hidden': navOpen, 'overflow-scroll': !navOpen}">
+{% block navbar %}
+    <header class="fixed w-full z-40 justify-between items-center">
+        <nav class="bg-white inset-x-0 fixed z-[4] top-0 w-full shadow gap-12 px-5 md:flex md:flex-shrink-0 md:justify-between">
+            <div class="flex sticky w-full z-[4] justify-between items-center ">
+                <a href="{% url 'home' %}" class="font-bold text-4xl text-gray-900 py-2 mb-1">Secury</a>
+                <button class="md:hidden" @click="navOpen = !navOpen">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" class="h-7 w-7">
+                        <path d="M0 96C0 78.33 14.33 64 32 64H416C433.7 64 448 78.33 448 96C448 113.7 433.7 128 416 128H32C14.33 128 0 113.7 0 96zM0 256C0 238.3 14.33 224 32 224H416C433.7 224 448 238.3 448 256C448 273.7 433.7 288 416 288H32C14.33 288 0 273.7 0 256zM416 448H32C14.33 448 0 433.7 0 416C0 398.3 14.33 384 32 384H416C433.7 384 448 398.3 448 416C448 433.7 433.7 448 416 448z"></path>
                     </svg>
                 </button>
-                <div x-show="open" x-transition:enter="transition ease-out duration-100"
-                    x-transition:enter-start="transform opacity-0 scale-95"
-                    x-transition:enter-end="transform opacity-100 scale-100"
-                    x-transition:leave="transition ease-in duration-75"
-                    x-transition:leave-start="transform opacity-100 scale-100"
-                    x-transition:leave-end="transform opacity-0 scale-95" class="z-50 origin-top-right absolute right-0 mt-2 w-40 rounded-md shadow-lg bg-white 
-                    ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical"
-                    aria-labelledby="menu-button" tabindex="-1" style="display: none">
-                    <div class="py-1" role="none">
-                        <a href="{% url 'accounts:my_profile'%}"
-                            class="text-gray-600 block px-4 py-2 text-sm hover:bg-gray-50" role="menuitem" tabindex="-1"
-                            id="menu-item-0">Ver Perfil</a>
-                    </div>
-                    <div class="py-1" role="none">
-                        <a href="{% url 'accounts:logout' %}"
-                            class="text-red-600 block px-4 py-2 text-sm hover:bg-gray-50" role="menuitem" tabindex="-1"
-                            id="menu-item-1">Cerrar Sesión</a>
-                    </div>
-                </div>
             </div>
-            {% else %}
-            <a type="button" href="{% url 'accounts:login' %}"
-                class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto sm:text-sm">
-                Iniciar Sesión
-            </a>
-            {% endif %}
-        </div>
-    </div>
-    {% endblock %}
-    {% if messages %}
+            <div class="md:hidden left-0 right-0 min-h-screen space-y-4 p-4 bg-white fixed transform transition translate-x-full"
+                 :class="{'translate-x-full': !navOpen}"
+                 :class="{'translate-x-0': navOpen}">
+                <ul>
+                    {% if request.user.is_authenticated %}
+                        <li class="pb-2">
+                            <a href="{% url 'home' %}">Dashboard</a>
+                        </li>
+                        <li class="pb-2">
+                            <a href="{% url 'incidents:list_incidents' %}">Incidencias</a>
+                        </li>
+                        {% if request.user.role.name == "admin" %}
+                            <li class="pb-2">
+                                <a href="{% url 'accounts:list_workers' %}">Colaboradores</a>
+                            </li>
+                            <li class="pb-2">
+                                <a href="{% url 'accounts:list_users' %}">Usuarios</a>
+                            </li>
+                        {% endif %}
+                    {% endif %}
+                    {% if request.user.is_authenticated %}
+                        <li class="pb-2">
+                            <a href="#">Notificaciones</a>
+                        </li>
+                        <li class="pb-2">
+                            <a href="{% url 'accounts:my_profile' %}">Ver Perfil</a>
+                        </li>
+                        <li class="pb-2 text-red-600">
+                            <a href="{% url 'accounts:login' %}">Cerrar Sesión</a>
+                        </li>
+                    {% else %}
+                        <li class="pb-2">
+                            <a href="{% url 'accounts:login' %}">Iniciar Sesión</a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </div>
+            <ul class="md:flex md:items-center z-[-1] md:z-auto md:static absolute bg-white w-full left-0 md:w-auto md:py-0 py-4 md:pl-0 pl-7 md:block hidden top-[-400px] transition-all ease-in duration-500">
+                {% if request.user.is_authenticated %}
+                    <li class="mx-2 my-6 md:my-0">
+                        <a href="{% url 'home' %}"
+                           class="flex flex-col items-center xl:flex-row flex-shrink-0 text-gray-600 hover:text-gray-500 content-center gap-2 focus:text-indigo-500 focus:border-b-2 focus:border-indigo-500 p-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                                 stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                      d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
+                            </svg>
+                            <p class="text-base hidden lg:block">Dashboard</p>
+                        </a>
+                    </li>
+                    <li class="mx-2 my-6 md:my-0">
+                        <a href="{% url 'incidents:list_incidents' %}"
+                           class="flex flex-col items-center xl:flex-row flex-shrink-0 text-gray-600 hover:text-gray-500 content-center gap-2 focus:text-indigo-500 focus:border-b-2 focus:border-indigo-500 p-3">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                                 stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                      d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+                            </svg>
+                            <p class="text-base hidden lg:block">Incidencias</p>
+                        </a>
+                    </li>
+                    {% if request.user.role.name == "admin" %}
+                        <li class="mx-2 my-6 md:my-0">
+                            <a href="{% url 'accounts:list_workers' %}"
+                               class="flex flex-col items-center xl:flex-row flex-shrink-0 text-gray-600 hover:text-gray-500 content-center gap-2 focus:text-indigo-500 focus:border-b-2 focus:border-indigo-500 p-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                                     stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                          d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                </svg>
+                                <p class="text-base hidden lg:block">Colaboradores</p>
+                            </a>
+                        </li>
+                        <li class="mx-2 my-6 md:my-0">
+                            <a href="{% url 'accounts:list_users' %}"
+                               class="flex flex-col items-center xl:flex-row flex-shrink-0 text-gray-600 hover:text-gray-500 content-center gap-2 focus:text-indigo-500 focus:border-b-2 focus:border-indigo-500 p-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor"
+                                     viewBox="0 0 24 24"
+                                     stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                          d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"></path>
+                                </svg>
+                                <p class="text-base hidden lg:block">Usuarios</p>
+                            </a>
+                        </li>
+                    {% endif %}
+                {% endif %}
+                {% if request.user.is_authenticated %}
+                    <li class="mx-2 my-6 md:my-0">
+                        <div @click.away="open = false" class="relative inline-block text-left"
+                             x-data="{ open: false }">
+                             <button @click="open = !open" class="flex flex-col items-center xl:flex-row flex-shrink-0 text-gray-600 hover:text-gray-500 content-center gap-2 focus:text-indigo-500 focus:border-b-2 focus:border-indigo-500 p-3">
+                                <div class="absolute" style="left: 28px; bottom: 28px">
+                                    <div class="number-circle notification-count-cl">{% get_notification_count request.user.id %}</div>
+                                </div>
+                                <svg class="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                     stroke="currentColor" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                          d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+                                </svg>
+                            </button>
+                            <a href="" id="notification-template" style="display: none">
+                                <div class="flex items-center justify-center notification-item mt-2 mb-2">
+                                    <div class="flex-shrink-0 h-10 w-10">
+                                        <img class="h-10 w-10 rounded-full image-cl" src=""
+                                             alt="profile photo" height="40px">
+                                    </div>
+                                    <div class="ml-4">
+                                        <p class="text-sm font-normal text-gray-800 leading-5">
+                                            <div style="font-weight: 600; font-size: 14px;" class="name-cl"></div>
+                                            <div class="font-semibold category-cl" style="font-size: 14px !important;"></div>
+                                        </p>
+                                        <p class="text-sm text-gray-500 leading-5">
+                                            <div style="font-size: 13px;" class="date-cl"></div>
+                                        </p>
+                                    </div>
+                                </div>    
+                             </a>
+                            <div x-show="open" x-transition:enter="transition ease-out duration-100"
+                                 x-transition:enter-start="transform opacity-0 scale-95"
+                                 x-transition:enter-end="transform opacity-100 scale-100"
+                                 x-transition:leave="transition ease-in duration-75"
+                                 x-transition:leave-start="transform opacity-100 scale-100"
+                                 x-transition:leave-end="transform opacity-0 scale-95" class="z-50 origin-top-right absolute right-0 mt-2 w-80 rounded-md shadow-lg bg-white
+                    ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical"
+                                 aria-labelledby="menu-button" tabindex="-1" style="display: none" id="notification_list">
+                                 {% get_latest_unreviewed_incidents request.user.id 5 as incidents %}
+                                 {% for incident in incidents %}
+                                 <a href="{% url 'incidents:get_incident' id=incident.id %}">
+                                    <div class="flex items-center justify-center notification-item mt-2 mb-2">
+                                        <div class="flex-shrink-0 h-10 w-10">
+                                            <img class="h-10 w-10 rounded-full image-cl" src="{{ incident.worker.photo.url }}"
+                                                 alt="profile photo" height="40px">
+                                        </div>
+                                        <div class="ml-4">
+                                            <p class="text-sm font-normal text-gray-800 leading-5">
+                                                <div style="font-weight: 600; font-size: 14px;" class="name-cl"> {{ incident.worker.names }} {{ incident.worker.surnames }} </div>
+                                                <div class="font-semibold text-{{ incident.incident_category.color }}-500 category-cl" style="font-size: 14px !important;"> {{ incident.incident_category.name|lower }} </div>
+                                            </p>
+                                            <p class="text-sm text-gray-500 leading-5">
+                                                <div style="font-size: 13px;" class="date-cl">{{ incident.date_time }}</div>
+                                            </p>
+                                        </div>
+                                    </div>    
+                                 </a>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </li>
+                    <li class="mx-2 my-6 md:my-0">
+                        <div @click.away="open = false" class="relative inline-block text-left"
+                             x-data="{ open: false }">
+                            <button @click="open = !open"
+                                    class="inline-flex justify-center content-center w-full rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-sm
+                    font-medium text-gray-600 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-100 focus:ring-indigo-500">
+                                <span class="truncate w-16 lg:w-full">{{ request.user }}</span>
+                                <svg fill="currentColor" viewBox="0 0 20 20"
+                                     :class="{'rotate-180': open, 'rotate-0': !open}"
+                                     class="ml-1 h-5 w-5 transition-transform duration-200 transform">
+                                    <path fill-rule="evenodd"
+                                          d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                          clip-rule="evenodd"></path>
+                                </svg>
+                            </button>
+                            <div x-show="open" x-transition:enter="transition ease-out duration-100"
+                                 x-transition:enter-start="transform opacity-0 scale-95"
+                                 x-transition:enter-end="transform opacity-100 scale-100"
+                                 x-transition:leave="transition ease-in duration-75"
+                                 x-transition:leave-start="transform opacity-100 scale-100"
+                                 x-transition:leave-end="transform opacity-0 scale-95" class="z-50 origin-top-right absolute right-0 mt-2 w-32 lg:w-40 rounded-md shadow-lg bg-white
+                    ring-1 ring-black ring-opacity-5 focus:outline-none" role="menu" aria-orientation="vertical"
+                                 aria-labelledby="menu-button" tabindex="-1" style="display: none">
+                                <div class="py-1" role="none">
+                                    <a href="{% url 'accounts:my_profile' %}"
+                                       class="text-gray-600 block px-4 py-2 text-sm hover:bg-gray-50" role="menuitem"
+                                       tabindex="-1"
+                                       id="menu-item-0">Ver Perfil</a>
+                                </div>
+                                <div class="py-1" role="none">
+                                    <a href="{% url 'accounts:login' %}"
+                                       class="text-red-600 block px-4 py-2 text-sm hover:bg-gray-50" role="menuitem"
+                                       tabindex="-1"
+                                       id="menu-item-1">Cerrar Sesión</a>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                {% else %}
+                    <li class="mx-2 my-6 md:my-0">
+                        <a type="button" href="{% url 'accounts:login' %}"
+                           class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto sm:text-sm">
+                            Iniciar Sesión
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+{% endblock %}
+{% if messages %}
     <div class="relative">
         <div class="absolute bg-green-200">
             <ul class="messages">
                 {% for message in messages %}
-                <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
-                    {% endfor %}
+                    <li{% if message.tags %} class="{{ message.tags }}" {% endif %}>{{ message }}</li>
+                {% endfor %}
             </ul>
         </div>
     </div>
-    {% endif %}
+{% endif %}
 
-    {% block container %}
-    <div class="container mx-auto py-3 lg:px-10">
+{% block container %}
+    <div class="container mx-auto pt-20 lg:pt-24 py-3 md:px-10">
         {% block content %}
         {% endblock %}
     </div>
-    {% endblock %}
+{% endblock %}
 
-    {% block auth %}
-    {% endblock %}
+{% block auth %}
+{% endblock %}
 
-    <!-- js-cookie cdn -->
-    <script src="https://cdn.jsdelivr.net/npm/js-cookie@2.2.1/src/js.cookie.js"
+<!-- js-cookie cdn -->
+<script src="https://cdn.jsdelivr.net/npm/js-cookie@2.2.1/src/js.cookie.js"
         integrity="sha256-P8jY+MCe6X2cjNSmF4rQvZIanL5VwUUT4MBnOMncjRU=" crossorigin="anonymous"></script>
-    <!-- jquery cdn -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+<!-- jquery cdn -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"
         integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-    <!-- chart.js cdn -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.6.0/chart.min.js"
+<!-- chart.js cdn -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.6.0/chart.min.js"
         integrity="sha512-GMGzUEevhWh8Tc/njS0bDpwgxdCJLQBWG3Z2Ct+JGOpVnEmjvNx6ts4v6A2XJf1HOrtOsfhv3hBKpK9kE5z8AQ=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <!-- chart.js datalabels cdn -->
-    <script
+<!-- chart.js datalabels cdn -->
+<script
         src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.0.0/chartjs-plugin-datalabels.min.js"
         integrity="sha512-R/QOHLpV1Ggq22vfDAWYOaMd5RopHrJNMxi8/lJu8Oihwi4Ho4BRFeiMiCefn9rasajKjnx9/fTQ/xkWnkDACg=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <!-- chart.js plugin-annotation cdn -->
-    <script
+<!-- chart.js plugin-annotation cdn -->
+<script
         src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@1.0.2/dist/chartjs-plugin-annotation.min.js"></script>
-    <!-- frowbite datepicker cdn -->
-    <script src="https://unpkg.com/@themesberg/flowbite@1.1.1/dist/datepicker.bundle.js"></script>
-    <!-- load source js files -->
-    <script src="{% static 'js/scripts.js' %}"></script>
-    <script src="{% static 'accounts/js/scripts.js' %}"></script>
-    <script src="{% static 'incidents/js/scripts.js' %}"></script>
+<!-- flowbite datepicker cdn -->
+<script src="https://unpkg.com/@themesberg/flowbite@1.1.1/dist/datepicker.bundle.js"></script>
+<!-- load source js files -->
+<script src="{% static 'js/scripts.js' %}"></script>
+<script src="{% static 'accounts/js/scripts.js' %}"></script>
+<script src="{% static 'incidents/js/scripts.js' %}"></script>
 </body>
 
 </html>
 
+{% block notification_web_socket %}
 <script type="text/javascript">
+    var notificationsWsUrl = `ws://${window.location.host}/ws/socket-server/`;
+    const notificationsSocket = new WebSocket(notificationsWsUrl);
+    function playNotificationSound() {
+        const audio = new Audio('{% static '/media/notification.mp3' %}');
+        audio.play();
+    };
+    function reloadNotifications() {
+        var xhr = new XMLHttpRequest();
 
+        var form_data = new FormData();
+
+        xhr.open("GET", '{% url 'incidents:get_last_unchecked_incidents' %}' + '?count=5', true);
+        xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token  }}');
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === 4) {
+                processResponse(xhr.response);
+            }
+        }
+        xhr.send(form_data);
+    }
+    function processResponse(response) {
+        response = JSON.parse(response)
+
+        if (response.data) {
+            $("#notification_list").empty()
+
+            response.data.reverse().forEach(e => {
+                prependNotification(e);
+            })
+        }
+    }
+    function prependNotification(notification_data) {
+        notification_template = $('#notification-template').clone();
+
+        notification_template.find('.name-cl').text(notification_data.name);
+        notification_template.find('.category-cl').text(notification_data.category);
+        notification_template.find('.category-cl').addClass(`text-${notification_data.color}-500`);
+        notification_template.find('.date-cl').text(notification_data.date);
+        notification_template.find('.image-cl').attr("src", notification_data.image);
+
+        notification_template.show();
+
+        $('#notification_list').prepend(notification_template);
+    }
+    notificationsSocket.onmessage = function(e) {
+        let data = JSON.parse(e.data);
+
+        notification_count_elem = $(".notification-count-cl");
+
+        if (data.type === 'incident_received') {
+            let incident_data = data.message;
+
+            playNotificationSound();
+
+            if ($('#notification_list').find('.notification-item').length >= 5) {
+                $('#notification_list').find('.notification-item').last().parent().remove();
+            }
+
+            prependNotification(incident_data);
+
+            notification_count_elem.text(parseInt(notification_count_elem.text()) + 1);
+
+        } else if (data.type === 'notification_read') {
+            reloadNotifications();
+            notification_count_elem.text(parseInt(notification_count_elem.text()) - 1);
+        }
+    };
 </script>
+{% endblock %}

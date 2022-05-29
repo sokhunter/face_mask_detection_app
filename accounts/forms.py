@@ -1,4 +1,3 @@
-from tkinter.tix import Form
 from captcha.fields import ReCaptchaField
 from django import forms
 from django.contrib.auth import get_user_model
@@ -60,11 +59,10 @@ class RecoverPasswordForm(Form):
 class MyProfileEditForm(ModelForm):
     class Meta:
         model = Worker
-        fields = ['email', 'phone_number', 'photo']
+        fields = ['phone_number', 'photo']
 
     def __init__(self, *args, **kwargs):
         super(MyProfileEditForm, self).__init__(*args, **kwargs)
-        self.fields['email'].required = False
         self.fields['phone_number'].required = False
 
 

@@ -11,6 +11,15 @@ img.auth-image {
     width : 100%;
 }
 
+.center {
+    margin: 0;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
+
 @media only screen and (max-width: 1400px) {
     .responsive-captcha .g-recaptcha {
         transform       : scale(0.75);

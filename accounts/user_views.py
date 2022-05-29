@@ -20,11 +20,16 @@ from django.utils.http import (is_safe_url, urlsafe_base64_decode,
                                urlsafe_base64_encode)
 from django.views.generic import CreateView, FormView
 from django_email_verification import send_email as send_verification_email
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from accounts.forms import (LoginForm, MyProfileEditForm, RecoverPasswordForm,
                             UserCreationForm, UserEditForm)
 from accounts.models import UserPasswordHistory
 from accounts.utils import on_email_changed, send_custom_email
+
+from incidents.forms import CameraSelectionForm
+from incidents.models import Camera
+from incidents.views import camera_instance
 
 User = get_user_model()
 
@@ -116,7 +121,7 @@ def reset_password_page(request, uidb64, token):
     except:
         return render(request, 'accounts/reset_password.html', {'success': False})
     if default_token_generator.check_token(user, token) == False:
-        return HttpResponse('Token expirado')
+        pass#return render(request, 'accounts/reset_password.html', {'success': False})
     if request.method == "POST":
         password_form = SetPasswordForm(user, request.POST)
         if password_form.is_valid():
@@ -127,6 +132,10 @@ def reset_password_page(request, uidb64, token):
             return redirect('accounts:login')
     else:
         password_form = SetPasswordForm(user=user)
+
+    for form_field in password_form.visible_fields():
+        form_field.field.widget.attrs['class'] = 'my-1 w-full text-sm border border-gray-300 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-indigo-500 py-1.5 px-3 shadow rounded-md'
+
     context = {
         'password_form': password_form,
         'success': True
@@ -181,9 +190,27 @@ class RegisterAdminView(CreateView):
 
 
 def list_users_page(request):
+    search = request.GET.get('search', False)
+
+    users = User.objects.all()
+
+    if search:
+        users = users.filter(username__icontains=search)
+
+    page = request.GET.get('page', 1)
+    paginator = Paginator(users, 10)
+
+    try:
+        users = paginator.page(page)
+    except PageNotAnInteger:
+        users = paginator.page(1)
+    except EmptyPage:
+        users = paginator.page(paginator.num_pages)
+
     context = {
-        'users': User.objects.all(),
+        'users': users
     }
+
     return render(request, 'accounts/users/list.html', context)
 
 
@@ -253,15 +280,10 @@ def my_profile_page(request):
     password_form = SetPasswordForm(user=user)
     if request.method == "POST":
         if 'profile-form' in request.POST:
-            previous_email = user.worker.email
             profile_form = MyProfileEditForm(
                 request.POST, request.FILES, instance=user.worker)
             if profile_form.is_valid():
                 profile_form.save()
-                if on_email_changed(request, previous_email, profile_form.cleaned_data['email']):
-                    messages.success(
-                        request, 'Se envió a su correo el link de confirmación de su cuenta')
-                    return redirect("accounts:logout")
                 messages.success(
                     request, 'Se actualizó los datos correctamente!')
                 return redirect('accounts:my_profile')
@@ -279,6 +301,22 @@ def my_profile_page(request):
         'password_form': password_form,
     }
     return render(request, 'accounts/users/my_profile.html', context)
+
+
+def camera_selector(request):
+    if request.method == 'POST' and 'cameras' in request.POST:
+        camera_id = request.POST['cameras']
+        return redirect('incidents:camera_instance', id=camera_id)
+
+    security_user = request.user
+    camera_form = CameraSelectionForm(security_user)
+
+    context = {
+        'security_user': security_user,
+        'cameras_form': camera_form
+    }
+
+    return render(request, 'accounts/users/camera_selector.html', context)
 
 
 def delete_user_request(request, id):

@@ -1,3 +1,10 @@
+colors = {
+    yellow: '#FCD34D',
+    red: '#EF4444',
+    blue: '#6366F1',
+    green: '#34D399'
+}
+
 $(function () {
     var $chart = $("#incidents-chart");
     $.ajax({
@@ -11,8 +18,7 @@ $(function () {
                 if (e > 2) {
                     data1.push(maxIncidents)
                     data2.push(e - maxIncidents)
-                }
-                else {
+                } else {
                     data1.push(e)
                     data2.push(0)
                 }
@@ -79,8 +85,7 @@ $(function () {
                 if (e > 2) {
                     data1.push(maxIncidents)
                     data2.push(e - maxIncidents)
-                }
-                else {
+                } else {
                     data1.push(e)
                     data2.push(0)
                 }
@@ -140,27 +145,57 @@ $(function () {
         url: $chart3.data("url"),
         success: function (data) {
             var ctx = $chart3[0].getContext("2d");
+            var datasets = []
+
+            for (let i = 0; i < data.data.length; ++i) {
+                datasets.push({
+                    label: data.data_labels[i],
+                    backgroundColor: colors[data.data_colors[i]],
+                    data: data.data[i]
+                });
+            }
+
             new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels: data.labels,
-                    datasets: [{
-                        label: data.data_labels[0],
-                        backgroundColor: '#EF4444',
-                        data: data.data[0]
-                    }, {
-                        label: data.data_labels[1],
-                        backgroundColor: "#FCD34D",
-                        data: data.data[1]
-                    }, {
-                        label: data.data_labels[2],
-                        backgroundColor: '#6366F1',
-                        data: data.data[2]
-                    }, {
-                        label: data.data_labels[3],
-                        backgroundColor: '#34D399',
-                        data: data.data[3]
-                    }]
+                    datasets: datasets
+                },
+                options: {
+                    responsive: true,
+                    legend: {
+                        display: true,
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+    });
+
+    var $chart3_2 = $("#incidents-by-category-bar-chart-2");
+    $.ajax({
+        url: $chart3_2.data("url"),
+        success: function (data) {
+            var ctx = $chart3_2[0].getContext("2d");
+            var datasets = []
+
+            for (let i = 0; i < data.data.length; ++i) {
+                datasets.push({
+                    label: data.data_labels[i],
+                    backgroundColor: colors[data.data_colors[i]],
+                    data: data.data[i]
+                });
+            }
+
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: data.labels,
+                    datasets: datasets
                 },
                 options: {
                     responsive: true,
@@ -188,7 +223,7 @@ $(function () {
                     labels: data.labels,
                     datasets: [{
                         label: 'Incidents',
-                        backgroundColor: ['#EF4444', "#FCD34D", '#6366F1', '#34D399'],
+                        backgroundColor: data.data_colors.map(e => colors[e]),
                         data: data.data,
                     }]
                 },
@@ -205,224 +240,87 @@ $(function () {
         }
     });
 
-    var ctx = document.getElementById('day-incidents-chart').getContext('2d');
-    new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: ['Incidencias'],
-            datasets: [{
-                label: 'Sin mascarilla',
-                backgroundColor: "#EF4444",
-                data: [2],
-            }, {
-                label: 'Bajo la barbilla',
-                backgroundColor: "#FCD34D",
-                data: [1],
+    var $summary = $("#incidents-summary-charts");
+    $.ajax({
+        url: $summary.data("url"),
+        success: function (data) {
+            Object.keys(data.summary).forEach(e => {
+                var ctx = document.getElementById(e + '-incidents-chart').getContext('2d');
+                var count = document.getElementById(e + '-count');
+                var increment = document.getElementById(e + '-increment');
 
-            }, {
-                label: 'Cubre solo boca y barbilla',
-                backgroundColor: "#6366F1",
-                data: [0],
+                count.innerHTML = data.summary[e].count
 
-            }, {
-                label: 'Cubre solo boca y nariz',
-                backgroundColor: "#34D399",
-                data: [2],
-            }]
-        },
-        plugins: [ChartDataLabels],
-        options: {
-            aspectRatio: 6,
-            indexAxis: 'y',
-            plugins: {
-                legend: {
-                    display: false
-                },
-                tooltip: {
-                    enabled: false,
+                var change = data.summary[e].change
+
+                if (change > 0) {
+                    increment.classList.add("text-red-500");
+                    increment.innerHTML = '+' + change + '%'
+                } else if (change < 0) {
+                    increment.classList.add("text-green-500");
+                    increment.innerHTML = '-' + -change + '%'
+                } else {
+                    increment.classList.add("text-500");
+                    increment.innerHTML = '+' + change + '%'
                 }
-            },
-            scales: {
-                x: {
-                    display: false,
-                    stacked: true,
-                    grid: {
-                        display: false
+
+                var datasets = []
+
+                for (let i = 0; i < data.data_labels.length; ++i) {
+                    datasets.push({
+                        label: data.data_labels[i],
+                        backgroundColor: colors[data.data_colors[i]],
+                        data: [data.summary[e].data[i]]
+                    });
+                }
+
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: data.labels,
+                        datasets: datasets
                     },
-                },
-                y: {
-                    display: false,
-                    stacked: true,
-                    beginAtZero: true,
-                    grid: {
-                        display: false
-                    },
-                }
-            }
-        }
-    });
-
-    var ctx = document.getElementById('week-incidents-chart').getContext('2d');
-    new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: ['Incidencias'],
-            datasets: [{
-                label: 'Sin mascarilla',
-                backgroundColor: "#EF4444",
-                data: [7],
-            }, {
-                label: 'Bajo la barbilla',
-                backgroundColor: "#FCD34D",
-                data: [4],
-
-            }, {
-                label: 'Cubre solo boca y barbilla',
-                backgroundColor: "#6366F1",
-                data: [3],
-
-            }, {
-                label: 'Cubre solo boca y nariz',
-                backgroundColor: "#34D399",
-                data: [4],
-            }]
-        },
-        plugins: [ChartDataLabels],
-        options: {
-            aspectRatio: 6,
-            indexAxis: 'y',
-            plugins: {
-                legend: {
-                    display: false
-                },
-                tooltip: {
-                    enabled: false,
-                }
-            },
-            scales: {
-                x: {
-                    display: false,
-                    stacked: true,
-                },
-                y: {
-                    display: false,
-                    stacked: true,
-                    beginAtZero: true,
-                }
-            }
-        }
-    });
-
-    var ctx = document.getElementById('month-incidents-chart').getContext('2d');
-    new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: ['Incidencias'],
-            datasets: [{
-                label: 'Sin mascarilla',
-                backgroundColor: "#EF4444",
-                data: [19],
-            }, {
-                label: 'Bajo la barbilla',
-                backgroundColor: "#FCD34D",
-                data: [12],
-            }, {
-                label: 'Cubre solo boca y barbilla',
-                backgroundColor: "#6366F1",
-                data: [20],
-
-            }, {
-                label: 'Cubre solo boca y nariz',
-                backgroundColor: "#34D399",
-                data: [15],
-            }]
-        },
-        plugins: [ChartDataLabels],
-        options: {
-            aspectRatio: 6,
-            indexAxis: 'y',
-            plugins: {
-                legend: {
-                    display: false
-                },
-                tooltip: {
-                    enabled: false,
-                }
-            },
-            scales: {
-                x: {
-                    display: false,
-                    stacked: true,
-                    grid: {
-                        display: false
-                    },
-                },
-                y: {
-                    display: false,
-                    stacked: true,
-                    beginAtZero: true,
-                    grid: {
-                        display: false
-                    },
-                }
-            }
-        }
-    });
-
-    var ctx = document.getElementById('year-incidents-chart').getContext('2d');
-    new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: ['Incidencias'],
-            datasets: [{
-                label: 'Sin mascarilla',
-                backgroundColor: "#EF4444",
-                data: [145],
-            }, {
-                label: 'Bajo la barbilla',
-                backgroundColor: "#FCD34D",
-                data: [153],
-
-            }, {
-                label: 'Cubre solo boca y barbilla',
-                backgroundColor: "#6366F1",
-                data: [170],
-
-            }, {
-                label: 'Cubre solo boca y nariz',
-                backgroundColor: "#34D399",
-                data: [123],
-            }]
-        },
-        plugins: [ChartDataLabels],
-        options: {
-            aspectRatio: 6,
-            indexAxis: 'y',
-            plugins: {
-                legend: {
-                    display: false
-                },
-                tooltip: {
-                    enabled: false,
-                }
-            },
-            scales: {
-                x: {
-                    display: false,
-                    stacked: true,
-                    grid: {
-                        display: false
-                    },
-                },
-                y: {
-                    display: false,
-                    stacked: true,
-                    beginAtZero: true,
-                    grid: {
-                        display: false
-                    },
-                }
-            }
+                    plugins: [ChartDataLabels],
+                    // plugins: {
+                    //     [ChartDataLabels]: {
+                    //         display: function (context) {
+                    //             return context.dataset.data[context.dataIndex] > 0;
+                    //         },
+                    //         color: "white"
+                    //     },
+                    // },
+                    options: {
+                        borderRadius: 5,
+                        aspectRatio: 6,
+                        indexAxis: 'y',
+                        plugins: {
+                            legend: {
+                                display: false
+                            },
+                            tooltip: {
+                                enabled: false,
+                            }
+                        },
+                        scales: {
+                            x: {
+                                display: false,
+                                stacked: true,
+                                grid: {
+                                    display: false
+                                },
+                            },
+                            y: {
+                                display: false,
+                                stacked: true,
+                                beginAtZero: true,
+                                grid: {
+                                    display: false
+                                },
+                            }
+                        }
+                    }
+                });
+            })
         }
     });
 });
