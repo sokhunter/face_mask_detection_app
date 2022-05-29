@@ -249,6 +249,7 @@ def edit_user_page(request, id):
                     request, 'Se actualizó las configuraciones del usuario')
                 return redirect('accounts:get_user', id=id)
         if 'password-form' in request.POST:
+            user_form = UserEditForm(instance=user, initial={'worker': user.worker, 'role': user.role}, worker=user.worker)
             password_form = SetPasswordForm(user, request.POST)
             if password_form.is_valid():
                 user_saved = password_form.save()
@@ -264,8 +265,8 @@ def edit_user_page(request, id):
                         request, 'Hubo un fallo en el envio de correo')
                 return redirect('accounts:get_user', id=id)
     else:
-        user_form = UserEditForm(instance=user, initial={
-                                 'worker': user.worker, 'role': user.role}, worker=user.worker)
+        user_form = UserEditForm(instance=user, initial={'worker': user.worker, 'role': user.role}, worker=user.worker)
+
     context = {
         'user': user,
         'user_form': user_form,

@@ -90,13 +90,14 @@ def list_incidents_page_csv(request):
 
 def delete_incident_request(request, id):
     incident = get_object_or_404(Incident, id=id)
-    incident.delete()
 
     if not incident.is_reviewed:
         async_to_sync(get_channel_layer().group_send)(
-            'noti' + str(request.user.id),
+            'noti' + str(incident.security_user.id),
             {'type': 'notification_read'}
         )
+
+    incident.delete()
 
     return redirect('incidents:list_incidents')
 
@@ -108,12 +109,12 @@ def get_incident_page(request, id):
         'incident': incident,
     }
 
-    if not incident.is_reviewed:
+    if not incident.is_reviewed and incident.security_user.id == request.user.id:
         incident.is_reviewed = True
         incident.save()
 
         async_to_sync(get_channel_layer().group_send)(
-            'noti' + str(request.user.id),
+            'noti' + str(incident.security_user.id),
             {'type': 'notification_read'}
         )
 
@@ -247,7 +248,7 @@ def get_incidents_by_category_chart_data(request):
         local = counter[incident_category]
         data_colors.append(incident_category.color)
         data.append(local)
-        labels.append(incident_category.name + ' (' + str(round((local/total) * 100, 2)) + '%)')
+        labels.append(incident_category.name + ' (' + str(0 if total == 0 else round((local/total) * 100, 2)) + '%)')
 
     context = {
         'data': data,
