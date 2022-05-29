@@ -91,6 +91,13 @@ def list_incidents_page_csv(request):
 def delete_incident_request(request, id):
     incident = get_object_or_404(Incident, id=id)
     incident.delete()
+
+    if not incident.is_reviewed:
+        async_to_sync(get_channel_layer().group_send)(
+            'noti' + str(request.user.id),
+            {'type': 'notification_read'}
+        )
+
     return redirect('incidents:list_incidents')
 
 
