@@ -15,6 +15,7 @@ from channels.auth import AuthMiddlewareStack
 import incidents.routing
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'securityapp.settings')
+os.environ.setdefault('DJANGO_ALLOW_ASYNC_UNSAFE', 'true')
 
 application = ProtocolTypeRouter({
     'http': get_asgi_application(),
