@@ -27,6 +27,8 @@ urlpatterns = [
          name='list_incidents'),
     path('view/<int:id>', get_incident_page,
          name='get_incident'),
+    path('view/', get_incident_page,
+         name='get_incident'),
     path('delete/<int:id>/', delete_incident_request,
          name='delete_incident'),
     path('list_incidents_page_csv/', list_incidents_page_csv,

@@ -337,9 +337,10 @@
         notification_template.find('.category-cl').text(notification_data.category);
         notification_template.find('.category-cl').addClass(`text-${notification_data.color}-500`);
         notification_template.find('.date-cl').text(notification_data.date);
-        notification_template.find('.image-cl').attr("src", notification_data.image);
-
-        notification_template.show();
+        notification_template.find('.image-cl').attr('src', notification_data.image);
+        notification_template.attr('href', '{% url 'incidents:get_incident' %}' + notification_data.id);
+        notification_template.removeAttr('style');
+        notification_template.removeAttr('id');
 
         $('#notification_list').prepend(notification_template);
     }

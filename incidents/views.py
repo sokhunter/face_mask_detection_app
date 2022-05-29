@@ -489,6 +489,7 @@ def camera_request(request, id):
 
             incident_date = timezone.make_aware(timezone.make_naive(incident.date_time))
             incident_context = {
+                'id': incident.id,
                 'name': incident.worker.names + ' ' + incident.worker.surnames,
                 'category': incident.incident_category.name.lower(),
                 'color': incident.incident_category.color,
@@ -518,6 +519,7 @@ def get_last_unchecked_incidents(request):
     for incident in incidents_unchecked:
         incident_date = timezone.make_aware(timezone.make_naive(incident.date_time))
         incident_contexts.append({
+            'id': incident.id,
             'name': incident.worker.names + ' ' + incident.worker.surnames,
             'category': incident.incident_category.name.lower(),
             'color': incident.incident_category.color,
