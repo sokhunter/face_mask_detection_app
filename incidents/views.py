@@ -1,3 +1,4 @@
+import logging
 import random, csv, requests, collections, uuid, base64, urllib.request, json
 import pandas as pd
 
@@ -157,7 +158,7 @@ def get_incidents_by_worker_chart_data(request):
     workers = Worker.objects.all()
 
     counter = collections.Counter(list(map(lambda x: x.worker, incidents)))
-    
+
     data = []
     labels = []
 
@@ -215,7 +216,7 @@ def get_incidents_by_category_and_day_chart_data(request):
             if labels == None:
                 labels_local.append(current_date.strftime('%d/%m/%Y'))
             current_date += timedelta(days=1)
-        
+
         data.append(data_local)
         if labels == None:
             labels = labels_local
@@ -485,7 +486,7 @@ def camera_request(request, id):
 
             format, imgstr = image_data.split(';base64,')
             ext = format.split('/')[-1]
-            data = ContentFile(base64.b64decode(imgstr))  
+            data = ContentFile(base64.b64decode(imgstr))
             file_name = uuid.uuid4().hex + '.' + ext
 
             incident = Incident(incident_category=incident_category, worker=worker, camera=camera, security_user=camera.security_user,
