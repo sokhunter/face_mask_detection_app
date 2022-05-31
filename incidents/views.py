@@ -54,7 +54,7 @@ def list_incidents_page(request):
     incidents, fstart_date, fend_date = get_incidents_by_request(request, "POST")
 
     # Ordenar incidentes por fecha
-    incidents = incidents.objects.order_by('-date_time')
+    incidents = incidents.order_by('-date_time')
 
     page = request.GET.get('page', 1)
     paginator = Paginator(incidents, 10)
