@@ -102,7 +102,7 @@
         form_data.append('dni', dni.value);
 
         xhr.open("POST", '{% url 'incidents:camera_request' id=camera_id %}', true);
-        xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token  }}');
+        xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token }}');
         xhr.onreadystatechange = function() {
             if (xhr.readyState === 4) {
                 processReconResponse(xhr.response);
