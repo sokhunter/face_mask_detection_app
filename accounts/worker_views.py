@@ -29,7 +29,8 @@ def list_workers_page(request):
         workers = paginator.page(paginator.num_pages)
 
     context = {
-        'workers': workers
+        'workers': workers,
+        'filter': search if search != False else ''
     }
 
     return render(request, 'accounts/workers/list.html', context)
