@@ -315,7 +315,7 @@
         var form_data = new FormData();
 
         xhr.open("GET", '{% url 'incidents:get_last_unchecked_incidents' %}' + '?count=5', true);
-        xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token  }}');
+        xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token }}');
         xhr.onreadystatechange = function() {
             if (xhr.readyState === 4) {
                 processResponse(xhr.response);

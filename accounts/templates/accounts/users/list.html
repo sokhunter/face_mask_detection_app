@@ -4,21 +4,44 @@
 <div class="flex justify-between m-3 place-items-center">
     <p class="text-sm text-gray-400">Mostrando <span class="text-sm text-gray-700">{{ users.start_index }}-{{ users.end_index }}</span> de <span
             class="text-sm text-gray-700">{{ users.paginator.count }}</span></p>
-    <div class="flex justify-end">
-        <input type="text" name="filter" id="filter"
-            class="w-50 text-sm border border-gray-300 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-indigo-500 py-1.5 px-3 shadow rounded-md placeholder-gray-500 placeholder-opacity-50"
-            placeholder="Buscar usuario" />
-        <div class="relative">
-            <div class="absolute right-1.5 top-1.5">
-                <button onclick="search_user()" class="h-5 w-5 bg-white text-gray-900 focus:text-indigo-600">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd"
-                            d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                            clip-rule="evenodd" />
-                    </svg>
-                </button>
+    <div class="flex justify-end items-center">
+        {% if filter %}
+        <p class="mx-2 mt-1">Buscando usuarios con nombre de usuario: {{ filter }}</p>
+        {% endif %}
+        <div>
+            <input type="text" name="filter" id="filter" value="{{ filter }}"
+                class="w-50 text-sm border border-gray-300 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-indigo-500 py-1.5 px-3 shadow rounded-md placeholder-gray-500 placeholder-opacity-50"
+                placeholder="Buscar usuario" />
+            <div class="relative">
+                <div class="absolute bottom-0 right-2">
+                    {% if filter %}
+                    <a href='./' class="absolute right-5">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" style="stroke: black;"
+                                d="M 4 5 L 15 16 L 16 15 L 5 4 M 16 5 L 5 16 L 4 15 L 15 4 M 10 9 L 11 10 L 10 11 L 9 10"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </a>
+                    {% endif %}
+                    <button onclick="search_worker()" class="h-5 w-5 bg-white text-gray-900 focus:text-indigo-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd"
+                                d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </button>
+
+                </div>
             </div>
+
         </div>
+        <a class="tooltip pl-2">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                <path
+                    d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm1 18h-2v-6h-2v-2h4v8zm-1-9.75c-.69 0-1.25-.56-1.25-1.25s.56-1.25 1.25-1.25 1.25.56 1.25 1.25-.56 1.25-1.25 1.25z" />
+            </svg>
+            <span class="tooltiptext shadow px-2 py-2">La búsqueda se realiza solo por el nombre del usuario</span>
+        </a>
     </div>
 </div>
 <div class="flex flex-col mt-3">
@@ -163,7 +186,8 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="bg-gray-50 px-4 py-3 sm:px-6 flex flex-col md:flex-row-reverse">
+                                                <div
+                                                    class="bg-gray-50 px-4 py-3 sm:px-6 flex flex-col md:flex-row-reverse">
                                                     <a type="button"
                                                         href="{% url 'accounts:block_user' action='true' id=user.id %}"
                                                         class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
@@ -233,7 +257,8 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="bg-gray-50 px-4 py-3 sm:px-6 flex flex-col md:flex-row-reverse">
+                                                <div
+                                                    class="bg-gray-50 px-4 py-3 sm:px-6 flex flex-col md:flex-row-reverse">
                                                     <a type="button"
                                                         href="{% url 'accounts:block_user' action='false' id=user.id %}"
                                                         class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
@@ -266,12 +291,12 @@
             <li>
                 <a href="?page={{ users.previous_page_number }}">
                     <button
-                    class="bg-white flex items-center justify-center w-10 h-10 text-indigo-600 duration-150 rounded-full focus:ring focus:ring-indigo-500 hover:bg-indigo-50 shadow">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd"
-                            d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                            clip-rule="evenodd"/>
-                    </svg>
+                        class="bg-white flex items-center justify-center w-10 h-10 text-indigo-600 duration-150 rounded-full focus:ring focus:ring-indigo-500 hover:bg-indigo-50 shadow">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd"
+                                d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                                clip-rule="evenodd" />
+                        </svg>
                     </button>
                 </a>
             </li>
@@ -282,7 +307,7 @@
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
                         <path fill-rule="evenodd"
                             d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                            clip-rule="evenodd"/>
+                            clip-rule="evenodd" />
                     </svg>
                 </button>
             </li>
@@ -290,11 +315,13 @@
             {% for i in users.paginator.page_range %}
             {% if users.number == i %}
             <li><button
-                class="w-10 h-10 bg-indigo-600 text-white duration-150 border border-r-0 border-indigo-600 rounded-full focus:shadow-outline shadow">{{ i }}</button>
+                    class="w-10 h-10 bg-indigo-600 text-white duration-150 border border-r-0 border-indigo-600 rounded-full focus:shadow-outline shadow">{{
+                    i }}</button>
             </li>
             {% else %}
             <li><a href="?page={{ i }}"><button
-                class="w-10 h-10 bg-white text-indigo-600 duration-150 rounded-full focus:ring focus:ring-indigo-500 hover:bg-indigo-50 shadow">{{ i }}</button></a>
+                        class="w-10 h-10 bg-white text-indigo-600 duration-150 rounded-full focus:ring focus:ring-indigo-500 hover:bg-indigo-50 shadow">{{
+                        i }}</button></a>
             </li>
             {% endif %}
             {% endfor %}
@@ -306,7 +333,7 @@
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
                             <path fill-rule="evenodd"
                                 d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                                clip-rule="evenodd"/>
+                                clip-rule="evenodd" />
                         </svg>
                     </button>
                 </a>
@@ -318,12 +345,12 @@
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
                         <path fill-rule="evenodd"
                             d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                            clip-rule="evenodd"/>
+                            clip-rule="evenodd" />
                     </svg>
                 </button>
             </li>
             {% endif %}
-        {% endif %}
+            {% endif %}
     </nav>
     <div class="flex justify-end gap-2 mx-6">
         <a href="{% url 'accounts:register_user' %}"
@@ -343,7 +370,7 @@
         let seach_string = document.getElementById('filter').value;
         window.location.href = "{% url 'accounts:list_users' %}?search=" + seach_string;
     }
-    document.getElementById('filter').addEventListener('keydown', function(e) {
+    document.getElementById('filter').addEventListener('keydown', function (e) {
         if (e.key === 'Enter') {
             search_user();
         }
