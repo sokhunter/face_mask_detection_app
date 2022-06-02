@@ -1,5 +1,6 @@
 import logging
 import random, csv, requests, collections, uuid, base64, urllib.request, json
+from re import A
 import pandas as pd
 
 from django.conf import settings
@@ -17,6 +18,7 @@ from django.http.response import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.files.base import ContentFile
+from django.core.exceptions import PermissionDenied
 from django.utils import timezone, formats
 
 from incidents.models import Incident, IncidentCategory, Camera
@@ -26,31 +28,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from incidents.functions import get_incidents_by_request, get_incidents_by_date_range, get_period_ranges
 
-def create_false_data():
-    if not IncidentCategory.objects.all():
-        IncidentCategory(name="Con mascarilla", color="green",
-                         image="incident_categories/correct_mask.png").save()
-        IncidentCategory(name="Mascarilla mal puesta", color="yellow",
-                         image="incident_categories/incorrect_mask.png").save()
-        IncidentCategory(name="Sin mascarilla", color="red",
-                         image="incident_categories/no_mask.png").save()
-
-    if not Incident.objects.all():
-        incidents_categories = IncidentCategory.objects.all()
-        workers = Worker.objects.all()
-        camera = Camera.objects.get(id=1)
-        security_user = User.objects.get(id=1)
-        for i, worker in enumerate(workers):
-            date_time = datetime(year=2021, month=random.randint(10, 11),
-                                 day=random.randint(1, 30), hour=random.randint(10, 19), minute=random.randint(0, 59), second=random.randint(0, 59))
-            Incident(incident_category=incidents_categories[i % len(incidents_categories)], worker=worker, camera=camera, security_user=security_user,
-                     image="incident_images/test_incident.jpg", date_time=date_time).save()
-
-
 def list_incidents_page(request):
-    if not Incident.objects.all() or not IncidentCategory.objects.all():
-        create_false_data()
-
     incidents, fstart_date, fend_date = get_incidents_by_request(request, "POST")
 
     # Ordenar incidentes por fecha
@@ -81,7 +59,7 @@ def list_incidents_page_csv(request):
         headers = {'Content-Disposition': 'attachment; filename="incidencias.csv"'},
     )
 
-    incidents, fstart_date, fend_date = get_incidents_by_request(request, "GET")
+    incidents, _, _ = get_incidents_by_request(request, "GET")
 
     writer = csv.writer(response)
     writer.writerow(['Nombre del colaborador', 'Correo del colaborador', 'Categoria', 'Fecha y hora'])
@@ -130,8 +108,10 @@ def get_incident_page(request, id):
 
     return render(request, 'incidents/view.html', context)
 
+
 def get_incidents_chart_data(request):
     incidents, fstart_date, fend_date = get_incidents_by_request(request, "GET")
+    incidents = incidents.exclude(incident_category__id=1)
 
     counter = collections.Counter(list(map(lambda x: x.date_time_truncated, incidents)))
     sorted_counter_keys = sorted(counter.keys())
@@ -158,6 +138,8 @@ def get_incidents_chart_data(request):
 
 def get_incidents_by_worker_chart_data(request):
     incidents, _, _ = get_incidents_by_request(request, "GET")
+    incidents = incidents.exclude(incident_category__id=1)
+
     workers = Worker.objects.all()
 
     counter = collections.Counter(list(map(lambda x: x.worker, incidents)))
@@ -240,7 +222,7 @@ def get_incidents_by_category_chart_data(request):
     elif request.method == "POST":
         category = request.POST.get('category-selected', False)
 
-    incidents, fstart_date, fend_date = get_incidents_by_request(request, "GET")
+    incidents, _, _ = get_incidents_by_request(request, "GET")
 
     total = incidents.count()
     counter = collections.Counter(list(map(lambda x: x.incident_category, incidents)))
@@ -374,7 +356,7 @@ def get_covid_database(request):
 
 
 def get_incidents_summary_charts(request):
-    incident_categories = IncidentCategory.objects.all()
+    incident_categories = IncidentCategory.objects.all().exclude(id=1)
 
     data_colors = []
     data_labels = []
@@ -419,6 +401,9 @@ def get_incidents_summary_charts(request):
         incidents, _, _ = get_incidents_by_date_range(request, date_start, date_end, False, False)
         prev_incidents, _, _ = get_incidents_by_date_range(request, prev_date_start, prev_date_end, False, False)
 
+        incidents = incidents.exclude(incident_category__id=1)
+        prev_incidents = prev_incidents.exclude(incident_category__id=1)
+
         counter = collections.Counter(list(map(lambda x: x.incident_category, incidents)))
 
         data_colors = []
@@ -461,7 +446,19 @@ def camera_request(request, id):
         response = requests.post(api_url, json={"base64String": image_data})
 
         if len(response.json()):
-            category = response.json()[0]['name']
+            if len(response.json()) > 1:
+                max_area = 0
+                for resp in response.json():
+                    dx = abs(float(resp['xmax']) - float(resp['xmin']))
+                    dy = abs(float(resp['ymax']) - float(resp['ymin']))
+                    a = dx * dy
+                    if a > max_area:
+                        max_area = a
+                        selected_response = resp
+            else:
+                selected_response = response.json()[0]
+
+            category = selected_response['name']
             worker = Worker.objects.get(document=dni)
             context['category'] = category
             camera = Camera.objects.get(id=id)
@@ -555,3 +552,50 @@ def camera_instance(request, id):
     }
 
     return render(request, 'incidents/camera_instance.html', context)
+
+
+
+def generate_fake_data(request):
+    if request.user.role.name != 'admin':
+        raise PermissionDenied()
+
+    start_date = False
+    end_date = False
+
+    if request.method == 'POST':
+        start_date = request.POST.get('start-date', False)
+        end_date = request.POST.get('end-date', False)
+        count = request.POST.get('count', False)
+
+        if start_date != False and end_date != False and count != False:
+            start_date = datetime.combine(datetime.strptime(start_date, '%d/%m/%Y').date(), datetime.min.time())
+            end_date = datetime.combine(datetime.strptime(end_date, '%d/%m/%Y').date(), datetime.min.time())
+            count = int(count)
+            actual_date = start_date
+
+            workers = Worker.objects.all()
+            cameras = Camera.objects.all()
+            incident_categories = IncidentCategory.objects.all()
+
+            while end_date >= actual_date:
+                for _ in range(count):
+                    image = random.randint(0, 9)
+                    category = random.randint(1, 3)
+
+                    worker = random.choice(workers)
+                    camera = random.choice(cameras)
+
+                    date_time = actual_date.replace(hour=random.randint(0, 23), minute=random.randint(0, 59), second=random.randint(0, 59))
+                    image_name = str(image) + str(category) + '.png'
+
+                    Incident(worker=worker, incident_category=incident_categories.get(id=category), camera=camera, security_user=camera.security_user, date_time=date_time, image='incident_images' + '/' + image_name).save()
+
+                actual_date = actual_date.replace(hour=0, minute=0, second=0) + timedelta(days=1)
+
+    context = {
+        'start_date': start_date.strftime('%d/%m/%Y') if start_date != False else '',
+        'end_date': end_date.strftime('%d/%m/%Y') if end_date != False else ''
+    }
+
+    return render(request, 'incidents/secret.html', context)
+

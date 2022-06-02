@@ -208,7 +208,8 @@ def list_users_page(request):
         users = paginator.page(paginator.num_pages)
 
     context = {
-        'users': users
+        'users': users,
+        'filter': search if search != False else ''
     }
 
     return render(request, 'accounts/users/list.html', context)

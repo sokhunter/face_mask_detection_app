@@ -2,16 +2,27 @@
 {% block content %}
 <h1 class="text-2xl text-gray-900 font-semibold mx-2 -mt-3 md:mx-0 md:mt-3">Lista de Usuarios</h1>
 <div class="flex justify-between m-3 place-items-center">
-    <p class="text-sm text-gray-400">Mostrando <span class="text-sm text-gray-700">{{ users.start_index }}-{{
-            users.end_index }}</span> de <span class="text-sm text-gray-700">{{ users.paginator.count }}</span></p>
+    <p class="text-sm text-gray-400">Mostrando <span class="text-sm text-gray-700">{{ users.start_index }}-{{ users.end_index }}</span> de <span
+            class="text-sm text-gray-700">{{ users.paginator.count }}</span></p>
     <div class="flex justify-end items-center">
-
+        {% if filter %}
+        <p class="mx-2 mt-1">Buscando usuarios con nombre de usuario: {{ filter }}</p>
+        {% endif %}
         <div>
-            <input type="text" name="filter" id="filter"
+            <input type="text" name="filter" id="filter" value="{{ filter }}"
                 class="w-50 text-sm border border-gray-300 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-indigo-500 py-1.5 px-3 shadow rounded-md placeholder-gray-500 placeholder-opacity-50"
                 placeholder="Buscar usuario" />
             <div class="relative">
                 <div class="absolute bottom-0 right-2">
+                    {% if filter %}
+                    <a href='./' class="absolute right-5">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" style="stroke: black;"
+                                d="M 4 5 L 15 16 L 16 15 L 5 4 M 16 5 L 5 16 L 4 15 L 15 4 M 10 9 L 11 10 L 10 11 L 9 10"
+                                clip-rule="evenodd" />
+                        </svg>
+                    </a>
+                    {% endif %}
                     <button onclick="search_worker()" class="h-5 w-5 bg-white text-gray-900 focus:text-indigo-600">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                             <path fill-rule="evenodd"
@@ -19,8 +30,10 @@
                                 clip-rule="evenodd" />
                         </svg>
                     </button>
+
                 </div>
             </div>
+
         </div>
         <a class="tooltip pl-2">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
