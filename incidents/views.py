@@ -25,7 +25,6 @@ from django.views.decorators.csrf import csrf_exempt
 
 from incidents.functions import get_incidents_by_request, get_incidents_by_date_range, get_period_ranges
 
-
 def create_false_data():
     if not IncidentCategory.objects.all():
         IncidentCategory(name="Con mascarilla", color="green",
@@ -42,10 +41,8 @@ def create_false_data():
         security_user = User.objects.get(id=1)
         for i, worker in enumerate(workers):
             date_time = datetime(year=2021, month=random.randint(10, 11),
-                                 day=random.randint(1, 30), hour=random.randint(10, 19), minute=random.randint(0, 59),
-                                 second=random.randint(0, 59))
-            Incident(incident_category=incidents_categories[i % len(incidents_categories)], worker=worker,
-                     camera=camera, security_user=security_user,
+                                 day=random.randint(1, 30), hour=random.randint(10, 19), minute=random.randint(0, 59), second=random.randint(0, 59))
+            Incident(incident_category=incidents_categories[i % len(incidents_categories)], worker=worker, camera=camera, security_user=security_user,
                      image="incident_images/test_incident.jpg", date_time=date_time).save()
 
 
@@ -76,8 +73,8 @@ def list_incidents_page(request):
 
 def list_incidents_page_csv(request):
     response = HttpResponse(
-        content_type='text/csv',
-        headers={'Content-Disposition': 'attachment; filename="incidencias.csv"'},
+        content_type = 'text/csv',
+        headers = {'Content-Disposition': 'attachment; filename="incidencias.csv"'},
     )
 
     incidents, fstart_date, fend_date = get_incidents_by_request(request, "GET")
@@ -86,9 +83,7 @@ def list_incidents_page_csv(request):
     writer.writerow(['Nombre del colaborador', 'Correo del colaborador', 'Categoria', 'Fecha y hora'])
 
     for incident in incidents:
-        writer.writerow([incident.worker.names + ' ' + incident.worker.surnames, incident.worker.email,
-                         incident.incident_category.name,
-                         timezone.localtime(incident.date_time).strftime('%d/%m/%Y %H:%M')])
+        writer.writerow([incident.worker.names + ' ' + incident.worker.surnames, incident.worker.email, incident.incident_category.name, timezone.localtime(incident.date_time).strftime('%d/%m/%Y %H:%M')])
 
     return response
 
@@ -97,13 +92,10 @@ def delete_incident_request(request, id):
     incident = get_object_or_404(Incident, id=id)
 
     if not incident.is_reviewed:
-        try:
-            async_to_sync(get_channel_layer().group_send)(
-                'noti' + str(incident.security_user.id),
-                {'type': 'notification_read'}
-            )
-        except:
-            pass
+        async_to_sync(get_channel_layer().group_send)(
+            'noti' + str(incident.security_user.id),
+            {'type': 'notification_read'}
+        )
 
     incident.delete()
 
@@ -121,16 +113,12 @@ def get_incident_page(request, id):
         incident.is_reviewed = True
         incident.save()
 
-        try:
-            async_to_sync(get_channel_layer().group_send)(
-                'noti' + str(incident.security_user.id),
-                {'type': 'notification_read'}
-            )
-        except:
-            pass
+        async_to_sync(get_channel_layer().group_send)(
+            'noti' + str(incident.security_user.id),
+            {'type': 'notification_read'}
+        )
 
     return render(request, 'incidents/view.html', context)
-
 
 def get_incidents_chart_data(request):
     incidents, fstart_date, fend_date = get_incidents_by_request(request, "GET")
@@ -163,7 +151,7 @@ def get_incidents_by_worker_chart_data(request):
     workers = Worker.objects.all()
 
     counter = collections.Counter(list(map(lambda x: x.worker, incidents)))
-
+    
     data = []
     labels = []
 
@@ -207,7 +195,7 @@ def get_incidents_by_category_and_day_chart_data(request):
         data_labels.append(category.name)
         data_colors.append(category.color)
         incident_per_category = filter(lambda x: x.incident_category == category, incidents)
-        counter = collections.Counter(list(map(lambda x: x.date_time_truncated, incident_per_category)))
+        counter = collections.Counter(list(map(lambda x : x.date_time_truncated, incident_per_category)))
 
         sorted_counter_keys = sorted(counter.keys())
 
@@ -221,7 +209,7 @@ def get_incidents_by_category_and_day_chart_data(request):
             if labels == None:
                 labels_local.append(current_date.strftime('%d/%m/%Y'))
             current_date += timedelta(days=1)
-
+        
         data.append(data_local)
         if labels == None:
             labels = labels_local
@@ -260,7 +248,7 @@ def get_incidents_by_category_chart_data(request):
         local = counter[incident_category]
         data_colors.append(incident_category.color)
         data.append(local)
-        labels.append(incident_category.name + ' (' + str(0 if total == 0 else round((local / total) * 100, 2)) + '%)')
+        labels.append(incident_category.name + ' (' + str(0 if total == 0 else round((local/total) * 100, 2)) + '%)')
 
     context = {
         'data': data,
@@ -280,27 +268,20 @@ def get_covid_database(request):
         with open(context_file_path, 'r') as f:
             content = f.readlines()
 
-        date_now = timezone.make_naive(
-            timezone.localtime(timezone.now()).replace(hour=0, minute=0, second=0, microsecond=0))
+        date_now = timezone.make_naive(timezone.localtime(timezone.now()).replace(hour=0, minute=0, second=0, microsecond=0))
 
         last_update_date = datetime.combine(datetime.strptime(content[0], '%Y%m%d').date(), datetime.min.time())
 
         if date_now > last_update_date:
             data = []
 
-            storage_csv_headers = ['CONTAGIONS_THIS_WEEK', 'CONTAGIONS_THIS_MONTH', 'CONTAGIONS_THIS_YEAR',
-                                   'CONTAGIONS_LAST_WEEK', 'CONTAGIONS_LAST_MONTH', 'CONTAGIONS_LAST_YEAR',
-                                   'CONTAGIONS_INCREASE_FROM_LAST_WEEK', 'CONTAGIONS_INCREASE_FROM_LAST_MONTH',
-                                   'CONTAGIONS_INCREASE_FROM_LAST_YEAR',
-                                   'DEATHS_THIS_WEEK', 'DEATHS_THIS_MONTH', 'DEATHS_THIS_YEAR', 'DEATHS_LAST_WEEK',
-                                   'DEATHS_LAST_MONTH', 'DEATHS_LAST_YEAR',
-                                   'DEATHS_INCREASE_FROM_LAST_WEEK', 'DEATHS_INCREASE_FROM_LAST_MONTH',
-                                   'DEATHS_INCREASE_FROM_LAST_YEAR']
+            storage_csv_headers = ['CONTAGIONS_THIS_WEEK', 'CONTAGIONS_THIS_MONTH', 'CONTAGIONS_THIS_YEAR', 'CONTAGIONS_LAST_WEEK', 'CONTAGIONS_LAST_MONTH', 'CONTAGIONS_LAST_YEAR',
+                                   'CONTAGIONS_INCREASE_FROM_LAST_WEEK', 'CONTAGIONS_INCREASE_FROM_LAST_MONTH', 'CONTAGIONS_INCREASE_FROM_LAST_YEAR',
+                                   'DEATHS_THIS_WEEK', 'DEATHS_THIS_MONTH', 'DEATHS_THIS_YEAR', 'DEATHS_LAST_WEEK', 'DEATHS_LAST_MONTH', 'DEATHS_LAST_YEAR',
+                                   'DEATHS_INCREASE_FROM_LAST_WEEK', 'DEATHS_INCREASE_FROM_LAST_MONTH', 'DEATHS_INCREASE_FROM_LAST_YEAR']
 
-            minsa_contagion_metadata = json.loads(urllib.request.urlopen(
-                'https://www.datosabiertos.gob.pe/api/3/action/package_show?id=3423d336-63b5-4a73-af54-7f9836a9bb26').read())
-            minsa_deaths_metadata = json.loads(urllib.request.urlopen(
-                'https://www.datosabiertos.gob.pe/api/3/action/package_show?id=b44c937b-7f6d-4165-be78-f7d55651ee28').read())
+            minsa_contagion_metadata = json.loads(urllib.request.urlopen('https://www.datosabiertos.gob.pe/api/3/action/package_show?id=3423d336-63b5-4a73-af54-7f9836a9bb26').read())
+            minsa_deaths_metadata = json.loads(urllib.request.urlopen('https://www.datosabiertos.gob.pe/api/3/action/package_show?id=b44c937b-7f6d-4165-be78-f7d55651ee28').read())
             contagion_data = pd.read_csv(minsa_contagion_metadata['result'][0]['resources'][0]['url'], sep=';')
             deaths_data = pd.read_csv(minsa_deaths_metadata['result'][0]['resources'][0]['url'], sep=';')
 
@@ -312,53 +293,23 @@ def get_covid_database(request):
 
             _, _, _, _, week_start, week_end, prev_week_start, prev_week_end, month_start, month_end, prev_month_start, prev_month_end, year_start, year_end, prev_year_start, prev_year_end = get_period_ranges()
 
-            contagions_week = contagions_count.loc[
-                (contagions_count['FECHA_RESULTADO'] >= int(week_start.strftime('%Y%m%d'))) & (
-                            contagions_count['FECHA_RESULTADO'] <= int(week_end.strftime('%Y%m%d')))].sum()['COUNT']
-            contagions_last_week = contagions_count.loc[
-                (contagions_count['FECHA_RESULTADO'] >= int(prev_week_start.strftime('%Y%m%d'))) & (
-                            contagions_count['FECHA_RESULTADO'] <= int(prev_week_end.strftime('%Y%m%d')))].sum()[
-                'COUNT']
+            contagions_week = contagions_count.loc[(contagions_count['FECHA_RESULTADO'] >= int(week_start.strftime('%Y%m%d'))) & (contagions_count['FECHA_RESULTADO'] <= int(week_end.strftime('%Y%m%d')))].sum()['COUNT']
+            contagions_last_week = contagions_count.loc[(contagions_count['FECHA_RESULTADO'] >= int(prev_week_start.strftime('%Y%m%d'))) & (contagions_count['FECHA_RESULTADO'] <= int(prev_week_end.strftime('%Y%m%d')))].sum()['COUNT']
 
-            contagions_month = contagions_count.loc[
-                (contagions_count['FECHA_RESULTADO'] >= int(month_start.strftime('%Y%m%d'))) & (
-                            contagions_count['FECHA_RESULTADO'] <= int(month_end.strftime('%Y%m%d')))].sum()['COUNT']
-            contagions_last_month = contagions_count.loc[
-                (contagions_count['FECHA_RESULTADO'] >= int(prev_month_start.strftime('%Y%m%d'))) & (
-                            contagions_count['FECHA_RESULTADO'] <= int(prev_month_end.strftime('%Y%m%d')))].sum()[
-                'COUNT']
+            contagions_month = contagions_count.loc[(contagions_count['FECHA_RESULTADO'] >= int(month_start.strftime('%Y%m%d'))) & (contagions_count['FECHA_RESULTADO'] <= int(month_end.strftime('%Y%m%d')))].sum()['COUNT']
+            contagions_last_month = contagions_count.loc[(contagions_count['FECHA_RESULTADO'] >= int(prev_month_start.strftime('%Y%m%d'))) & (contagions_count['FECHA_RESULTADO'] <= int(prev_month_end.strftime('%Y%m%d')))].sum()['COUNT']
 
-            contagions_year = contagions_count.loc[
-                (contagions_count['FECHA_RESULTADO'] >= int(year_start.strftime('%Y%m%d'))) & (
-                            contagions_count['FECHA_RESULTADO'] <= int(year_end.strftime('%Y%m%d')))].sum()['COUNT']
-            contagions_last_year = contagions_count.loc[
-                (contagions_count['FECHA_RESULTADO'] >= int(prev_year_start.strftime('%Y%m%d'))) & (
-                            contagions_count['FECHA_RESULTADO'] <= int(prev_year_end.strftime('%Y%m%d')))].sum()[
-                'COUNT']
+            contagions_year = contagions_count.loc[(contagions_count['FECHA_RESULTADO'] >= int(year_start.strftime('%Y%m%d'))) & (contagions_count['FECHA_RESULTADO'] <= int(year_end.strftime('%Y%m%d')))].sum()['COUNT']
+            contagions_last_year = contagions_count.loc[(contagions_count['FECHA_RESULTADO'] >= int(prev_year_start.strftime('%Y%m%d'))) & (contagions_count['FECHA_RESULTADO'] <= int(prev_year_end.strftime('%Y%m%d')))].sum()['COUNT']
 
-            deaths_week = deaths_count.loc[
-                (deaths_count['FECHA_FALLECIMIENTO'] >= int(week_start.strftime('%Y%m%d'))) & (
-                            deaths_count['FECHA_FALLECIMIENTO'] <= int(week_end.strftime('%Y%m%d')))].sum()['COUNT']
-            deaths_last_week = deaths_count.loc[
-                (deaths_count['FECHA_FALLECIMIENTO'] >= int(prev_week_start.strftime('%Y%m%d'))) & (
-                            deaths_count['FECHA_FALLECIMIENTO'] <= int(prev_week_end.strftime('%Y%m%d')))].sum()[
-                'COUNT']
+            deaths_week = deaths_count.loc[(deaths_count['FECHA_FALLECIMIENTO'] >= int(week_start.strftime('%Y%m%d'))) & (deaths_count['FECHA_FALLECIMIENTO'] <= int(week_end.strftime('%Y%m%d')))].sum()['COUNT']
+            deaths_last_week = deaths_count.loc[(deaths_count['FECHA_FALLECIMIENTO'] >= int(prev_week_start.strftime('%Y%m%d'))) & (deaths_count['FECHA_FALLECIMIENTO'] <= int(prev_week_end.strftime('%Y%m%d')))].sum()['COUNT']
 
-            deaths_month = deaths_count.loc[
-                (deaths_count['FECHA_FALLECIMIENTO'] >= int(month_start.strftime('%Y%m%d'))) & (
-                            deaths_count['FECHA_FALLECIMIENTO'] <= int(month_end.strftime('%Y%m%d')))].sum()['COUNT']
-            deaths_last_month = deaths_count.loc[
-                (deaths_count['FECHA_FALLECIMIENTO'] >= int(prev_month_start.strftime('%Y%m%d'))) & (
-                            deaths_count['FECHA_FALLECIMIENTO'] <= int(prev_month_end.strftime('%Y%m%d')))].sum()[
-                'COUNT']
+            deaths_month = deaths_count.loc[(deaths_count['FECHA_FALLECIMIENTO'] >= int(month_start.strftime('%Y%m%d'))) & (deaths_count['FECHA_FALLECIMIENTO'] <= int(month_end.strftime('%Y%m%d')))].sum()['COUNT']
+            deaths_last_month = deaths_count.loc[(deaths_count['FECHA_FALLECIMIENTO'] >= int(prev_month_start.strftime('%Y%m%d'))) & (deaths_count['FECHA_FALLECIMIENTO'] <= int(prev_month_end.strftime('%Y%m%d')))].sum()['COUNT']
 
-            deaths_year = deaths_count.loc[
-                (deaths_count['FECHA_FALLECIMIENTO'] >= int(year_start.strftime('%Y%m%d'))) & (
-                            deaths_count['FECHA_FALLECIMIENTO'] <= int(year_end.strftime('%Y%m%d')))].sum()['COUNT']
-            deaths_last_year = deaths_count.loc[
-                (deaths_count['FECHA_FALLECIMIENTO'] >= int(prev_year_start.strftime('%Y%m%d'))) & (
-                            deaths_count['FECHA_FALLECIMIENTO'] <= int(prev_year_end.strftime('%Y%m%d')))].sum()[
-                'COUNT']
+            deaths_year = deaths_count.loc[(deaths_count['FECHA_FALLECIMIENTO'] >= int(year_start.strftime('%Y%m%d'))) & (deaths_count['FECHA_FALLECIMIENTO'] <= int(year_end.strftime('%Y%m%d')))].sum()['COUNT']
+            deaths_last_year = deaths_count.loc[(deaths_count['FECHA_FALLECIMIENTO'] >= int(prev_year_start.strftime('%Y%m%d'))) & (deaths_count['FECHA_FALLECIMIENTO'] <= int(prev_year_end.strftime('%Y%m%d')))].sum()['COUNT']
 
             data.append(str(contagions_week))
             data.append(str(contagions_month))
@@ -367,12 +318,9 @@ def get_covid_database(request):
             data.append(str(contagions_last_month))
             data.append(str(contagions_last_year))
 
-            data.append(str(round(contagions_week * 100 if contagions_last_week == 0 else (
-                        (((contagions_week / contagions_last_week)) - 1) * 100), 2)))
-            data.append(str(round(contagions_month * 100 if contagions_last_month == 0 else (
-                        (((contagions_month / contagions_last_month)) - 1) * 100), 2)))
-            data.append(str(round(contagions_year * 100 if contagions_last_year == 0 else (
-                        (((contagions_year / contagions_last_year)) - 1) * 100), 2)))
+            data.append(str(round(contagions_week * 100 if contagions_last_week == 0 else ((((contagions_week / contagions_last_week)) - 1) * 100), 2)))
+            data.append(str(round(contagions_month * 100 if contagions_last_month == 0 else ((((contagions_month / contagions_last_month)) - 1) * 100), 2)))
+            data.append(str(round(contagions_year * 100 if contagions_last_year == 0 else ((((contagions_year / contagions_last_year)) - 1) * 100), 2)))
 
             data.append(str(deaths_week))
             data.append(str(deaths_month))
@@ -381,13 +329,9 @@ def get_covid_database(request):
             data.append(str(deaths_last_month))
             data.append(str(deaths_last_year))
 
-            data.append(str(round(
-                deaths_week * 100 if deaths_last_week == 0 else ((((deaths_week / deaths_last_week)) - 1) * 100), 2)))
-            data.append(str(round(
-                deaths_month * 100 if deaths_last_month == 0 else ((((deaths_month / deaths_last_month)) - 1) * 100),
-                2)))
-            data.append(str(round(
-                deaths_year * 100 if deaths_last_year == 0 else ((((deaths_year / deaths_last_year)) - 1) * 100), 2)))
+            data.append(str(round(deaths_week * 100 if deaths_last_week == 0 else ((((deaths_week / deaths_last_week)) - 1) * 100), 2)))
+            data.append(str(round(deaths_month * 100 if deaths_last_month == 0 else ((((deaths_month / deaths_last_month)) - 1) * 100), 2)))
+            data.append(str(round(deaths_year * 100 if deaths_last_year == 0 else ((((deaths_year / deaths_last_year)) - 1) * 100), 2)))
 
             with open(context_file_path, 'w') as f:
                 f.truncate()
@@ -408,7 +352,7 @@ def get_covid_database(request):
         headers = next(csvreader)
         line = []
 
-        # There will only be one row
+        #There will only be one row
         for row in csvreader:
             line.append(row)
 
@@ -512,13 +456,13 @@ def camera_request(request, id):
             context['category'] = category
             camera = Camera.objects.get(id=id)
 
-            # Con mascarilla -> 1
-            # Mascarilla mal puesta -> 2
-            # Sin mascarilla -> 3
+            #Con mascarilla -> 1
+            #Mascarilla mal puesta -> 2
+            #Sin mascarilla -> 3
 
-            # Verde -> Tiene
-            # Amarillo -> Incorrecta
-            # Rojo -> No tiene
+            #Verde -> Tiene
+            #Amarillo -> Incorrecta
+            #Rojo -> No tiene
 
             if category == 'With_Mask':
                 context['recommendation'] = 'Tiene la mascarilla puesta correctamente'
@@ -535,12 +479,11 @@ def camera_request(request, id):
 
             format, imgstr = image_data.split(';base64,')
             ext = format.split('/')[-1]
-            data = ContentFile(base64.b64decode(imgstr))
+            data = ContentFile(base64.b64decode(imgstr))  
             file_name = uuid.uuid4().hex + '.' + ext
 
-            incident = Incident(incident_category=incident_category, worker=worker, camera=camera,
-                                security_user=camera.security_user,
-                                date_time=timezone.now())
+            incident = Incident(incident_category=incident_category, worker=worker, camera=camera, security_user=camera.security_user,
+                        date_time=timezone.now())
             incident.image.save(file_name, data, save=True)
             incident.save()
 
@@ -554,13 +497,10 @@ def camera_request(request, id):
                 'date': formats.date_format(incident_date) + ' a las ' + formats.time_format(incident_date)
             }
 
-            try:
-                async_to_sync(get_channel_layer().group_send)(
-                    'noti' + str(request.user.id),
-                    {'type': 'notification', 'incident_context': incident_context}
-                )
-            except:
-                pass
+            async_to_sync(get_channel_layer().group_send)(
+                'noti' + str(request.user.id),
+                {'type': 'notification', 'incident_context': incident_context}
+            )
         else:
             context['success'] = False
             context['recommendation'] = "Error en la validacion, por favor mire bien a la camara e intentelo de nuevo"
@@ -570,11 +510,9 @@ def camera_request(request, id):
 
 def get_last_unchecked_incidents(request):
     if request.method == 'GET' and 'count' in request.GET:
-        incidents_unchecked = Incident.objects.filter(Q(security_user=request.user) & Q(is_reviewed=False)).order_by(
-            '-date_time')[0:int(request.GET['count'])]
+        incidents_unchecked = Incident.objects.filter(Q(security_user=request.user) & Q(is_reviewed=False)).order_by('-date_time')[0:int(request.GET['count'])]
     else:
-        incidents_unchecked = Incident.objects.filter(Q(security_user=request.user) & Q(is_reviewed=False)).order_by(
-            '-date_time')
+        incidents_unchecked = Incident.objects.filter(Q(security_user=request.user) & Q(is_reviewed=False)).order_by('-date_time')
 
     incident_contexts = []
 
