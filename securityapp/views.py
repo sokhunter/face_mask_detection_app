@@ -5,10 +5,13 @@ from incidents.functions import get_incidents_by_date_range
 from incidents.models import IncidentCategory, Camera
 from django.utils import timezone
 from datetime import datetime
+from django.shortcuts import redirect
 
 def home_page(request):
     if not request.user.is_authenticated:
-        return render(request, 'incidents/dashboard.html')
+        # return render(request, 'incidents/dashboard.html')
+        response = redirect('/accounts/login_security/')
+        return response
 
     if request.method == "GET":
         start_date = request.GET.get('start-date', False)
