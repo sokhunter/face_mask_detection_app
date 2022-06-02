@@ -1,3 +1,4 @@
+import logging
 import random, csv, requests, collections, uuid, base64, urllib.request, json
 from re import A
 import pandas as pd
@@ -29,6 +30,9 @@ from incidents.functions import get_incidents_by_request, get_incidents_by_date_
 
 def list_incidents_page(request):
     incidents, fstart_date, fend_date = get_incidents_by_request(request, "POST")
+
+    # Ordenar incidentes por fecha
+    incidents = incidents.order_by('-date_time')
 
     page = request.GET.get('page', 1)
     paginator = Paginator(incidents, 10)
@@ -139,7 +143,7 @@ def get_incidents_by_worker_chart_data(request):
     workers = Worker.objects.all()
 
     counter = collections.Counter(list(map(lambda x: x.worker, incidents)))
-    
+
     data = []
     labels = []
 
@@ -197,7 +201,7 @@ def get_incidents_by_category_and_day_chart_data(request):
             if labels == None:
                 labels_local.append(current_date.strftime('%d/%m/%Y'))
             current_date += timedelta(days=1)
-        
+
         data.append(data_local)
         if labels == None:
             labels = labels_local
@@ -482,7 +486,7 @@ def camera_request(request, id):
 
             format, imgstr = image_data.split(';base64,')
             ext = format.split('/')[-1]
-            data = ContentFile(base64.b64decode(imgstr))  
+            data = ContentFile(base64.b64decode(imgstr))
             file_name = uuid.uuid4().hex + '.' + ext
 
             incident = Incident(incident_category=incident_category, worker=worker, camera=camera, security_user=camera.security_user,
@@ -550,6 +554,7 @@ def camera_instance(request, id):
     return render(request, 'incidents/camera_instance.html', context)
 
 
+
 def generate_fake_data(request):
     if request.user.role.name != 'admin':
         raise PermissionDenied()
@@ -593,3 +598,4 @@ def generate_fake_data(request):
     }
 
     return render(request, 'incidents/secret.html', context)
+
