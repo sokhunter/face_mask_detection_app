@@ -121,9 +121,9 @@
                                  src="https://www.cdc.gov/coronavirus/2019-ncov/images/prevent-getting-sick/woman-kn95-checkmark.jpg">
                         </div>
                     </div>
-                    <div class="grid grid-cols-1 mx-8 md:mx-36 lg:mx-8 xl:mx-12 my-2">
+                    <div class="grid grid-cols-1 mx-8 md:mx-36 lg:mx-8 xl:mx-12 my-2 hidden" id="recommendation-additional">
                         <a>Recomendaciones adicionales</a>
-                        <img class="w-full h-full mx-auto" id="recommendation-image"
+                        <img class="w-full h-full mx-auto"
                              src="../../../static/media/recomendaciones.PNG" alt="recommendation">
                     </div>
                 </div>
@@ -169,6 +169,8 @@
             let recommendationImage = document.querySelector("#recommendation-image")
             let inputInfo = document.querySelector("#input-info")
             let goBack = document.querySelector("#go-back")
+            let recommendationData = document.querySelector("#recommendation-data")
+            let recommendationAdditional = document.querySelector("#recommendation-additional")
 
             function processReconResponse(response) {
                 response = JSON.parse(response)
@@ -178,12 +180,30 @@
                     loadingText.innerHTML = "Verificación exitosa"
                 } else {
                     loadingText.innerHTML = "Se encontraron problemas"
-                    beforePhoto.style.display = ""
-                    afterPhoto.style.display = "none"
+                }
+
+                recommendationTitle.innerHTML = 'Ups!'
+                recommendationImage.setAttribute("src", "https://www.cdc.gov/coronavirus/2019-ncov/images/prevent-getting-sick/woman-kn95-checkmark.jpg")
+
+                if(response.category === "Without_Mask"){
+                    beforePhoto.style.display = "none"
+                    afterPhoto.style.display = "block"
+                    recommendationData.style.display = "block"
+                }
+
+                if(response.category === "Incorrect_Mask"){
+                    beforePhoto.style.display = "none"
+                    afterPhoto.style.display = "block"
+                    recommendationData.style.display = "block"
+                    recommendationImage.setAttribute("src", "https://www.cdc.gov/coronavirus/2019-ncov/images/prevent-getting-sick/masks/Mask_N95-small.png?_=17698")
                 }
 
                 if (response.category === "With_Mask") {
+                    beforePhoto.style.display = "none"
+                    afterPhoto.style.display = "block"
+                    recommendationAdditional.style.display = "block"
                     recommendationTitle.innerHTML = 'Perfecto!'
+                    recommendationData.style.display = "none"
                     inputInfo.style.display = "none"
                     take_photo_button.style.display = "none"
                     goBack.style.display = "block"
@@ -193,6 +213,7 @@
                         inputInfo.style.display = ""
                         take_photo_button.style.display = ""
                         goBack.style.display = "none"
+                        recommendationAdditional.style.display = "none"
                     })
                     setTimeout(function () {
                         beforePhoto.style.display = ""
@@ -200,11 +221,8 @@
                         inputInfo.style.display = ""
                         take_photo_button.style.display = ""
                         goBack.style.display = "none"
+                        recommendationAdditional.style.display = "none"
                     }, 5000)
-                }
-
-                if (response.category === "Incorrect_Mask") {
-                    recommendationImage.setAttribute("src", "https://www.cdc.gov/coronavirus/2019-ncov/images/prevent-getting-sick/masks/Mask_N95-small.png?_=17698")
                 }
                 recommendationsText.innerHTML = response.recommendation
 
