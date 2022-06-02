@@ -40,7 +40,7 @@ if connection.introspection.table_names():
 
 def logout_request(request):
     logout(request)
-    return redirect("home")
+    return redirect("accounts:login")
 
 
 # class LoginView(FormView):
@@ -273,6 +273,7 @@ def edit_user_page(request, id):
         'user_form': user_form,
         'password_form': password_form,
     }
+
     return render(request, 'accounts/users/edit.html', context)
 
 
