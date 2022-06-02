@@ -14,6 +14,7 @@
     <!-- load css -->
     <link type="text/css" href='{% static "css/styles.css" %}' rel='stylesheet'/>
     <link type="text/css" href='{% static "accounts/css/styles.css" %}' rel='stylesheet'/>
+    <link type="text/css" href='{% static "incidents/css/daterangepicker.css" %}' rel='stylesheet'/>
     <style>
         .notification-item:hover {
             color: #000 !important;
@@ -76,7 +77,7 @@
                             <a href="{% url 'accounts:my_profile' %}">Ver Perfil</a>
                         </li>
                         <li class="pb-2 text-red-600">
-                            <a href="{% url 'accounts:login' %}">Cerrar Sesión</a>
+                            <a href="{% url 'accounts:logout' %}">Cerrar Sesión</a>
                         </li>
                     {% else %}
                         <li class="pb-2">
@@ -227,7 +228,7 @@
                                        id="menu-item-0">Ver Perfil</a>
                                 </div>
                                 <div class="py-1" role="none">
-                                    <a href="{% url 'accounts:login' %}"
+                                    <a href="{% url 'accounts:logout' %}"
                                        class="text-red-600 block px-4 py-2 text-sm hover:bg-gray-50" role="menuitem"
                                        tabindex="-1"
                                        id="menu-item-1">Cerrar Sesión</a>
@@ -292,6 +293,8 @@
 <!-- load source js files -->
 <script src="{% static 'js/scripts.js' %}"></script>
 <script src="{% static 'accounts/js/scripts.js' %}"></script>
+<script src="{% static 'incidents/js/moment.min.js' %}"></script>
+<script src="{% static 'incidents/js/daterangepicker.js' %}"></script>
 <script src="{% static 'incidents/js/scripts.js' %}"></script>
 </body>
 

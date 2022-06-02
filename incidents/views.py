@@ -28,7 +28,35 @@ from django.views.decorators.csrf import csrf_exempt
 from incidents.functions import get_incidents_by_request, get_incidents_by_date_range, get_period_ranges
 
 def list_incidents_page(request):
-    incidents, fstart_date, fend_date = get_incidents_by_request(request, "POST")
+    if request.method == "GET":
+        start_date = request.GET.get('start-date', False)
+        end_date = request.GET.get('end-date', False)
+    elif request.method == "POST":
+        start_date = request.POST.get('start-date', False)
+        end_date = request.POST.get('end-date', False)
+
+    date_now = timezone.localtime(timezone.now())
+
+    start_date_condition = start_date != False
+    end_date_condition = end_date != False
+
+    default_start_date = (date_now - timezone.timedelta(days=7)).strftime('%d/%m/%Y %H:%M')
+    default_end_date = date_now.strftime('%d/%m/%Y %H:%M')
+
+    start_date = start_date if start_date_condition or end_date_condition else default_start_date
+    end_date = end_date if start_date_condition or end_date_condition else default_end_date
+
+    date_start_to_validate = timezone.make_aware(datetime.combine(datetime.strptime(start_date, '%d/%m/%Y %H:%M').date(), datetime.min.time()))
+    date_end_to_validate = timezone.make_aware(datetime.combine(datetime.strptime(end_date, '%d/%m/%Y %H:%M').date(), datetime.min.time()))
+
+    invalid_date_range = False
+
+    if date_start_to_validate > date_end_to_validate:
+        invalid_date_range = True
+        start_date = default_start_date
+        end_date = default_end_date
+
+    incidents, fstart_date, fend_date = get_incidents_by_date_range(request, start_date, end_date)
 
     page = request.GET.get('page', 1)
     paginator = Paginator(incidents, 10)
@@ -40,10 +68,14 @@ def list_incidents_page(request):
     except EmptyPage:
         incidents = paginator.page(paginator.num_pages)
 
+    start_date = fstart_date.strftime('%d/%m/%Y %H:%M') if fstart_date is not None else ''
+    end_date = fend_date.strftime('%d/%m/%Y %H:%M') if fend_date is not None else ''
+
     context = {
         'incidents': incidents,
-        'start_date': fstart_date.strftime('%d/%m/%Y') if fstart_date is not None else '',
-        'end_date': fend_date.strftime('%d/%m/%Y') if fend_date is not None else ''
+        'start_date': start_date,
+        'end_date': end_date,
+        'max_date': date_now.strftime('%d/%m/%Y %H:%M')
     }
 
     return render(request, 'incidents/list.html', context)
@@ -115,8 +147,8 @@ def get_incidents_chart_data(request):
     data = []
     labels = []
 
-    current_date = fstart_date if fstart_date != None else sorted_counter_keys[0]
-    last_date = fend_date if fend_date != None else sorted_counter_keys[len(sorted_counter_keys) - 1]
+    current_date = (fstart_date if fstart_date != None else sorted_counter_keys[0]).replace(hour=0, minute=0, second=0, microsecond=0)
+    last_date = (fend_date if fend_date != None else sorted_counter_keys[len(sorted_counter_keys) - 1]).replace(hour=0, minute=0, second=0, microsecond=0)
 
     while current_date <= last_date:
         data.append(counter[current_date])
@@ -176,8 +208,8 @@ def get_incidents_by_category_and_day_chart_data(request):
 
     counter = collections.Counter(list(map(lambda x: x.date_time_truncated, incidents)))
     sorted_counter_keys = sorted(counter.keys())
-    current_date_temp = fstart_date if fstart_date != None else sorted_counter_keys[0]
-    last_date = fend_date if fend_date != None else sorted_counter_keys[len(sorted_counter_keys) - 1]
+    current_date_temp = (fstart_date if fstart_date != None else sorted_counter_keys[0]).replace(hour=0, minute=0, second=0, microsecond=0)
+    last_date = (fend_date if fend_date != None else sorted_counter_keys[len(sorted_counter_keys) - 1]).replace(hour=0, minute=0, second=0, microsecond=0)
 
     for category in incident_categories:
         data_labels.append(category.name)
@@ -374,25 +406,25 @@ def get_incidents_summary_charts(request):
 
     for cat in cats:
         if cat == 'day':
-            date_start = day_start.strftime('%d/%m/%Y')
-            date_end = day_end.strftime('%d/%m/%Y')
-            prev_date_start = prev_day_start.strftime('%d/%m/%Y')
-            prev_date_end = prev_day_end.strftime('%d/%m/%Y')
+            date_start = day_start.strftime('%d/%m/%Y %H:%M')
+            date_end = day_end.strftime('%d/%m/%Y %H:%M')
+            prev_date_start = prev_day_start.strftime('%d/%m/%Y %H:%M')
+            prev_date_end = prev_day_end.strftime('%d/%m/%Y %H:%M')
         elif cat == 'week':
-            date_start = week_start.strftime('%d/%m/%Y')
-            date_end = week_end.strftime('%d/%m/%Y')
-            prev_date_start = prev_week_start.strftime('%d/%m/%Y')
-            prev_date_end = prev_week_end.strftime('%d/%m/%Y')
+            date_start = week_start.strftime('%d/%m/%Y %H:%M')
+            date_end = week_end.strftime('%d/%m/%Y %H:%M')
+            prev_date_start = prev_week_start.strftime('%d/%m/%Y %H:%M')
+            prev_date_end = prev_week_end.strftime('%d/%m/%Y %H:%M')
         elif cat == 'month':
-            date_start = month_start.strftime('%d/%m/%Y')
-            date_end = month_end.strftime('%d/%m/%Y')
-            prev_date_start = prev_month_start.strftime('%d/%m/%Y')
-            prev_date_end = prev_month_end.strftime('%d/%m/%Y')
+            date_start = month_start.strftime('%d/%m/%Y %H:%M')
+            date_end = month_end.strftime('%d/%m/%Y %H:%M')
+            prev_date_start = prev_month_start.strftime('%d/%m/%Y %H:%M')
+            prev_date_end = prev_month_end.strftime('%d/%m/%Y %H:%M')
         elif cat == 'year':
-            date_start = year_start.strftime('%d/%m/%Y')
-            date_end = year_end.strftime('%d/%m/%Y')
-            prev_date_start = prev_year_start.strftime('%d/%m/%Y')
-            prev_date_end = prev_year_end.strftime('%d/%m/%Y')
+            date_start = year_start.strftime('%d/%m/%Y %H:%M')
+            date_end = year_end.strftime('%d/%m/%Y %H:%M')
+            prev_date_start = prev_year_start.strftime('%d/%m/%Y %H:%M')
+            prev_date_end = prev_year_end.strftime('%d/%m/%Y %H:%M')
 
         incidents, _, _ = get_incidents_by_date_range(request, date_start, date_end, False, False)
         prev_incidents, _, _ = get_incidents_by_date_range(request, prev_date_start, prev_date_end, False, False)

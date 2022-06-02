@@ -79,9 +79,9 @@ class UserEditForm(ModelForm):
 
     class Meta:
         model = User
-        fields = ['is_active', 'is_blocked']
+        fields = ['is_blocked']
 
-    field_order = ['role', 'worker', 'is_active', 'is_blocked']
+    field_order = ['role', 'worker', 'is_blocked']
 
 
 class UserCreationForm(UserCreationForm):
