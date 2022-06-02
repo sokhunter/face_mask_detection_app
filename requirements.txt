@@ -38,7 +38,7 @@ Jinja2==3.0.2
 jinja2-time==0.2.0
 MarkupSafe==2.0.1
 msgpack==1.0.3
-numpy==1.22.4
+numpy==1.21
 pandas==1.4.2
 Pillow==8.3.2
 pipenv==2022.4.8
