@@ -28,7 +28,7 @@ def get_incidents_by_request(request, type):
     return incidents, fstart_date, fend_date
 
 
-def get_incidents_by_date_range(request, start_date, end_date, camera, category):
+def get_incidents_by_date_range(request, start_date, end_date, camera=False, category=False):
     fstart_date = None
     fend_date = None
 
@@ -44,11 +44,11 @@ def get_incidents_by_date_range(request, start_date, end_date, camera, category)
     incidents = Incident.objects.all()
 
     if start_date:
-        fstart_date = timezone.make_aware(datetime.combine(datetime.strptime(start_date, '%d/%m/%Y').date(), datetime.min.time()))
+        fstart_date = timezone.make_aware(datetime.strptime(start_date, '%d/%m/%Y %H:%M'))
         incidents = incidents.filter(date_time__gte=fstart_date)
     if end_date:
-        fend_date = timezone.make_aware(datetime.combine(datetime.strptime(end_date, '%d/%m/%Y').date(), datetime.max.time()))
-        incidents = incidents.filter(date_time__lte=fend_date)
+        fend_date = timezone.make_aware(datetime.strptime(end_date, '%d/%m/%Y %H:%M'))
+        incidents = incidents.filter(date_time__lt=fend_date + timedelta(minutes=1))
     if camera and camera != 'all' and camera != 'False':
         incidents = incidents.filter(camera=camera)
     if category and category != 'all' and category != 'False':

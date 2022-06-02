@@ -29,14 +29,14 @@ def home_page(request):
     start_date_condition = start_date != False
     end_date_condition = end_date != False
 
-    default_start_date = (date_now - timezone.timedelta(days=7)).strftime('%d/%m/%Y')
-    default_end_date = date_now.strftime('%d/%m/%Y')
+    default_start_date = (date_now - timezone.timedelta(days=7)).strftime('%d/%m/%Y %H:%M')
+    default_end_date = date_now.strftime('%d/%m/%Y %H:%M')
 
     start_date = start_date if start_date_condition or end_date_condition else default_start_date
     end_date = end_date if start_date_condition or end_date_condition else default_end_date
 
-    date_start_to_validate = timezone.make_aware(datetime.combine(datetime.strptime(start_date, '%d/%m/%Y').date(), datetime.min.time()))
-    date_end_to_validate = timezone.make_aware(datetime.combine(datetime.strptime(end_date, '%d/%m/%Y').date(), datetime.min.time()))
+    date_start_to_validate = timezone.make_aware(datetime.combine(datetime.strptime(start_date, '%d/%m/%Y %H:%M').date(), datetime.min.time()))
+    date_end_to_validate = timezone.make_aware(datetime.combine(datetime.strptime(end_date, '%d/%m/%Y %H:%M').date(), datetime.min.time()))
 
     invalid_date_range = False
 
@@ -62,8 +62,8 @@ def home_page(request):
     if not find_all:
         cameras = cameras.filter(security_user=security_user)
 
-    start_date = fstart_date.strftime('%d/%m/%Y') if fstart_date is not None else ''
-    end_date = fend_date.strftime('%d/%m/%Y') if fend_date is not None else ''
+    start_date = fstart_date if fstart_date is not None else ''
+    end_date = fend_date if fend_date is not None else ''
 
     context = {
         'start_date': start_date,
@@ -73,7 +73,8 @@ def home_page(request):
         'incidents': incidents,
         'category_selected': category,
         'camera_selected': camera,
-        'invalid_date_range': invalid_date_range
+        'invalid_date_range': invalid_date_range,
+        'max_date': date_now
     }
 
     return render(request, 'incidents/dashboard.html', context)

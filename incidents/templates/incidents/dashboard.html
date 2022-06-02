@@ -117,16 +117,11 @@
                     </div>
                 </div>
             </div>
-
             <div class="flex flex-col md:grid md:grid-cols-2 gap-x-8 lg:gap-x-4 gap-y-3 lg:flex lg:flex-row w-4/5 lg:w-4/5 xl:w-3/5 mt-5 justify-center mx-auto">
-                <input datepicker datepicker-autohide datepicker-format="dd/mm/yyyy" type="text"
-                       value="{{ start_date }}"
-                       class="lg:w-4/5 xl:w-1/2 bg-white border border-gray-300 text-gray-900 sm:text-sm rounded-lg shadow duration-150 focus:border-transparent focus:outline-none focus:ring focus:ring-indigo-500 block w-full px-3 py-1.5 datepicker-input"
-                       placeholder="Fecha inicio" id="start-date">
-                <input datepicker datepicker-autohide datepicker-format="dd/mm/yyyy" type="text"
-                       value="{{ end_date }}"
-                       class="lg:w-4/5 xl:w-1/2 bg-white border border-gray-300 text-gray-900 sm:text-sm rounded-lg shadow duration-150 focus:border-transparent focus:outline-none focus:ring focus:ring-indigo-500 block w-full px-3 py-1.5 datepicker-input"
-                       placeholder="Fecha fin" id="end-date">
+                <input type="hidden" id="end-date">
+                <input type="hidden" id="start-date">
+                <input class="lg:w-4/5 xl:w-1/2 bg-white border border-gray-300 text-gray-900 sm:text-sm rounded-lg shadow duration-150 focus:border-transparent focus:outline-none focus:ring focus:ring-indigo-500 block w-full px-3 py-1.5"
+                        data-max-date="{{ max_date|date:"d/m/Y H:i" }}" data-start-date="{{ start_date|date:"d/m/Y H:i" }}" data-end-date="{{ end_date|date:"d/m/Y H:i" }}" id="date-range-picker" style="min-width: 255px">
                 <select id="camera" style="min-width: 200px"
                         class="border border-gray-300 w-full focus:border-transparent focus:outline-none focus:ring-2 focus:ring-indigo-500 py-1.5 px-3 shadow rounded-md">
                     <option value="all" {% if camera_selected|slugify == "all"|slugify %}selected{% endif %}>Seleccionar
@@ -164,14 +159,14 @@
                 <p class="text-sm text-center">{% if start_date %}Del {{ start_date }}{% endif %}{% if end_date %} Hasta
                     el {{ end_date }}{% endif %}</p>
                 <canvas id="incidents-chart"
-                        data-url="{% url 'incidents:get_incidents' %}?start-date={{ start_date }}&end-date={{ end_date }}&camera-selected={{ camera_selected }}&category-selected={{ category_selected }}"></canvas>
+                        data-url="{% url 'incidents:get_incidents' %}?start-date={{ start_date|date:"d/m/Y H:i" }}&end-date={{ end_date|date:"d/m/Y H:i" }}&camera-selected={{ camera_selected }}&category-selected={{ category_selected }}"></canvas>
             </div>
             <div class="lg:w-1/3 bg-white p-3 rounded-lg shadow">
                 <p class="text-base text-center font-medium">Cantidad de incidencias por colaborador</p>
                 <p class="text-sm text-center">{% if start_date %}Del {{ start_date }}{% endif %}{% if end_date %} Hasta
                     el {{ end_date }}{% endif %}</p>
                 <canvas id="incidents-by-worker-chart"
-                        data-url="{% url 'incidents:get_incidents_by_worker' %}?start-date={{ start_date }}&end-date={{ end_date }}&camera-selected={{ camera_selected }}&category-selected={{ category_selected }}"></canvas>
+                        data-url="{% url 'incidents:get_incidents_by_worker' %}?start-date={{ start_date|date:"d/m/Y H:i" }}&end-date={{ end_date|date:"d/m/Y H:i" }}&camera-selected={{ camera_selected }}&category-selected={{ category_selected }}"></canvas>
             </div>
             <div class="lg:w-1/3 h-72 bg-white p-3 rounded-lg shadow md:mx-20 md:w-3/4 md:col-span-2 lg:mx-0">
                 <p class="text-base text-center font-medium">Últimas incidencias</p>
@@ -208,24 +203,16 @@
                 <p class="text-sm text-center">{% if start_date %}Del {{ start_date }}{% endif %}{% if end_date %} Hasta
                     el {{ end_date }}{% endif %}</p>
                 <canvas id="incidents-by-category-bar-chart"
-                        data-url="{% url 'incidents:get_incidents_by_category_and_day' %}?start-date={{ start_date }}&end-date={{ end_date }}&camera-selected={{ camera_selected }}&category-selected={{ category_selected }}"
+                        data-url="{% url 'incidents:get_incidents_by_category_and_day' %}?start-date={{ start_date|date:"d/m/Y H:i" }}&end-date={{ end_date|date:"d/m/Y H:i" }}&camera-selected={{ camera_selected }}&category-selected={{ category_selected }}"
                         height="100%"></canvas>
 
-            </div>
-            <div class="lg:w-3/5 md:hidden bg-white p-3 rounded-lg shadow">
-                <p class="text-base text-center font-medium">Cantidad de incidencias por categoría</p>
-                <p class="text-sm text-center">{% if start_date %}Del {{ start_date }}{% endif %}{% if end_date %} Hasta
-                    el {{ end_date }}{% endif %}</p>
-                <canvas id="incidents-by-category-bar-chart-2"
-                        data-url="{% url 'incidents:get_incidents_by_category_and_day' %}?start-date={{ start_date }}&end-date={{ end_date }}&camera-selected={{ camera_selected }}&category-selected={{ category_selected }}"
-                ></canvas>
             </div>
             <div class="md:w-3/4 lg:w-2/5 md:mx-20 lg:mx-0 bg-white p-3 rounded-lg shadow">
                 <p class="text-base text-center font-medium">Cantidad de incidencias por categoría</p>
                 <p class="text-sm text-center">{% if start_date %}Del {{ start_date }}{% endif %}{% if end_date %} Hasta
                     el {{ end_date }}{% endif %}</p>
                 <canvas id="incidents-by-category-doughnut-chart" class="mt-3"
-                        data-url="{% url 'incidents:get_incidents_by_category' %}?start-date={{ start_date }}&end-date={{ end_date }}&camera-selected={{ camera_selected }}&category-selected={{ category_selected }}"></canvas>
+                        data-url="{% url 'incidents:get_incidents_by_category' %}?start-date={{ start_date|date:"d/m/Y H:i" }}&end-date={{ end_date|date:"d/m/Y H:i" }}&camera-selected={{ camera_selected }}&category-selected={{ category_selected }}"></canvas>
             </div>
         </div>
         <script>
