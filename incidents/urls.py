@@ -7,7 +7,9 @@ from incidents.views import (delete_incident_request, get_incident_page,
                              get_incidents_chart_data, get_incidents_summary_charts,
                              list_incidents_page, list_incidents_page_csv,
                              camera_instance, camera_request, get_covid_database,
-                             get_last_unchecked_incidents, generate_fake_data)
+                             get_last_unchecked_incidents, generate_fake_data,
+                             list_cameras_page, get_camera_page, register_camera_page,
+                             edit_camera_page, delete_camera_request, block_camera_request)
 
 app_name = 'incidents'
 urlpatterns = [
@@ -33,5 +35,11 @@ urlpatterns = [
          name='delete_incident'),
     path('list_incidents_page_csv/', list_incidents_page_csv,
          name='list_incidents_page_csv'),
-    path('camera_instance/<int:id>/', camera_instance, name='camera_instance')
+    path('cameras/camera_instance/<int:id>/', camera_instance, name='camera_instance'),
+    path('cameras/', list_cameras_page, name='list_cameras'),
+    path('cameras/view/<int:id>/', get_camera_page, name='get_camera'),
+    path('cameras/register/', register_camera_page, name='register_camera'),
+    path('cameras/edit/<int:id>/', edit_camera_page, name='edit_camera'),
+    path('cameras/delete/<int:id>/', delete_camera_request, name='delete_camera'),
+    path('users/block/<str:action>/<int:id>/', block_camera_request, name='block_camera'),
 ]

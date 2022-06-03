@@ -29,8 +29,8 @@ def home_page(request):
     start_date_condition = start_date != False
     end_date_condition = end_date != False
 
-    default_start_date = (date_now - timezone.timedelta(days=7)).strftime('%d/%m/%Y %H:%M')
-    default_end_date = date_now.strftime('%d/%m/%Y %H:%M')
+    default_start_date = (datetime.combine(date_now, datetime.min.time()) - timezone.timedelta(days=7)).strftime('%d/%m/%Y %H:%M')
+    default_end_date = datetime.combine(date_now, datetime.max.time()).strftime('%d/%m/%Y %H:%M')
 
     start_date = start_date if start_date_condition or end_date_condition else default_start_date
     end_date = end_date if start_date_condition or end_date_condition else default_end_date
@@ -74,7 +74,7 @@ def home_page(request):
         'category_selected': category,
         'camera_selected': camera,
         'invalid_date_range': invalid_date_range,
-        'max_date': date_now
+        'max_date': datetime.combine(date_now, datetime.max.time())
     }
 
     return render(request, 'incidents/dashboard.html', context)
