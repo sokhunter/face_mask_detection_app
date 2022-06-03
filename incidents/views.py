@@ -1,5 +1,4 @@
-import logging
-import random, csv, requests, collections, uuid, base64, urllib.request, json
+import random, csv, requests, collections, uuid, base64, urllib.request, json, logging
 from re import A
 import pandas as pd
 
@@ -24,7 +23,7 @@ from django.utils import timezone, formats
 from incidents.models import Incident, IncidentCategory, Camera
 from django.db.models import Q
 
-from django.views.decorators.csrf import csrf_exempt
+from incidents.forms import CameraCreationForm, CameraEditForm
 
 from incidents.functions import get_incidents_by_request, get_incidents_by_date_range, get_period_ranges
 
@@ -41,8 +40,8 @@ def list_incidents_page(request):
     start_date_condition = start_date != False
     end_date_condition = end_date != False
 
-    default_start_date = (date_now - timezone.timedelta(days=7)).strftime('%d/%m/%Y %H:%M')
-    default_end_date = date_now.strftime('%d/%m/%Y %H:%M')
+    default_start_date = (datetime.combine(date_now, datetime.min.time()) - timezone.timedelta(days=7)).strftime('%d/%m/%Y %H:%M')
+    default_end_date = datetime.combine(date_now, datetime.max.time()).strftime('%d/%m/%Y %H:%M')
 
     start_date = start_date if start_date_condition or end_date_condition else default_start_date
     end_date = end_date if start_date_condition or end_date_condition else default_end_date
@@ -79,7 +78,7 @@ def list_incidents_page(request):
         'incidents': incidents,
         'start_date': start_date,
         'end_date': end_date,
-        'max_date': date_now.strftime('%d/%m/%Y %H:%M')
+        'max_date': datetime.combine(date_now, datetime.max.time()).strftime('%d/%m/%Y %H:%M')
     }
 
     return render(request, 'incidents/list.html', context)
@@ -577,14 +576,13 @@ def get_last_unchecked_incidents(request):
 
 
 def camera_instance(request, id):
-    camera = get_object_or_404(Camera, id=id, security_user=request.user)
+    camera = get_object_or_404(Camera, id=id, security_user=request.user, is_blocked=False)
 
     context = {
         'camera_id': camera.id
     }
 
-    return render(request, 'incidents/camera_instance.html', context)
-
+    return render(request, 'cameras/camera_instance.html', context)
 
 
 def generate_fake_data(request):
@@ -631,3 +629,80 @@ def generate_fake_data(request):
 
     return render(request, 'incidents/secret.html', context)
 
+
+def list_cameras_page(request):
+    search = request.GET.get('search', False)
+
+    cameras = Camera.objects.all().order_by('id')
+
+    if search:
+        cameras = cameras.filter(address__icontains=search)
+
+    page = request.GET.get('page', 1)
+    paginator = Paginator(cameras, 10)
+
+    try:
+        cameras = paginator.page(page)
+    except PageNotAnInteger:
+        cameras = paginator.page(1)
+    except EmptyPage:
+        cameras = paginator.page(paginator.num_pages)
+
+    context = {
+        'cameras': cameras,
+        'filter': search if search != False else ''
+    }
+
+    return render(request, 'cameras/list.html', context)
+
+
+def get_camera_page(request, id):
+    context = {
+        'camera': get_object_or_404(Camera, id=id)
+    }
+    return render(request, 'cameras/view.html', context)
+
+
+def register_camera_page(request):
+    if request.method == "POST":
+        camera_form = CameraCreationForm(request.POST)
+        if camera_form.is_valid():
+            camera = camera_form.save(False)
+            camera.save()
+    
+            return redirect("incidents:list_cameras")
+    else:
+        camera_form = CameraCreationForm
+    context = {
+        'camera_form': camera_form,
+    }
+    return render(request, 'cameras/register.html', context)
+
+
+def edit_camera_page(request, id):
+    camera = get_object_or_404(Camera, id=id)
+    if request.method == "POST":
+        camera_form = CameraEditForm(request.POST, instance=camera)
+        if camera_form.is_valid():
+            camera_form.save()
+            return redirect('incidents:get_camera', id=id)
+    else:
+        camera_form = CameraEditForm(instance=camera)
+    context = {
+        'camera': camera,
+        'camera_form': camera_form,
+    }
+    return render(request, 'cameras/edit.html', context)
+
+
+def delete_camera_request(request, id):
+    #worker = get_object_or_404(Worker, id=id)
+    #worker.delete()
+    return redirect('incidents:list_cameras')
+
+
+def block_camera_request(request, action, id):
+    camera = get_object_or_404(Camera, id=id)
+    camera.is_blocked = True if action == 'true' else False
+    camera.save()
+    return redirect('incidents:list_cameras')

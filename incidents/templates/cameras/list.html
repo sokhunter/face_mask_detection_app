@@ -1,18 +1,18 @@
 {% extends "index.html" %}
 {% block content %}
 <!-- This example requires Tailwind CSS v2.0+ -->
-<h1 class="text-2xl text-gray-900 font-semibold mx-2 -mt-3 md:mx-0 md:mt-3">Lista de Colaboradores</h1>
+<h1 class="text-2xl text-gray-900 font-semibold mx-2 -mt-3 md:mx-0 md:mt-3">Lista de Cámaras</h1>
 <div class="flex justify-between m-3 place-items-center">
-    <p class="text-sm text-gray-400">Mostrando <span class="text-sm text-gray-700">{{ workers.start_index }}-{{ workers.end_index }}</span> de <span
-            class="text-sm text-gray-700">{{ workers.paginator.count }}</span></p>
+    <p class="text-sm text-gray-400">Mostrando <span class="text-sm text-gray-700">{{ cameras.start_index }}-{{ cameras.end_index }}</span> de <span
+            class="text-sm text-gray-700">{{ cameras.paginator.count }}</span></p>
     <div class="flex justify-end items-center">
         {% if filter %}
-        <p class="mx-2 mt-1">Buscando colaboradores con nombres y/o apellidos: {{ filter }}</p>
+        <p class="mx-2 mt-1">Buscando cámaras por dirección: {{ filter }}</p>
         {% endif %}
         <div>
             <input type="text" name="filter" id="filter" value="{{ filter }}"
                 class="w-50 text-sm border border-gray-300 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-indigo-500 py-1.5 px-3 shadow rounded-md placeholder-gray-500 placeholder-opacity-50"
-                placeholder="Buscar colaborador" />
+                placeholder="Buscar cámara" />
             <div class="relative">
                 <div class="absolute bottom-0 right-2">
                     {% if filter %}
@@ -24,7 +24,7 @@
                         </svg>
                     </a>
                     {% endif %}
-                    <button onclick="search_worker()" class="h-5 w-5 bg-white text-gray-900 focus:text-indigo-600">
+                    <button onclick="search_camera()" class="h-5 w-5 bg-white text-gray-900 focus:text-indigo-600">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                             <path fill-rule="evenodd"
                                 d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
@@ -41,7 +41,7 @@
                 <path
                     d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm1 18h-2v-6h-2v-2h4v8zm-1-9.75c-.69 0-1.25-.56-1.25-1.25s.56-1.25 1.25-1.25 1.25.56 1.25 1.25-.56 1.25-1.25 1.25z" />
             </svg>
-            <span class="tooltiptext shadow px-2 py-2">La búsqueda se realiza solo por el nombre del colaborador</span>
+            <span class="tooltiptext shadow px-2 py-2">La búsqueda se realiza solo por la dirección de la cámara</span>
         </a>
     </div>
 </div>
@@ -54,7 +54,7 @@
                         <tr>
                             <th scope="col"
                                 class="px-6 py-3 text-left text-xs font-medium text-indigo-500 uppercase tracking-wider">
-                                Colaborador
+                                ID
                             </th>
                             <th scope="col"
                                 class="px-6 py-3 text-left text-xs font-medium text-indigo-500 uppercase tracking-wider">
@@ -62,11 +62,7 @@
                             </th>
                             <th scope="col"
                                 class="px-6 py-3 text-left text-xs font-medium text-indigo-500 uppercase tracking-wider">
-                                Celular
-                            </th>
-                            <th scope="col"
-                                class="px-6 py-3 text-left text-xs font-medium text-indigo-500 uppercase tracking-wider">
-                                Número de Documento
+                                Dirección
                             </th>
                             <th scope="col"
                                 class="px-6 py-3 text-right text-xs font-medium text-indigo-500 uppercase tracking-wider">
@@ -75,46 +71,27 @@
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
-                        {% for worker in workers %}
+                        {% for camera in cameras %}
                         <tr>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="flex items-center">
-                                    <div class="flex-shrink-0 h-10 w-10">
-                                        {% if worker.photo.url %}
-                                        <img class="h-10 w-10 rounded-full" src="{{worker.photo.url}}"
-                                            alt="profile photo" height="40px">
-                                        {% endif %}
-                                    </div>
-                                    <div class="ml-4">
-                                        <div class="text-sm font-medium text-gray-900 leading-none">
-                                            {{worker.names}}&nbsp;{{worker.surnames}}
-                                        </div>
-                                        <div class="text-sm text-gray-500 leading-none">
-                                            {{worker.email}}
-                                        </div>
-                                    </div>
-                                </div>
+                                <div class="text-sm text-gray-900">{{camera.id}}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="text-sm text-gray-900">
-                                    {% if worker.user %}
+                                    {% if camera.security_user %}
                                     <a class="underline"
-                                        href="{% url 'accounts:get_user' id=worker.user.id %}">{{worker.user.username}}</a>
+                                        href="{% url 'accounts:get_user' id=camera.security_user.id %}">{{camera.security_user.username}}</a>
                                     {% else %}
                                     Sin usuario
                                     {% endif %}
                                 </div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900">{{worker.phone_number}}</div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900">{{worker.document}}</div>
-                                <div class="text-sm text-gray-500 uppercase">{{worker.document_type}}</div>
+                                <div class="text-sm text-gray-900">{{camera.address}}</div>
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <div class="flex gap-2 justify-end">
-                                    <a href="{% url 'accounts:get_worker' id=worker.id %}"
+                                    <a href="{% url 'incidents:get_camera' id=camera.id %}"
                                         class="text-gray-900 hover:text-gray-700"><svg
                                             xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
                                             viewBox="0 0 24 24" stroke="currentColor">
@@ -123,23 +100,23 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
                                                 d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                                         </svg></a>
-                                    <a href="{% url 'accounts:edit_worker' id=worker.id %}"
+                                    <a href="{% url 'incidents:edit_camera' id=camera.id %}"
                                         class="text-gray-900 hover:text-gray-700"><svg
                                             xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
                                             viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
                                                 d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                                         </svg></a>
+                                    {% if not camera.is_blocked %}
                                     <div x-data="{ 'showModal': false }" @keydown.escape="showModal = false">
                                         <!-- Trigger for Modal -->
                                         <button type="button" @click="showModal = true"
-                                            class="text-red-600 hover:text-red-500">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                                            class="text-red-500 hover:text-red-400"><svg
+                                                xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
                                                 viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
-                                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                            </svg>
-                                        </button>
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7"
+                                                    d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                                            </svg></button>
 
                                         <!-- Modal -->
                                         <div class="fixed inset-0 z-30 flex items-center justify-center overflow-auto bg-black bg-opacity-75 transition-opacity"
@@ -176,24 +153,25 @@
                                                         <div class="mt-3 text-left sm:mt-0 sm:ml-4 whitespace-normal">
                                                             <h3 class="text-lg leading-6 font-medium text-gray-900"
                                                                 id="modal-title">
-                                                                Eliminar colaborador
+                                                                Bloquear cámara
                                                             </h3>
                                                             <p class="text-sm text-gray-500 mt-2">
-                                                                ¿Está seguro de eliminar al colaborador "{{worker}}"?
+                                                                ¿Está seguro de bloquear la cámara "{{ camera }}"?
                                                                 <br>
-                                                                La cuenta del colaborador "{{worker}}" dejará de tener
-                                                                permisos para entrar a la aplicación.
+                                                                La cámara "{{ camera }}" ya no se podrá utilizar para
+                                                                registrar nuevas incidencias.
                                                             </p>
                                                         </div>
                                                     </div>
                                                 </div>
-                                                <div class="bg-gray-50 px-4 py-3 sm:px-6 flex flex-col md:flex-row-reverse">
+                                                <div
+                                                    class="bg-gray-50 px-4 py-3 sm:px-6 flex flex-col md:flex-row-reverse">
                                                     <a type="button"
-                                                        href="{% url 'accounts:delete_worker' id=worker.id %}"
+                                                        href="{% url 'incidents:block_camera' action='true' id=camera.id %}"
                                                         class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
-                                                        Eliminar
+                                                        Bloquear
                                                     </a>
-                                                    <button @click="showModal = false"
+                                                    <button type="button" @click="showModal = false"
                                                         class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
                                                         Cancelar
                                                     </button>
@@ -201,12 +179,82 @@
                                             </div>
                                         </div>
                                     </div>
+                                    {% else %}
+                                    <div x-data="{ 'showModal': false }" @keydown.escape="showModal = false">
+                                        <!-- Trigger for Modal -->
+                                        <button type="button" @click="showModal = true"
+                                            class="text-green-500 hover:text-green-400"><svg
+                                                xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                                                viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7"
+                                                    d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
+                                            </svg></button>
+                                        <!-- Modal -->
+                                        <div class="fixed inset-0 z-30 flex items-center justify-center overflow-auto bg-black bg-opacity-75 transition-opacity"
+                                            x-show="showModal" x-transition:enter="transition ease-out duration-300"
+                                            x-transition:enter-start="transform opacity-0"
+                                            x-transition:enter-end="transform opacity-100"
+                                            x-transition:leave="transition ease-in duration-200"
+                                            x-transition:leave-start="transform opacity-100"
+                                            x-transition:leave-end="transform opacity-0">
+                                            <!-- Modal inner -->
+                                            <span class="hidden sm:inline-block sm:align-middle sm:h-screen"
+                                                aria-hidden="true">&#8203;</span>
+                                            <div class="inline-block align-bottom bg-white rounded-lg text-left shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
+                                                @click.away="showModal = false"
+                                                x-transition:enter="transition ease-out duration-300"
+                                                x-transition:enter-start="transform opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                                                x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                                                x-transition:leave="transition ease-in duration-200"
+                                                x-transition:leave-start="transform opacity-100 translate-y-0 sm:scale-100"
+                                                x-transition:leave-end="transform opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
+                                                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                                                    <div class="sm:flex sm:items-start">
+                                                        <div
+                                                            class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-green-100 sm:mx-0 sm:h-10 sm:w-10">
+                                                            <svg class="h-6 w-6 text-green-600"
+                                                                xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                                viewBox="0 0 24 24" stroke="currentColor"
+                                                                aria-hidden="true">
+                                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                                    stroke-width="2"
+                                                                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                                            </svg>
+                                                        </div>
+                                                        <div class="mt-3 text-left sm:mt-0 sm:ml-4 whitespace-normal">
+                                                            <h3 class="text-lg leading-6 font-medium text-gray-900"
+                                                                id="modal-title">
+                                                                Desbloquear cámara
+                                                            </h3>
+                                                            <p class="text-sm text-gray-500 mt-2">
+                                                                ¿Está seguro de desbloquear la cámara "{{ camera }}"?
+                                                                <br>
+                                                                La cámara "{{ camera }}" se podrá volver a utilizar para
+                                                                registrar incidencias.
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div
+                                                    class="bg-gray-50 px-4 py-3 sm:px-6 flex flex-col md:flex-row-reverse">
+                                                    <a type="button"
+                                                        href="{% url 'incidents:block_camera' action='false' id=camera.id %}"
+                                                        class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
+                                                        Desbloquear
+                                                    </a>
+                                                    <button type="button" @click="showModal = false"
+                                                        class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                                                        Cancelar
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endif %}
                                 </div>
                             </td>
                         </tr>
                         {% endfor %}
-
-                        <!-- More people... -->
                     </tbody>
                 </table>
             </div>
@@ -215,11 +263,11 @@
 </div>
 <div class="flex justify-between mt-5">
     <nav aria-label="Page navigation">
-        {% if workers.has_other_pages %}
+        {% if cameras.has_other_pages %}
         <ul class="inline-flex gap-2">
-            {% if workers.has_previous %}
+            {% if cameras.has_previous %}
             <li>
-                <a href="?page={{ workers.previous_page_number }}&search={{ filter }}">
+                <a href="?page={{ cameras.previous_page_number }}&search={{ filter }}">
                     <button
                     class="bg-white flex items-center justify-center w-10 h-10 text-indigo-600 duration-150 rounded-full focus:ring focus:ring-indigo-500 hover:bg-indigo-50 shadow">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
@@ -242,8 +290,8 @@
                 </button>
             </li>
             {% endif %}
-            {% for i in workers.paginator.page_range %}
-            {% if workers.number == i %}
+            {% for i in cameras.paginator.page_range %}
+            {% if cameras.number == i %}
             <li><button
                 class="w-10 h-10 bg-indigo-600 text-white duration-150 border border-r-0 border-indigo-600 rounded-full focus:shadow-outline shadow">{{ i }}</button>
             </li>
@@ -253,9 +301,9 @@
             </li>
             {% endif %}
             {% endfor %}
-            {% if workers.has_next %}
+            {% if cameras.has_next %}
             <li>
-                <a href="?page={{ workers.next_page_number }}&search={{ filter }}">
+                <a href="?page={{ cameras.next_page_number }}&search={{ filter }}">
                     <button
                         class="bg-white flex items-center justify-center w-10 h-10 text-indigo-600 duration-150 rounded-full focus:ring focus:ring-indigo-500 hover:bg-indigo-50 shadow">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
@@ -280,9 +328,8 @@
             {% endif %}
         {% endif %}
     </nav>
-
     <div class="flex justify-end gap-2 mx-6">
-        <a href="{% url 'accounts:register_worker' %}"
+        <a href="{% url 'incidents:register_camera' %}"
             class="ring-offset-2 rounded-full shadow focus:ring focus:ring-indigo-500">
             <div class="bg-indigo-600 h-10 w-10 rounded-full flex justify-center hover:bg-indigo-500">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white self-center" fill="none"
@@ -295,9 +342,9 @@
     </div>
 </div>
 <script>
-    function search_worker() {
+    function search_camera() {
         let seach_string = document.getElementById('filter').value;
-        window.location.href = "{% url 'accounts:list_workers' %}?search=" + seach_string;
+        window.location.href = "{% url 'incidents:list_cameras' %}?search=" + seach_string;
     }
     document.getElementById('filter').addEventListener('keydown', function(e) {
         if (e.key === 'Enter') {

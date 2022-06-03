@@ -27,6 +27,10 @@ class IncidentCategory(models.Model):
 class Camera(models.Model):
     address = models.CharField(_('Direccion'), max_length=100)
     security_user = models.ForeignKey(User, on_delete=models.CASCADE)
+    is_blocked = models.BooleanField(_('Bloqueado'), default=False)
+
+    def __str__(self):
+        return str(self.id) + ' - ' + self.address
 
 
 class Incident(models.Model):

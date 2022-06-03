@@ -45,16 +45,35 @@ def get_incidents_by_date_range(request, start_date, end_date, camera=False, cat
 
     if start_date:
         fstart_date = timezone.make_aware(datetime.strptime(start_date, '%d/%m/%Y %H:%M'))
-        incidents = incidents.filter(date_time__gte=fstart_date)
+        incidents = incidents.filter(date_time__gte=timezone.make_aware(datetime.combine(fstart_date, datetime.min.time())))
     if end_date:
         fend_date = timezone.make_aware(datetime.strptime(end_date, '%d/%m/%Y %H:%M'))
-        incidents = incidents.filter(date_time__lt=fend_date + timedelta(minutes=1))
+        incidents = incidents.filter(date_time__lte=timezone.make_aware(datetime.combine(fend_date, datetime.max.time())))
     if camera and camera != 'all' and camera != 'False':
         incidents = incidents.filter(camera=camera)
     if category and category != 'all' and category != 'False':
         incidents = incidents.filter(incident_category=category)
     if not find_all:
         incidents = incidents.filter(security_user=security_user)
+
+    ids_to_remove = []
+    if start_date and end_date:
+        for e in incidents:
+            time = timezone.localtime(e.date_time).time().replace(second=0, microsecond=0)
+            if time < fstart_date.time() or time > fend_date.time():
+                ids_to_remove.append(e.id)
+    elif start_date:
+        for e in incidents:
+            time = timezone.localtime(e.date_time).time().replace(second=0, microsecond=0)
+            if time < fstart_date.time():
+                ids_to_remove.append(e.id)
+    elif end_date:
+        for e in incidents:
+            time = timezone.localtime(e.date_time).time().replace(second=0, microsecond=0)
+            if time > fend_date.time():
+                ids_to_remove.append(e.id)
+
+    incidents = incidents.exclude(id__in=ids_to_remove)
 
     return incidents, fstart_date, fend_date
 

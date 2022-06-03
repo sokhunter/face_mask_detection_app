@@ -1,0 +1,43 @@
+{% extends "index.html" %}
+
+{% block content %}
+
+<div class="w-2/3 lg:w-1/2 mx-auto relative">
+    <div class="flex justify-center items-center mt-3 gap-5">
+        <h1 class="text-2xl text-gray-900 font-semibold ">Perfil cámara {{ camara }}</h1>
+    </div>
+    <div class="flex flex-col md:grid md:grid-cols-2 md:gap-x-14 gap-y-2">
+        <div class="mx-auto w-full md:w-2/3 whitespace-nowrap">
+            <label class="block text-base font-normal text-gray-600 mt-3">ID</label>
+            <div class="font-semibold">{{ camera.id }}</div>
+        </div>
+        <div class="mx-auto w-full md:w-2/3 whitespace-nowrap">
+            <label class="block text-base font-normal text-gray-600 mt-3">Dirección</label>
+            <div class="font-semibold">{{ camera.address }}</div>
+        </div>
+        <div class="mx-auto w-full md:w-2/3 whitespace-nowrap">
+            <label class="block text-base font-normal text-gray-600 mt-3">Bloqueada</label>
+            <div class="font-semibold">{{ camera.is_blocked|yesno:"Sí,No" }}</div>
+        </div>
+        <div class="mx-auto w-full md:w-2/3 whitespace-nowrap">
+            <label class="block text-base font-normal text-gray-600 mt-3">Usuario</label>
+            {% if camera.security_user %}
+            <div class="font-semibold">
+                <a class="underline" href="{% url 'accounts:get_user' id=camera.security_user.id %}">{{ camera.security_user.username}}</a>
+                {% if camera.security_user.is_blocked %}
+                (Bloqueado)
+                {% endif %}
+            </div>
+            {% else %}
+            <div class="font-medium text-gray-700">(Vacío)</div>
+            {% endif %}
+        </div>
+    </div>
+    <div class="flex justify-between md:justify-around gap-6 md:gap-0 my-8 md:mt-14">
+        <a type="button" href="{% url 'incidents:list_cameras' %}"
+            class='w-40 text-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-gray-600 text-base font-medium text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500'>Regresar</a>
+        <a type="button" href="{% url 'incidents:edit_camera' id=camera.id %}"
+            class='w-40 text-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500'>Editar</a>
+    </div>
+</div>
+{% endblock content %}

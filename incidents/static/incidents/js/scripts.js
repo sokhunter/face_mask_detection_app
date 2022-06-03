@@ -13,7 +13,7 @@ $(function () {
         "timePicker": true,
         "timePicker24Hour": true,
         "locale": {
-            "format": "DD/MM/YYYY HH:mm",
+            "format": "DD/MM/YYYY",
             "separator": " - ",
             "applyLabel": "Aceptar",
             "cancelLabel": "Cancelar",
@@ -47,9 +47,9 @@ $(function () {
             "firstDay": 1
         },
         "linkedCalendars": false,
-        "startDate": $dateRangePicker.data("start-date"),
-        "endDate": $dateRangePicker.data("end-date"),
-        "maxDate": $dateRangePicker.data("max-date"),
+        "startDate": moment($dateRangePicker.data("start-date"), "DD/MM/YYYY HH:mm"),
+        "endDate": moment($dateRangePicker.data("end-date"), "DD/MM/YYYY HH:mm"),
+        "maxDate": moment($dateRangePicker.data("max-date"), "DD/MM/YYYY HH:mm"),
         "buttonClasses": "btn btn-sm",
         "applyButtonClasses": "btn-primary",
         "cancelClass": "btn-default"

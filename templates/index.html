@@ -67,6 +67,9 @@
                             <li class="pb-2">
                                 <a href="{% url 'accounts:list_users' %}">Usuarios</a>
                             </li>
+                            <li class="pb-2">
+                                <a href="{% url 'incidents:list_cameras' %}">Cámaras</a>
+                            </li>
                         {% endif %}
                     {% endif %}
                     {% if request.user.is_authenticated %}
@@ -132,6 +135,20 @@
                                           d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"></path>
                                 </svg>
                                 <p class="text-base hidden lg:block">Usuarios</p>
+                            </a>
+                        </li>
+                        <li class="mx-2 my-6 md:my-0">
+                            <a href="{% url 'incidents:list_cameras' %}"
+                               class="flex flex-col items-center xl:flex-row flex-shrink-0 text-gray-600 hover:text-gray-500 content-center gap-2 focus:text-indigo-500 focus:border-b-2 focus:border-indigo-500 p-3">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor"
+                                     viewBox="0 0 24 24"
+                                     stroke="currentColor">
+                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                          d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"/>
+                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" style="color: white"
+                                          d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                </svg>
+                                <p class="text-base hidden lg:block">Cámaras</p>
                             </a>
                         </li>
                     {% endif %}

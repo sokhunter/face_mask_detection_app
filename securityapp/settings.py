@@ -129,12 +129,12 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
 
-        'NAME': 'securitydb',
-        'USER': 'damian',
+       # 'NAME': 'securitydb',
+       # 'USER': 'damian',
+       # 'PASSWORD': '1234',
+        'NAME': 'securityDB',
+        'USER': 'postgres',
         'PASSWORD': '1234',
-       # 'NAME': 'securityDb',
-       # 'USER': 'josue',
-       # 'PASSWORD': 'cuentas',
        # 'NAME': 'securityDb',
        # 'USER': 'josue',
        # 'PASSWORD': 'cuentas',
