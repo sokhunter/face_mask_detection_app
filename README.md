@@ -1,8 +1,11 @@
 # Yolov5 object detection model deployment using flask
 This repo contains example apps for exposing the [yolo5](https://github.com/ultralytics/yolov5) object detection model from [pytorch hub](https://pytorch.org/hub/ultralytics_yolov5/) via a [flask](https://flask.palletsprojects.com/en/1.1.x/) api/app.
 
-## Web app
-Simple app consisting of a form where you can upload an image, and see the inference result of the model in the browser. Run:
+## Run the app
+
+First download the weigths from [here](https://drive.google.com/file/d/1HlvrrHDlJEdgaF5jpqkxiXoYA7G5r8Cc/view?usp=sharing) and paste it on the root folder
+
+See the inference result of the model in the browser. Run:
 
 `$ python3 app.py --port 5000`
 
