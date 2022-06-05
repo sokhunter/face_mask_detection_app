@@ -3,7 +3,7 @@ This repo contains example apps for exposing the [yolo5](https://github.com/ultr
 
 ## Run the app
 
-First download the weigths from [here](https://drive.google.com/file/d/1HlvrrHDlJEdgaF5jpqkxiXoYA7G5r8Cc/view?usp=sharing) and paste it on the root folder
+First download the weigths from [here](https://drive.google.com/file/d/1HlvrrHDlJEdgaF5jpqkxiXoYA7G5r8Cc/view?usp=sharing) and paste the file (best.pt) on the project root folder
 
 See the inference result of the model in the browser. Run:
 
