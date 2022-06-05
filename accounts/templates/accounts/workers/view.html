@@ -1,7 +1,7 @@
 {% extends "index.html" %}
 
 {% block content %}
-
+<div class = "bg-white shadow-lg rounded-3xl mx-auto p-5 mt-2 w-2/3 ">
 <div class="w-2/3 lg:w-1/2 mx-auto relative">
     <div class="flex justify-center items-center mt-3 gap-5">
         <h1 class="text-2xl text-gray-900 font-semibold ">Perfil de colaborador {{worker}}</h1>
@@ -62,5 +62,6 @@
         <a type="button" href="{% url 'accounts:edit_worker' id=worker.id %}"
             class='w-40 text-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500'>Editar</a>
     </div>
+</div>
 </div>
 {% endblock content %}

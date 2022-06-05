@@ -141,7 +141,7 @@
                 {% if request.user.is_authenticated %}
                     <li class="mx-2 my-6 md:my-0">
                         <a href="{% url 'home' %}"
-                           class="flex flex-col items-center xl:flex-row flex-shrink-0 text-gray-600 hover:text-gray-500 content-center gap-2 focus:text-indigo-500 focus:border-b-2 focus:border-indigo-500 p-3">
+                           class="flex flex-col items-center xl:flex-row flex-shrink-0 text-gray-600 hover:bg-gray-300 content-center gap-2 focus:text-indigo-500 focus:border-b-2 focus:border-indigo-500 p-3">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                                  stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
@@ -152,7 +152,7 @@
                     </li>
                     <li class="mx-2 my-6 md:my-0">
                         <a href="{% url 'incidents:list_incidents' %}"
-                           class="flex flex-col items-center xl:flex-row flex-shrink-0 text-gray-600 hover:text-gray-500 content-center gap-2 focus:text-indigo-500 focus:border-b-2 focus:border-indigo-500 p-3">
+                           class="flex flex-col items-center xl:flex-row flex-shrink-0 text-gray-600 hover:bg-gray-300 content-center gap-2 focus:text-indigo-500 focus:border-b-2 focus:border-indigo-500 p-3">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                                  stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
@@ -164,7 +164,7 @@
                     {% if request.user.role.name == "admin" %}
                         <li class="mx-2 my-6 md:my-0">
                             <a href="{% url 'accounts:list_workers' %}"
-                               class="flex flex-col items-center xl:flex-row flex-shrink-0 text-gray-600 hover:text-gray-500 content-center gap-2 focus:text-indigo-500 focus:border-b-2 focus:border-indigo-500 p-3">
+                               class="flex flex-col items-center xl:flex-row flex-shrink-0 text-gray-600 hover:bg-gray-300 content-center gap-2 focus:text-indigo-500 focus:border-b-2 focus:border-indigo-500 p-3">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                                      stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
@@ -175,7 +175,7 @@
                         </li>
                         <li class="mx-2 my-6 md:my-0">
                             <a href="{% url 'accounts:list_users' %}"
-                               class="flex flex-col items-center xl:flex-row flex-shrink-0 text-gray-600 hover:text-gray-500 content-center gap-2 focus:text-indigo-500 focus:border-b-2 focus:border-indigo-500 p-3">
+                               class="flex flex-col items-center xl:flex-row flex-shrink-0 text-gray-600 hover:bg-gray-300 content-center gap-2 focus:text-indigo-500 focus:border-b-2 focus:border-indigo-500 p-3">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor"
                                      viewBox="0 0 24 24"
                                      stroke="currentColor">
@@ -187,7 +187,7 @@
                         </li>
                         <li class="mx-2 my-6 md:my-0">
                             <a href="{% url 'incidents:list_cameras' %}"
-                               class="flex flex-col items-center xl:flex-row flex-shrink-0 text-gray-600 hover:text-gray-500 content-center gap-2 focus:text-indigo-500 focus:border-b-2 focus:border-indigo-500 p-3">
+                               class="flex flex-col items-center xl:flex-row flex-shrink-0 text-gray-600 hover:bg-gray-300 content-center gap-2 focus:text-indigo-500 focus:border-b-2 focus:border-indigo-500 p-3">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="currentColor"
                                      viewBox="0 0 24 24"
                                      stroke="currentColor">
@@ -288,13 +288,13 @@
                                  aria-labelledby="menu-button" tabindex="-1" style="display: none">
                                 <div class="py-1" role="none">
                                     <a href="{% url 'accounts:my_profile' %}"
-                                       class="text-gray-600 block px-4 py-2 text-sm hover:bg-gray-50" role="menuitem"
+                                       class="text-gray-600 block px-4 py-2 text-sm hover:bg-gray-300" role="menuitem"
                                        tabindex="-1"
                                        id="menu-item-0">Ver Perfil</a>
                                 </div>
                                 <div class="py-1" role="none">
                                     <a href="{% url 'accounts:logout' %}"
-                                       class="text-red-600 block px-4 py-2 text-sm hover:bg-gray-50" role="menuitem"
+                                       class="text-red-600 block px-4 py-2 text-sm hover:bg-gray-300" role="menuitem"
                                        tabindex="-1"
                                        id="menu-item-1">Cerrar Sesión</a>
                                 </div>

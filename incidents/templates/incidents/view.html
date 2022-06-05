@@ -1,5 +1,6 @@
 {% extends "index.html" %}
 {% block content %}
+<div class = "bg-white shadow-lg rounded-3xl mx-auto p-5 mt-2 w-2/3 ">
 <div class="w-4/5 mx-auto">
     <h1 class="text-2xl lg:mx-28 xl:mx-36 text-gray-900 font-semibold -mt-1">Incidencia / Incidencia #{{ incident.id|stringformat:"04d" }}
     </h1>
@@ -63,5 +64,6 @@
             <img src="{{incident.image.url}}" alt="incident image"
                 class="rounded-md border border-gray-400 shadow w-80 h-80 mt-1">
     </div>
+</div>
 </div>
 {% endblock content %}
