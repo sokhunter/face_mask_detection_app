@@ -251,6 +251,7 @@ EMAIL_HOST_USER = 'upcpry2021274dc@gmail.com'
 EMAIL_HOST_PASSWORD = 'UPC12345'
 EMAIL_USE_TLS = True
 
+MASK_RECOGNITION_API_URL = 'https://yolo-mask-api.herokuapp.com/detect'
 
 # Password settings
 
