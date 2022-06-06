@@ -44,7 +44,10 @@
             {% if worker.user %}
             <div class="font-semibold">
                 <a class="underline" href="{% url 'accounts:get_user' id=worker.user.id %}">{{worker.user.username}}</a>
-                {% if worker.user.is_blocked %}
+                <!-- {% if worker.user.is_blocked %}
+                (Bloqueado)
+                {% endif %} -->
+                {% if not worker.user.is_active %}
                 (Bloqueado)
                 {% endif %}
             </div>
