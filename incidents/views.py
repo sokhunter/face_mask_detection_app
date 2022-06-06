@@ -473,7 +473,7 @@ def camera_request(request, id):
             context['recommendation'] = "DNI Invalido"
             return JsonResponse(context)
 
-        api_url = 'https://yolo-mask-api.herokuapp.com/detect'
+        api_url = settings.MASK_RECOGNITION_API_URL
         response = requests.post(api_url, json={"base64String": image_data})
 
         if len(response.json()):
