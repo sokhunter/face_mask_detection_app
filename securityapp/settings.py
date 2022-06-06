@@ -236,7 +236,7 @@ def email_query(User, email):
 EMAIL_QUERY = email_query
 
 EMAIL_VERIFIED_CALLBACK = verified_callback
-EMAIL_FROM_ADDRESS = 'upcpry2021274dc@gmail.com'
+EMAIL_FROM_ADDRESS = config('EMAIL_HOST_USER')
 EMAIL_MAIL_SUBJECT = 'Verifica tu cuenta'
 EMAIL_MAIL_HTML = 'accounts/mail_confirm_account.html'
 EMAIL_MAIL_PLAIN = 'accounts/mail_confirm_account.txt'
@@ -247,11 +247,11 @@ EMAIL_PAGE_DOMAIN = 'http://127.0.0.1:8000/'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_HOST_USER = 'upcpry2021274dc@gmail.com'
-EMAIL_HOST_PASSWORD = 'UPC12345'
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 EMAIL_USE_TLS = True
 
-MASK_RECOGNITION_API_URL = 'https://yolo-mask-api.herokuapp.com/detect'
+MASK_RECOGNITION_API_URL = config('MASK_RECOGNITION_API_URL')
 
 # Password settings
 
