@@ -202,8 +202,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 # py manage.py tailwind start
 
-AWS_ACCESS_KEY_ID='AKIA2NADWC3M6322A6HM'
-AWS_SECRET_ACCESS_KEY='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'
+AWS_ACCESS_KEY_ID=config('AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY=config('AWS_SECRET_ACCESS_KEY')
 AWS_STORAGE_BUCKET_NAME='securyapp1'
 AWS_URL='https://securyapp1.s3.amazonaws.com/'
 AWS_DEFAULT_ACL = None
