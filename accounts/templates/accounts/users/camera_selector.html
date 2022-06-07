@@ -38,6 +38,8 @@
                         <div class="text-base font-normal text-red-600 mb-2">
                             El usuario no cuenta con cámaras asignadas.
                         </div>
+                        <a type='button' href="{% url 'accounts:login_security' %}"
+                       class='mt-2 w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-green-600 text-base font-medium text-white hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500'>Regresar</a>
                     {% endif %}
                 {% endfor %}
                 {% if cooloff_time %}

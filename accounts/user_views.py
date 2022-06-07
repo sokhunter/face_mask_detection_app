@@ -288,7 +288,7 @@ def my_profile_page(request):
             if profile_form.is_valid():
                 profile_form.save()
                 messages.success(
-                    request, 'Se actualizó los datos correctamente!')
+                    request, 'Se actualizaron los datos correctamente!')
                 return redirect('accounts:my_profile')
         if 'password-form' in request.POST:
             password_form = SetPasswordForm(user, request.POST)
