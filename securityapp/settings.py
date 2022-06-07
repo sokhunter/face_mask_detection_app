@@ -74,7 +74,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'axes.middleware.AxesMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'securityapp.urls'
@@ -262,5 +261,3 @@ MASK_RECOGNITION_API_URL = config('MASK_RECOGNITION_API_URL')
 # Password settings
 
 PASSWORD_RESET_TIMEOUT_DAYS = 1  # Amount of days will take a token to expire
-
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
