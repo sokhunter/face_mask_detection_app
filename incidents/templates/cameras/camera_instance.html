@@ -260,6 +260,26 @@
                 xhr.send(form_data);
             }
 
+            function processMinsaResponse(response) {
+                response = JSON.parse(response)
+                console.log(response);
+            }
+
+            function fetchMinsaData() {
+                var xhr = new XMLHttpRequest();
+
+                var form_data = new FormData();
+
+                xhr.open("GET", '{% url 'incidents:get_covid_database' %}', true);
+                xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token }}');
+                xhr.onreadystatechange = function() {
+                    if (xhr.readyState === 4) {
+                        processMinsaResponse(xhr.response);
+                    }
+                }
+                xhr.send(form_data);
+            }
+
             camera_button.addEventListener("click", async function () {
                 let stream = await navigator.mediaDevices.getUserMedia({video: true, audio: false});
                 video.srcObject = stream;
@@ -294,6 +314,8 @@
             dni.addEventListener('input', function () {
                 take_photo_button.disabled = !this.value;
             })
+
+            fetchMinsaData();
         </script>
     {% endblock auth-content %}
 {% endblock auth %}

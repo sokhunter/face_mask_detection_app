@@ -330,6 +330,7 @@ def delete_user_request(request, id):
 
 def block_user_request(request, action, id):
     user = get_object_or_404(User, id=id)
-    user.is_blocked = True if action == 'true' else False
+    # user.is_blocked = True if action == 'true' else False
+    user.is_active = True if action == 'true' else False
     user.save()
     return redirect('accounts:list_users')

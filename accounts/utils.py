@@ -34,7 +34,7 @@ def on_email_changed(request, previous_email, new_email):
             [to_email],
             fail_silently=False,
         )
-        user.is_active = False
+        # user.is_active = False
         user.save()
         return True
     return False

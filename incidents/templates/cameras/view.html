@@ -24,7 +24,7 @@
             {% if camera.security_user %}
             <div class="font-semibold">
                 <a class="underline" href="{% url 'accounts:get_user' id=camera.security_user.id %}">{{ camera.security_user.username}}</a>
-                {% if camera.security_user.is_blocked %}
+                {% if not camera.security_user.is_active %}
                 (Bloqueado)
                 {% endif %}
             </div>
