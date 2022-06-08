@@ -62,12 +62,13 @@
                     <div class="grid grid-cols-1">
                         <div class="grid grid-cols-1 mx-8 md:mx-36 lg:mx-8 xl:mx-12 my-2">
                             <a class="text-right text-gray-500">Recomendaciones del día</a>
-                            <a class="text-justify">Las mascarillas N95 filtran hasta el 95% de las particulas
+                            <a id="recommendation-day-text" class="text-justify">Las mascarillas N95 filtran hasta el
+                                95% de las particulas
                                 aereas.</a>
                         </div>
                         <div class="grid grid-cols-1 mx-8 md:mx-36 lg:mx-8 xl:mx-12 my-2">
-                            <a class="text-right text-gray-500">Mayo 26, 2022</a>
-                            <a class="text-justify">Se confirmaron 15000 nuevos casos en la última semana.</a>
+                            <a id="date-now" class="text-right text-gray-500">Hoy</a>
+                            <a id="data-text" class="text-justify">Cada día se confirman nuevos casos de COVID-19</a>
                         </div>
                     </div>
                 </div>
@@ -96,10 +97,7 @@
                     </div>
                     <div class="grid grid-cols-1 mx-8 md:mx-36 lg:mx-8 xl:mx-12 my-2 hidden"
                          id="recommendation-additional">
-                        <a>Muchas gracias por seguir estas indicaciones.</a>
-                        <br>
-                        <a>¡Bienvenido, qué tenga una agradable visita!</a>
-                        <br>
+                        <a>Muchas gracias por seguir las indicaciones.</a>
                         <a>Recomendaciones adicionales</a>
                         <div class="flex flex-col">
                             <div class="flex flex-col">
@@ -114,12 +112,12 @@
                                         <div>
                                             <img class="" src="{% static 'media/kn95.jpg' %}" alt="kn95">
                                             <h1 class="text-indigo-500 text-center font-bold">KN95</h1>
-                                            <h2 class="text-center">Texto de prueba</h2>
+                                            <h2 class="text-center">Protege hasta el 92%</h2>
                                         </div>
                                         <div>
                                             <img class="" src="{% static 'media/n95.jpg' %}" alt="kn95">
                                             <h1 class="text-indigo-500 text-center font-bold">N95</h1>
-                                            <h2 class="text-center">Texto de prueba</h2>
+                                            <h2 class="text-center">Protege hasta el 95%</h2>
                                         </div>
                                     </div>
                                 </div>
@@ -194,6 +192,18 @@
             let goBack = document.querySelector("#go-back")
             let recommendationData = document.querySelector("#recommendation-data")
             let recommendationAdditional = document.querySelector("#recommendation-additional")
+            let dataText = document.querySelector("#data-text");
+            let dateNow = document.querySelector("#date-now");
+            let recommendationDayText = document.querySelector("#recommendation-day-text")
+            let dataMINSA;
+
+            const recommendationList = ["Recuerde que el uso de una mascarilla KN95 o doble mascarilla es obligatorio en espacios cerrados. Por favor, asegúrese de cumplir con una de estas indicaciones para poder ingresar.",
+                "Por su seguridad y la de los demás, es importante que la mascarilla cubra por completo su nariz, boca y barbilla. Por favor, asegúrese de acomodarla correctamente.",
+                "Las mascarillas N95 filtran hasta el 95% de las partículas aéreas."]
+
+            let fecha = new Date(Date.now())
+            const options = {timeZone: "UTC", month: "long", day: "2-digit", year: "numeric"}
+            dateNow.innerHTML = fecha.toLocaleDateString('es-ES', options)
 
             function processReconResponse(response) {
                 response = JSON.parse(response)
@@ -260,9 +270,90 @@
                 xhr.send(form_data);
             }
 
+            function convertData(info) {
+                let infoString = '';
+                let numberData = info[1];
+                switch (info[0]) {
+                    case 'CONTAGIONS_INCREASE_FROM_LAST_MONTH':
+                        infoString = `El número de contagios ha incrementado en ${numberData} el último mes.`
+                        break;
+                    case 'CONTAGIONS_INCREASE_FROM_LAST_WEEK':
+                        infoString = `El número de contagios ha incrementado en ${numberData} la última semana.`
+                        break;
+                    case 'CONTAGIONS_INCREASE_FROM_LAST_YEAR':
+                        infoString = `El número de contagios ha incrementado en ${numberData} el último año.`
+                        break;
+                    case 'CONTAGIONS_LAST_MONTH':
+                        infoString = `En el último mes se identificaron ${numberData} nuevos casos de COVID-19.`
+                        break;
+                    case 'CONTAGIONS_LAST_WEEK':
+                        infoString = `En la última semana se identificaron ${numberData} nuevos casos de COVID-19.`
+                        break;
+                    case 'CONTAGIONS_LAST_YEAR':
+                        infoString = `En el último año se identificaron ${numberData} nuevos casos de COVID-19.`
+                        break;
+                    case 'CONTAGIONS_THIS_MONTH':
+                        infoString = `Este mes se identificaron ${numberData} nuevos casos de COVID-19.`
+                        break;
+                    case 'CONTAGIONS_THIS_WEEK':
+                        infoString = `Esta semana se identificaron ${numberData} nuevos casos de COVID-19.`
+                        break;
+                    case 'CONTAGIONS_THIS_YEAR':
+                        infoString = `Este año se identificaron ${numberData} nuevos casos de COVID-19.`
+                        break;
+                    case 'DEATHS_INCREASE_FROM_LAST_MONTH':
+                        infoString = `El número de muertes por COVID-19 ha incrementado en ${numberData} el último mes.`
+                        break;
+                    case 'DEATHS_INCREASE_FROM_LAST_WEEK':
+                        infoString = `El número de muertes por COVID-19 ha incrementado en ${numberData} la última semana.`
+                        break;
+                    case 'DEATHS_INCREASE_FROM_LAST_YEAR':
+                        infoString = `El número de muertes por COVID-19 ha incrementado en ${numberData} el último año.`
+                        break;
+                    case 'DEATHS_LAST_MONTH':
+                        infoString = `En el último mes se confirmaron ${numberData} fallecimientos a causa de la COVID-19.`
+                        break;
+                    case 'DEATHS_LAST_WEEK':
+                        infoString = `En la última semana se confirmaron ${numberData} fallecimientos a causa de la COVID-19.`
+                        break;
+                    case 'DEATHS_LAST_YEAR':
+                        infoString = `En el último año se confirmaron ${numberData} fallecimientos a causa de la COVID-19.`
+                        break;
+                    case 'DEATHS_THIS_MONTH':
+                        infoString = `Este año se confirmaron ${numberData} fallecimientos a causa de la COVID-19.`
+                        break;
+                    case 'DEATHS_THIS_WEEK':
+                        infoString = `Esta semana se confirmaron ${numberData} fallecimientos a causa de la COVID-19.`
+                        break;
+                    case 'DEATHS_THIS_YEAR':
+                        infoString = `Este año se confirmaron ${numberData} fallecimientos a causa de la COVID-19.`
+                        break;
+                    default:
+                        infoString = 'No se pudo obtener información en este momento';
+                }
+                return infoString;
+            }
+
             function processMinsaResponse(response) {
                 response = JSON.parse(response)
-                console.log(response);
+                var result = [];
+
+                for (var i in response.data)
+                    result.push([i, response.data[i]]);
+
+                dataMINSA = result;
+            }
+
+            setInterval(function () {
+                if (dataMINSA) {
+                    let rand = getRndInteger(0, 18)
+                    dataText.innerHTML = convertData(dataMINSA[rand])
+                    recommendationDayText.innerHTML = recommendationList[getRndInteger(0, recommendationList.length - 1)]
+                }
+            }, 30000)
+
+            function getRndInteger(min, max) {
+                return Math.floor(Math.random() * (max - min)) + min;
             }
 
             function fetchMinsaData() {
@@ -272,7 +363,7 @@
 
                 xhr.open("GET", '{% url 'incidents:get_covid_database' %}', true);
                 xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token }}');
-                xhr.onreadystatechange = function() {
+                xhr.onreadystatechange = function () {
                     if (xhr.readyState === 4) {
                         processMinsaResponse(xhr.response);
                     }
