@@ -231,7 +231,6 @@ def email_query(User, email):
 
 EMAIL_QUERY = email_query
 
-EMAIL_VERIFIED_CALLBACK = verified_callback
 EMAIL_FROM_ADDRESS = config('EMAIL_HOST_USER')
 EMAIL_MAIL_SUBJECT = 'Verifica tu cuenta'
 EMAIL_MAIL_HTML = 'accounts/mail_confirm_account.html'
