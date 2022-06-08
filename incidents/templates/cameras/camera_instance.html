@@ -87,7 +87,7 @@
                         <div class="grid grid-cols-1 mx-8 md:mx-36 lg:mx-8 xl:mx-12 my-2">
                             <a>Por favor, coloquese la mascarilla cubriendo
                                 totalmente la
-                                nariz, boca y barbilla</a>
+                                <b>nariz, boca y barbilla</b></a>
                         </div>
                         <div class="grid grid-cols-1 mx-8 md:mx-36 lg:mx-8 xl:mx-12 my-2">
                             <a class="text-justify">Tal como se muestra en la imagen</a>
@@ -198,7 +198,7 @@
             let dataMINSA;
 
             const recommendationList = ["Recuerde que el uso de una mascarilla KN95 o doble mascarilla es obligatorio en espacios cerrados. Por favor, asegúrese de cumplir con una de estas indicaciones para poder ingresar.",
-                "Por su seguridad y la de los demás, es importante que la mascarilla cubra por completo su nariz, boca y barbilla. Por favor, asegúrese de acomodarla correctamente.",
+                "Por su seguridad y la de los demás, es importante que la mascarilla cubra por completo su " + "nariz, boca y barbilla".bold() +". Por favor, asegúrese de acomodarla correctamente.",
                 "Las mascarillas N95 filtran hasta el 95% de las partículas aéreas."]
 
             let fecha = new Date(Date.now())
@@ -345,10 +345,10 @@
             }
 
             setInterval(function () {
+                recommendationDayText.innerHTML = recommendationList[getRndInteger(0, recommendationList.length - 1)]
                 if (dataMINSA) {
                     let rand = getRndInteger(0, 18)
                     dataText.innerHTML = convertData(dataMINSA[rand])
-                    recommendationDayText.innerHTML = recommendationList[getRndInteger(0, recommendationList.length - 1)]
                 }
             }, 30000)
 
