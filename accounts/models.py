@@ -80,7 +80,6 @@ class User(AbstractBaseUser, PermissionsMixin):
         _('Nombre de Usuario'), max_length=25, unique=True)
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(_('Activo'), default=True)
-    is_blocked = models.BooleanField(_('Bloqueado'), default=False)
     date_joined = models.DateTimeField(
         _('Fecha de Registro'), default=datetime.now())
     worker = models.OneToOneField(

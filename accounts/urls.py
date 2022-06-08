@@ -2,7 +2,7 @@ from django.contrib.auth import views
 from django.urls import include, path
 from accounts.forms import LoginForm
 
-from accounts.user_views import (activate_account_after_changing_email_page, block_user_request, delete_user_request,
+from accounts.user_views import (activate_account_after_changing_email_page, delete_user_request,
                                  edit_user_page, get_user_page,
                                  list_users_page, logout_request,
                                  my_profile_page, recover_password_page,
@@ -41,6 +41,4 @@ urlpatterns = [
     path('users/register/', register_user_page, name='register_user'),
     path('users/edit/<int:id>/', edit_user_page, name='edit_user'),
     path('users/delete/<int:id>/', delete_user_request, name='delete_user'),
-    path('users/block/<str:action>/<int:id>/',
-         block_user_request, name='block_user'),
 ]

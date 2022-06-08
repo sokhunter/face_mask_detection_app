@@ -23,10 +23,6 @@
             <label class="block text-base font-normal text-gray-600 mt-3">Está Activo</label>
             <div class="font-semibold">{{user.is_active|yesno:"Sí,No"}}</div>
         </div>
-        <!-- <div class="mx-auto w-full md:w-2/3 whitespace-nowrap">
-            <label class="block text-base font-normal text-gray-600 mt-3">Está Bloqueado</label>
-            <div class="font-semibold">{{user.is_blocked|yesno:"Sí,No"}}</div>
-        </div> -->
         <div class="mx-auto w-full md:w-2/3 whitespace-nowrap">
             <label class="block text-base font-normal text-gray-600 mt-3">Colaborador</label>
             {% if user.worker %}

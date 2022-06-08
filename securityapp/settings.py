@@ -225,10 +225,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # https://support.google.com/accounts/answer/6010255#zippy=%2Csi-est%C3%A1-activada-la-opci%C3%B3n-acceso-de-apps-menos-seguras
 
 
-def verified_callback(user):
-    user.is_active = True
-
-
 def email_query(User, email):
     return User.objects.get(worker__email=email)
 

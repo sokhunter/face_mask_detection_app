@@ -79,9 +79,9 @@ class UserEditForm(ModelForm):
 
     class Meta:
         model = User
-        fields = ['is_blocked']
+        fields = []
 
-    field_order = ['role', 'worker', 'is_blocked']
+    field_order = ['role', 'worker']
 
 
 class UserCreationForm(UserCreationForm):
@@ -92,3 +92,8 @@ class UserCreationForm(UserCreationForm):
     class Meta:
         model = User
         fields = ['username']
+        error_messages = {
+            'username': {
+                'unique': "El nombre de usuario ingresado ya existe",
+            },
+        }

@@ -132,4 +132,4 @@ dmypy.json
 .vscode/launch.json
 
 securityapp/settings.py
-static/media/incident_images/
+media/incident_images/
