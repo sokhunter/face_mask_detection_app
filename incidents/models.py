@@ -38,7 +38,6 @@ class Incident(models.Model):
     incident_category = models.ForeignKey(
         IncidentCategory, on_delete=models.CASCADE)
     camera = models.ForeignKey(Camera, on_delete=models.CASCADE)
-    security_user = models.ForeignKey(User, on_delete=models.CASCADE)
     image = models.ImageField(_('Imagen de la Incidencia'),
                               blank=True, upload_to='incident_images')
     date_time = models.DateTimeField(_('Fecha y Hora de Incidencia'))

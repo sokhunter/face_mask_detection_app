@@ -25,7 +25,7 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from accounts.forms import (LoginForm, MyProfileEditForm, RecoverPasswordForm,
                             UserCreationForm, UserEditForm)
 from accounts.models import UserPasswordHistory
-from accounts.utils import on_email_changed, send_custom_email
+from accounts.utils import send_custom_email
 
 from incidents.forms import CameraSelectionForm
 from incidents.models import Camera
@@ -325,12 +325,4 @@ def camera_selector(request):
 def delete_user_request(request, id):
     user = get_object_or_404(User, id=id)
     user.delete()
-    return redirect('accounts:list_users')
-
-
-def block_user_request(request, action, id):
-    user = get_object_or_404(User, id=id)
-    # user.is_blocked = True if action == 'true' else False
-    user.is_active = True if action == 'true' else False
-    user.save()
     return redirect('accounts:list_users')

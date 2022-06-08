@@ -54,7 +54,7 @@ def get_incidents_by_date_range(request, start_date, end_date, camera=False, cat
     if category and category != 'all' and category != 'False':
         incidents = incidents.filter(incident_category=category)
     if not find_all:
-        incidents = incidents.filter(security_user=security_user)
+        incidents = incidents.filter(camera__security_user=security_user)
 
     ids_to_remove = []
     if start_date and end_date:
