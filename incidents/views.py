@@ -285,9 +285,9 @@ def get_incidents_by_category_chart_data(request):
 
 def get_covid_database(request):
     try:
-        media_dir_root = settings.MEDIA_ROOT
-        context_file_path = Path(media_dir_root + '\\context')
-        cached_data_file_path = Path(media_dir_root + '\\cached_data.csv')
+        media_dir_root = settings.MEDIA_URL
+        context_file_path = Path(media_dir_root + '/context')
+        cached_data_file_path = Path(media_dir_root + '/cached_data.csv')
 
         fs = FileSystemStorage()
 
