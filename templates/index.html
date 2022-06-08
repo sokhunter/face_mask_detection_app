@@ -37,7 +37,7 @@
     <title> {% block title %} SECURY {% endblock %}</title>
 </head>
 
-<body x-data="{navOpen: false}" class="bg-gray-50" :class="{'overflow-hidden': navOpen, 'overflow-scroll': !navOpen}">
+<body x-data="{navOpen: false}" class="bg-gray-50" :class="{'overflow-hidden': navOpen}">
 {% block navbar %}
     <header class="fixed w-full z-40 justify-between items-center">
         <nav class="bg-white inset-x-0 fixed z-[4] top-0 w-full shadow gap-12 px-5 md:flex md:flex-shrink-0 md:justify-between">
