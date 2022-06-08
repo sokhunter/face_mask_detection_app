@@ -17,6 +17,7 @@ from django.http.response import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.files.base import ContentFile
+from django.core.files.storage import FileSystemStorage
 from django.core.exceptions import PermissionDenied
 from django.utils import timezone, formats
 
@@ -107,7 +108,7 @@ def delete_incident_request(request, id):
     if not incident.is_reviewed:
         try:
             async_to_sync(get_channel_layer().group_send)(
-                'noti' + str(incident.security_user.id),
+                'noti' + str(incident.camera.security_user.id),
                 {'type': 'notification_read'}
             )
         except:
@@ -125,13 +126,13 @@ def get_incident_page(request, id):
         'incident': incident,
     }
 
-    if not incident.is_reviewed and incident.security_user.id == request.user.id:
+    if not incident.is_reviewed and incident.camera.security_user.id == request.user.id:
         incident.is_reviewed = True
         incident.save()
 
         try:
             async_to_sync(get_channel_layer().group_send)(
-                'noti' + str(incident.security_user.id),
+                'noti' + str(incident.camera.security_user.id),
                 {'type': 'notification_read'}
             )
         except:
@@ -284,11 +285,13 @@ def get_incidents_by_category_chart_data(request):
 
 def get_covid_database(request):
     try:
-        static_dir_path = settings.STATICFILES_DIRS
-        context_file_path = Path(static_dir_path[0] + '\\context')
-        cached_data_file_path = Path(static_dir_path[0] + '\\cached_data.csv')
+        media_dir_root = settings.MEDIA_ROOT
+        context_file_path = Path(media_dir_root + '\\context')
+        cached_data_file_path = Path(media_dir_root + '\\cached_data.csv')
 
-        with open(context_file_path, 'r') as f:
+        fs = FileSystemStorage()
+
+        with fs.open(context_file_path, 'r') as f:
             content = f.readlines()
 
         date_now = timezone.make_naive(timezone.localtime(timezone.now()).replace(hour=0, minute=0, second=0, microsecond=0))
@@ -356,11 +359,11 @@ def get_covid_database(request):
             data.append(str(round(deaths_month * 100 if deaths_last_month == 0 else ((((deaths_month / deaths_last_month)) - 1) * 100), 2)))
             data.append(str(round(deaths_year * 100 if deaths_last_year == 0 else ((((deaths_year / deaths_last_year)) - 1) * 100), 2)))
 
-            with open(context_file_path, 'w') as f:
+            with fs.open(context_file_path, 'w') as f:
                 f.truncate()
                 f.write(date_now.strftime('%Y%m%d'))
 
-            with open(cached_data_file_path, 'w') as f:
+            with fs.open(cached_data_file_path, 'w') as f:
                 f.truncate()
                 f.writelines([','.join(storage_csv_headers), '\n', ','.join(data)])
     except:
@@ -370,7 +373,7 @@ def get_covid_database(request):
         'data': {}
     }
 
-    with open(cached_data_file_path, 'r') as f:
+    with fs.open(cached_data_file_path, 'r') as f:
         csvreader = csv.reader(f)
         headers = next(csvreader)
         line = []
@@ -520,8 +523,7 @@ def camera_request(request, id):
             data = ContentFile(base64.b64decode(imgstr))
             file_name = uuid.uuid4().hex + '.' + ext
 
-            incident = Incident(incident_category=incident_category, worker=worker, camera=camera, security_user=camera.security_user,
-                        date_time=timezone.now())
+            incident = Incident(incident_category=incident_category, worker=worker, camera=camera, date_time=timezone.now())
             incident.image.save(file_name, data, save=True)
             incident.save()
 
@@ -551,9 +553,9 @@ def camera_request(request, id):
 
 def get_last_unchecked_incidents(request):
     if request.method == 'GET' and 'count' in request.GET:
-        incidents_unchecked = Incident.objects.filter(Q(security_user=request.user) & Q(is_reviewed=False)).order_by('-date_time')[0:int(request.GET['count'])]
+        incidents_unchecked = Incident.objects.filter(Q(camera__security_user=request.user) & Q(is_reviewed=False)).order_by('-date_time')[0:int(request.GET['count'])]
     else:
-        incidents_unchecked = Incident.objects.filter(Q(security_user=request.user) & Q(is_reviewed=False)).order_by('-date_time')
+        incidents_unchecked = Incident.objects.filter(Q(camera__security_user=request.user) & Q(is_reviewed=False)).order_by('-date_time')
 
     incident_contexts = []
 
@@ -618,7 +620,7 @@ def generate_fake_data(request):
                     date_time = actual_date.replace(hour=random.randint(0, 23), minute=random.randint(0, 59), second=random.randint(0, 59))
                     image_name = str(image) + str(category) + '.png'
 
-                    Incident(worker=worker, incident_category=incident_categories.get(id=category), camera=camera, security_user=camera.security_user, date_time=date_time, image='incident_images' + '/' + image_name).save()
+                    Incident(worker=worker, incident_category=incident_categories.get(id=category), camera=camera, date_time=date_time, image='incident_images' + '/' + image_name).save()
 
                 actual_date = actual_date.replace(hour=0, minute=0, second=0) + timedelta(days=1)
 

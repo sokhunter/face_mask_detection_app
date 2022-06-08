@@ -206,12 +206,10 @@ USE_TZ = True
 # py manage.py tailwind start
 
 STATIC_URL = '/static/'
-
 MEDIA_URL = '/media/'
 
-STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
-
-MEDIA_ROOT = os.path.join(BASE_DIR, 'static/media')
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
@@ -223,17 +221,11 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # https://support.google.com/accounts/answer/6010255#zippy=%2Csi-est%C3%A1-activada-la-opci%C3%B3n-acceso-de-apps-menos-seguras
 
 
-def verified_callback(user):
-    user.is_active = True
-
-
 def email_query(User, email):
     return User.objects.get(worker__email=email)
 
 
 EMAIL_QUERY = email_query
-
-EMAIL_VERIFIED_CALLBACK = verified_callback
 
 #EMAIL_FROM_ADDRESS = 'upcpry2021274dc@gmail.com'
 #EMAIL_FROM_ADDRESS = 'jrasta305@gmail.com'
