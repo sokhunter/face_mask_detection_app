@@ -1,26 +1,53 @@
 {% extends "index.html" %}
-{% load static %}
 {% block content %}
 <!-- This example requires Tailwind CSS v2.0+ -->
-<div class = "bg-white shadow-lg rounded-3xl mx-auto p-5 mt-2 w-4/5 ">
-<h1 class="text-2xl text-gray-900 font-semibold -mt-3 lg:mt-3 mx-2 mb-2">Lista de Incidencias</h1>
+<div class = "bg-white shadow rounded-3xl mx-auto p-5 mt-2 w-4/5 ">
 <div class="flex flex-col md:flex-row justify-between">
+    <h1 class="text-2xl text-gray-900 font-semibold -mt-3 lg:mt-3 mx-2 mb-2">Lista de Incidencias</h1>
+    <div class="flex justify-center gap-2 mx-3">
+        <a href="{% url 'incidents:list_incidents_page_csv'%}?start-date={{ start_date }}&end-date={{ end_date }}&camera-selected={{ camera_selected }}&category-selected={{ category_selected }}" class="ring-offset-2 rounded-full focus:ring focus:ring-indigo-500">
+            <div class="bg-indigo-600 h-10 w-10 rounded-full flex justify-center hover:bg-indigo-500">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white self-center" fill="none"
+                    viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7"
+                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                </svg>
+            </div>
+        </a>
+        <p class="self-center text-sm text-gray-600">Descargar en CSV</p>
+    </div>
+</div>
+<div class="flex flex-col md:flex-row justify-between mt-2">
     <p class="text-sm text-gray-400 m-2">Mostrando <span class="text-sm text-gray-700">{{ incidents.start_index }}-{{ incidents.end_index }}</span> de <span
             class="text-sm text-gray-700">{{ incidents.paginator.count }}</span></p>
-    <form id="searchForm" method="post" class="flex flex-col">
+    <form method="post" class="flex flex-col">
         {% csrf_token %}
         <div class="flex flex-col md:flex-row items-center px-3 gap-x-2">
             <input type="hidden" name="end-date" id="end-date">
             <input type="hidden" name="start-date" id="start-date">
             <input class="lg:w-4/5 xl:w-1/2 bg-white border border-gray-300 text-gray-900 sm:text-sm rounded-lg shadow duration-150 focus:border-transparent focus:outline-none focus:ring focus:ring-indigo-500 block w-full px-3 py-1.5"
-                    data-max-date="{{ max_date|date:"d/m/Y" }}" data-start-date="{{ start_date|date:"d/m/Y" }}" data-end-date="{{ end_date|date:"d/m/Y" }}" id="date-range-picker" style="width: 185px">
-            <div class="flex gap-x-4">
-                <p style="text-align: right">Desde las</p>
-                <input id="time-from" value="{{ start_date|date:"H:i" }}" placeholder="Hora desde" style="width: 100px" class="timePicker lg:w-4/5 xl:w-1/2 bg-white border border-gray-300 text-gray-900 sm:text-sm rounded-lg shadow duration-150 focus:border-transparent focus:outline-none focus:ring focus:ring-indigo-500 block w-full px-3 py-1.5">
-                <p style="text-align: right">hasta las</p>
-                <input id="time-to" value="{{ end_date|date:"H:i" }}" placeholder="Hora hasta" style="width: 100px" class="timePicker lg:w-4/5 xl:w-1/2 bg-white border border-gray-300 text-gray-900 sm:text-sm rounded-lg shadow duration-150 focus:border-transparent focus:outline-none focus:ring focus:ring-indigo-500 block w-full px-3 py-1.5">    
-            </div>
-            <button type="submit"
+                    data-max-date="{{ max_date }}" data-start-date="{{ start_date }}" data-end-date="{{ end_date }}" id="date-range-picker" style="min-width: 255px">
+            <select id="camera" style="min-width: 200px"
+                        class="border border-gray-300 w-full focus:border-transparent focus:outline-none focus:ring-2 focus:ring-indigo-500 py-1.5 px-3 shadow rounded-md">
+                    <option value="all" {% if camera_selected|slugify == "all"|slugify %}selected{% endif %}>Seleccionar
+                        cámara / Todas
+                    </option>
+                    {% for camera in cameras %}
+                        <option value="{{ camera.id }}"
+                                {% if camera_selected|slugify == camera.id|slugify %}selected{% endif %}>{{ camera.address }}</option>
+                    {% endfor %}
+                </select>
+                <select id="category" style="min-width: 200px"
+                        class="border border-gray-300 w-full focus:border-transparent focus:outline-none focus:ring-2 focus:ring-indigo-500 py-1.5 px-3 shadow rounded-md">
+                    <option value="all" {% if category_selected == "all" %}selected{% endif %}>Seleccionar categoría /
+                        Todas
+                    </option>
+                    {% for category in incident_categories %}
+                        <option value="{{ category.id }}"
+                                {% if category_selected|slugify == category.id|slugify %}selected{% endif %}>{{ category.name }}</option>s
+                    {% endfor %}
+            </select>
+            <button type="button"  onclick="reload2()"
                 class="w-20 h-10 flex justify-center items-center bg-indigo-600 rounded-lg shadow-sm hover:bg-indigo-500 focus:bg-indigo-700 duration-150 focus:ring focus:ring-indigo-500">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" viewBox="0 0 20 20"
                     fill="currentColor">
@@ -32,6 +59,7 @@
         </div>
     </form>
 </div>
+
 <div class="flex flex-col mt-3">
     <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
         <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
@@ -198,7 +226,7 @@
         <ul class="inline-flex gap-2">
             {% if incidents.has_previous %}
             <li>
-                <a href="?page={{ incidents.previous_page_number }}&start-date={{ start_date|date:"d/m/Y H:i" }}&end-date={{ end_date|date:"d/m/Y H:i" }}">
+                <a href="?page={{ incidents.previous_page_number }}&start-date={{ start_date }}&end-date={{ end_date }}&camera-selected={{ camera_selected }}&category-selected={{ category_selected }}">
                     <button
                     class="bg-white flex items-center justify-center w-10 h-10 text-indigo-600 duration-150 rounded-full focus:ring focus:ring-indigo-500 hover:bg-indigo-50 shadow">
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
@@ -221,39 +249,50 @@
                 </button>
             </li>
             {% endif %}
+
             {% for i in incidents.paginator.page_range %}
                 {% if incidents.paginator.num_pages > 3 %}
-                        {% if incidents.has_previous and i == incidents.previous_page_number %}
-                        <li><a href="?page={{ i }}&search={{ filter }}"><button
+                        {% if incidents.has_previous and i == incidents.previous_page_number and incidents.previous_page_number != 1 %}
+                        <li><a href="?page={{ 1 }}&start-date={{ start_date }}&end-date={{ end_date }}&camera-selected={{ camera_selected }}&category-selected={{ category_selected }}"><button
+                            class="w-10 h-10 bg-white text-indigo-600 duration-150 rounded-full focus:ring focus:ring-indigo-500 hover:bg-indigo-50 shadow">{{ 1 }}</button></a>
+                        </li>
+                        {% endif %}
+                        {% if incidents.has_previous and i == incidents.previous_page_number%}
+                        <li><a href="?page={{ i }}&start-date={{ start_date }}&end-date={{ end_date }}&camera-selected={{ camera_selected }}&category-selected={{ category_selected }}"><button
                             class="w-10 h-10 bg-white text-indigo-600 duration-150 rounded-full focus:ring focus:ring-indigo-500 hover:bg-indigo-50 shadow">{{ i }}</button></a>
                         </li>
                         {% endif %}
-                        {% if incidents.number == i %}
+                        {% if incidents.number == i  %}
                         <li><button
                             class="w-10 h-10 bg-indigo-600 text-white duration-150 border border-r-0 border-indigo-600 rounded-full focus:shadow-outline shadow">{{ i }}</button>
                         </li>
                         {% endif %}
                         {% if incidents.has_next and i == incidents.next_page_number %}
-                        <li><a href="?page={{ i }}&search={{ filter }}"><button
+                        <li><a href="?page={{ i }}&start-date={{ start_date }}&end-date={{ end_date }}&camera-selected={{ camera_selected }}&category-selected={{ category_selected }}"><button
                             class="w-10 h-10 bg-white text-indigo-600 duration-150 rounded-full focus:ring focus:ring-indigo-500 hover:bg-indigo-50 shadow">{{ i }}</button></a>
                         </li>
                         {% endif %}
-
+                        {% if incidents.has_next and i == incidents.next_page_number and incidents.next_page_number != incidents.paginator.num_pages %}
+                        <li><a href="?page={{ incidents.paginator.num_pages }}&start-date={{ start_date }}&end-date={{ end_date }}&camera-selected={{ camera_selected }}&category-selected={{ category_selected }}"><button
+                            class="w-10 h-10 bg-white text-indigo-600 duration-150 rounded-full focus:ring focus:ring-indigo-500 hover:bg-indigo-50 shadow">{{ incidents.paginator.num_pages }}</button></a>
+                        </li>
+                        {% endif %}
                 {% else %}
                     {% if incidents.number == i %}
                     <li><button
                         class="w-10 h-10 bg-indigo-600 text-white duration-150 border border-r-0 border-indigo-600 rounded-full focus:shadow-outline shadow">{{ i }}</button>
                     </li>
                     {% else %}
-                    <li><a href="?page={{ i }}&search={{ filter }}"><button
+                    <li><a href="?page={{ i }}&start-date={{ start_date }}&end-date={{ end_date }}&camera-selected={{ camera_selected }}&category-selected={{ category_selected }}"><button
                         class="w-10 h-10 bg-white text-indigo-600 duration-150 rounded-full focus:ring focus:ring-indigo-500 hover:bg-indigo-50 shadow">{{ i }}</button></a>
                     </li>
                     {% endif %}
                 {% endif %}
             {% endfor %}
+
             {% if incidents.has_next %}
             <li>
-                <a href="?page={{ incidents.next_page_number }}&start-date={{ start_date|date:"d/m/Y H:i" }}&end-date={{ end_date|date:"d/m/Y H:i" }}">
+                <a href="?page={{ incidents.next_page_number }}&start-date={{ start_date }}&end-date={{ end_date }}&camera-selected={{ camera_selected }}&category-selected={{ category_selected }}">
                     <button
                         class="bg-white flex items-center justify-center w-10 h-10 text-indigo-600 duration-150 rounded-full focus:ring focus:ring-indigo-500 hover:bg-indigo-50 shadow">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
@@ -278,49 +317,16 @@
             {% endif %}
         {% endif %}
     </nav>
-    <div class="flex justify-end gap-2 mx-3">
-        <a href="{% url 'incidents:list_incidents_page_csv'%}?start-date={{ start_date|date:"d/m/Y H:i" }}&end-date={{ end_date|date:"d/m/Y H:i" }}" class="ring-offset-2 rounded-full shadow focus:ring focus:ring-indigo-500">
-            <div class="bg-indigo-600 h-10 w-10 rounded-full flex justify-center hover:bg-indigo-500">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white self-center" fill="none"
-                    viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7"
-                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                </svg>
-            </div>
-        </a>
-        <p class="self-center text-sm text-gray-600">Descargar en CSV</p>
-    </div>
-</div>
-<script>
-    document.getElementById("searchForm").onsubmit = function() {
-        let time_from = document.getElementById('time-from').value
-        let time_to = document.getElementById('time-to').value
+    <script>
+        function reload2() {
+            let start_date = document.getElementById('start-date').value
+            let end_date = document.getElementById('end-date').value
+            let camera_selected = document.getElementById('camera').value
+            let category_selected = document.getElementById('category').value
 
-        if (!time_from || !time_to || time_from.includes('M') || time_from.includes('H')
-            || time_to.includes('M') || time_to.includes('H')) {
-            alert("Por favor, llene los campos de hora");
-            return false;
+            window.location.href = "{% url 'incidents:list_incidents' %}?start-date=" + start_date + "&end-date=" + end_date + "&camera-selected=" + camera_selected + "&category-selected=" + category_selected;
         }
-
-        document.getElementById('start-date').value = document.getElementById('start-date').value + ' ' + time_from
-        document.getElementById('end-date').value = document.getElementById('end-date').value + ' ' + time_to
-    }
-
-    /*function reload() {
-
-        let start_date = document.getElementById('start-date').value
-        let end_date = document.getElementById('end-date').value
-        let camera_selected = document.getElementById('camera').value
-        let category_selected = document.getElementById('category').value
-
-        window.location.href = "{% url 'home' %}?start-date=" + start_date + ' ' + time_from + "&end-date=" + end_date + ' ' + time_to + "&camera-selected=" + camera_selected + "&category-selected=" + category_selected;
-    }*/
-</script>
+    </script>
+</div>
+</div>
 {% endblock content %}
-
-{% block optional_scripts %}
-<script src="{% static 'incidents/js/moment.min.js' %}"></script>
-<script src="{% static 'incidents/js/daterangepicker.js' %}"></script>
-<script src="{% static 'incidents/js/dateselectormain.js' %}"></script>
-<script src="{% static 'incidents/js/inputmask.min.js' %}"></script>
-{% endblock %}

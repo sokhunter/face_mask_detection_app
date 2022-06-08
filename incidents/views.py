@@ -55,9 +55,13 @@ def list_incidents_page(request):
     if request.method == "GET":
         start_date = request.GET.get('start-date', False)
         end_date = request.GET.get('end-date', False)
+        camera = request.GET.get('camera-selected', False)
+        category = request.GET.get('category-selected', False)
     elif request.method == "POST":
         start_date = request.POST.get('start-date', False)
         end_date = request.POST.get('end-date', False)
+        camera = request.POST.get('camera-selected', False)
+        category = request.POST.get('category-selected', False)
 
     date_now = timezone.localtime(timezone.now())
 
@@ -76,8 +80,26 @@ def list_incidents_page(request):
     if date_start_to_validate > date_end_to_validate:
         start_date = default_start_date
         end_date = default_end_date
+    
+    #Incidentes
 
-    incidents, fstart_date, fend_date = get_incidents_by_date_range(request, start_date, end_date)
+    incidents, fstart_date, fend_date = get_incidents_by_date_range(request, start_date, end_date, camera, category)
+    
+
+    incident_categories = IncidentCategory.objects.all()
+
+
+    # Obtener Camaras
+    if request.user.role.name == 'admin':
+        find_all = True
+    elif request.user.role.name == 'security':
+        find_all = False
+        security_user = request.user
+
+    cameras = Camera.objects.all()
+
+    if not find_all:
+        cameras = cameras.filter(security_user=security_user)
 
     # Ordenar incidentes por fecha
     incidents = incidents.order_by('-date_time')
@@ -97,6 +119,11 @@ def list_incidents_page(request):
         'start_date': fstart_date,
         'end_date': fend_date,
         'max_date': datetime.combine(date_now, datetime.max.time())
+        'incident_categories': incident_categories,
+        'category_selected': category,
+        'invalid_date_range': invalid_date_range,
+        'cameras': cameras,
+        'camera_selected': camera,
     }
 
     return render(request, 'incidents/list.html', context)
