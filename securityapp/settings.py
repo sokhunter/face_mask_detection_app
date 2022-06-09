@@ -205,7 +205,7 @@ USE_TZ = True
 AWS_ACCESS_KEY_ID=config('AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY=config('AWS_SECRET_ACCESS_KEY')
 AWS_STORAGE_BUCKET_NAME='securyapp1'
-AWS_URL='https://securyapp1.s3.amazonaws.com/'
+AWS_URL='https://securyapp1.s3.amazonaws.com'
 AWS_DEFAULT_ACL = None
 AWS_S3_REGION_NAME = 'us-east-1'
 
