@@ -325,7 +325,7 @@
     var notificationsWsUrl = `ws://${window.location.host}/ws/socket-server/`;
     const notificationsSocket = new WebSocket(notificationsWsUrl);
     function playNotificationSound() {
-        const audio = new Audio('{% get_media_prefix %}/notification.mp3');
+        const audio = new Audio('{% get_media_prefix %}notification.mp3');
         audio.play();
     };
     function reloadNotifications() {
