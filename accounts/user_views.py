@@ -7,7 +7,8 @@ from django.contrib import messages
 from django.contrib.auth import (authenticate, get_user_model, login, logout,
                                  signals, update_session_auth_hash)
 from django.contrib.auth.forms import AuthenticationForm, SetPasswordForm
-from django.contrib.auth.models import Group
+from django.contrib.auth.models import Group, User, Permission
+from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.auth.views import PasswordResetView
 from django.core.mail import send_mail
@@ -20,6 +21,7 @@ from django.utils.http import (is_safe_url, urlsafe_base64_decode,
                                urlsafe_base64_encode)
 from django.views.generic import CreateView, FormView
 from django_email_verification import send_email as send_verification_email
+from django.contrib.auth.decorators import login_required, permission_required
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from accounts.forms import (LoginForm, MyProfileEditForm, RecoverPasswordForm,
@@ -37,7 +39,14 @@ if connection.introspection.table_names():
     admin_group, __ = Group.objects.get_or_create(name='admin')
     security_group, __ = Group.objects.get_or_create(name='security')
 
+    content_type = ContentType.objects.get_for_model(User)
+    user_permissions = Permission.objects.filter(content_type=content_type)
 
+    for perm in user_permissions:
+        admin_group.permissions.add(perm)
+
+
+@login_required
 def logout_request(request):
     logout(request)
     return redirect("accounts:login")
@@ -143,23 +152,8 @@ def reset_password_page(request, uidb64, token):
     return render(request, 'accounts/reset_password.html', context)
 
 
-def activate_account_after_changing_email_page(request, uidb64, token):
-    uid = urlsafe_base64_decode(uidb64).decode()
-    try:
-        user = User._default_manager.get(pk=uid)
-        user.is_active = True
-        user.save()
-    except:
-        return render(request, 'accounts/account_confirmation.html', {'success': False})
-    if default_token_generator.check_token(user, token) == False:
-        return HttpResponse('Token expirado')
-    context = {
-        'user': user,
-        'success': True
-    }
-    return render(request, 'accounts/account_confirmation.html', context)
-
-
+@login_required
+@permission_required('accounts.add_user', raise_exception=True)
 def register_user_page(request):
     if request.method == "POST":
         user_form = UserCreationForm(request.POST)
@@ -189,6 +183,8 @@ class RegisterAdminView(CreateView):
     success_url = reverse_lazy("accounts:login")
 
 
+@login_required
+@permission_required('accounts.view_user', raise_exception=True)
 def list_users_page(request):
     search = request.GET.get('search', False)
 
@@ -215,6 +211,8 @@ def list_users_page(request):
     return render(request, 'accounts/users/list.html', context)
 
 
+@login_required
+@permission_required('accounts.view_user', raise_exception=True)
 def get_user_page(request, id):
     context = {
         'user': get_object_or_404(User, id=id),
@@ -222,6 +220,8 @@ def get_user_page(request, id):
     return render(request, 'accounts/users/view.html', context)
 
 
+@login_required
+@permission_required('accounts.change_user', raise_exception=True)
 def edit_user_page(request, id):
     user = get_object_or_404(User, id=id)
     password_form = SetPasswordForm(user=user)
@@ -277,6 +277,7 @@ def edit_user_page(request, id):
     return render(request, 'accounts/users/edit.html', context)
 
 
+@login_required
 def my_profile_page(request):
     user = request.user
     profile_form = MyProfileEditForm(instance=user.worker)
@@ -306,6 +307,8 @@ def my_profile_page(request):
     return render(request, 'accounts/users/my_profile.html', context)
 
 
+@login_required
+@permission_required('incidents.use_own_camera', raise_exception=True)
 def camera_selector(request):
     if request.method == 'POST' and 'cameras' in request.POST:
         camera_id = request.POST['cameras']
@@ -322,6 +325,8 @@ def camera_selector(request):
     return render(request, 'accounts/users/camera_selector.html', context)
 
 
+@login_required
+@permission_required('accounts.delete_user', raise_exception=True)
 def delete_user_request(request, id):
     user = get_object_or_404(User, id=id)
     user.delete()

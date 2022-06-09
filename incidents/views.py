@@ -11,7 +11,7 @@ from pathlib import Path
 from datetime import datetime, timedelta
 
 from django.core.exceptions import ObjectDoesNotExist
-from accounts.models import UserPasswordHistory, Worker, User
+from accounts.models import Worker
 from django.http import HttpResponse
 from django.http.response import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
@@ -20,6 +20,10 @@ from django.core.files.base import ContentFile
 from django.core.files.storage import FileSystemStorage
 from django.core.exceptions import PermissionDenied
 from django.utils import timezone, formats
+from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.models import Group, Permission
+from django.contrib.contenttypes.models import ContentType
+from django.db import connection
 
 from incidents.models import Incident, IncidentCategory, Camera
 from django.db.models import Q
@@ -28,6 +32,27 @@ from incidents.forms import CameraCreationForm, CameraEditForm
 
 from incidents.functions import get_incidents_by_request, get_incidents_by_date_range, get_period_ranges
 
+if connection.introspection.table_names():
+    admin_group, __ = Group.objects.get_or_create(name='admin')
+    security_group, __ = Group.objects.get_or_create(name='security')
+
+    content_type = ContentType.objects.get_for_model(Incident)
+    incident_permissions = Permission.objects.filter(content_type=content_type)
+    content_type = ContentType.objects.get_for_model(Camera)
+    camera_permissions = Permission.objects.filter(content_type=content_type)
+
+    for perm in incident_permissions:
+        admin_group.permissions.add(perm)
+        security_group.permissions.add(perm)
+
+    for perm in camera_permissions:
+        if perm.codename == 'use_own_camera':
+            security_group.permissions.add(perm)
+        admin_group.permissions.add(perm)
+
+
+@login_required
+@permission_required('incidents.view_incident', raise_exception=True)
 def list_incidents_page(request):
     if request.method == "GET":
         start_date = request.GET.get('start-date', False)
@@ -85,6 +110,8 @@ def list_incidents_page(request):
     return render(request, 'incidents/list.html', context)
 
 
+@login_required
+@permission_required('incidents.view_incident', raise_exception=True)
 def list_incidents_page_csv(request):
     response = HttpResponse(
         content_type = 'text/csv',
@@ -102,6 +129,8 @@ def list_incidents_page_csv(request):
     return response
 
 
+@login_required
+@permission_required('incidents.delete_incident', raise_exception=True)
 def delete_incident_request(request, id):
     incident = get_object_or_404(Incident, id=id)
 
@@ -119,6 +148,8 @@ def delete_incident_request(request, id):
     return redirect('incidents:list_incidents')
 
 
+@login_required
+@permission_required('incidents.view_incident', raise_exception=True)
 def get_incident_page(request, id):
     incident = get_object_or_404(Incident, id=id)
 
@@ -141,6 +172,8 @@ def get_incident_page(request, id):
     return render(request, 'incidents/view.html', context)
 
 
+@login_required
+@permission_required('incidents.view_incident', raise_exception=True)
 def get_incidents_chart_data(request):
     incidents, fstart_date, fend_date = get_incidents_by_request(request, "GET")
     incidents = incidents.exclude(incident_category__id=1)
@@ -168,6 +201,8 @@ def get_incidents_chart_data(request):
     return JsonResponse(context)
 
 
+@login_required
+@permission_required('incidents.view_incident', raise_exception=True)
 def get_incidents_by_worker_chart_data(request):
     incidents, _, _ = get_incidents_by_request(request, "GET")
     incidents = incidents.exclude(incident_category__id=1)
@@ -192,6 +227,8 @@ def get_incidents_by_worker_chart_data(request):
     return JsonResponse(context)
 
 
+@login_required
+@permission_required('incidents.view_incident', raise_exception=True)
 def get_incidents_by_category_and_day_chart_data(request):
     if request.method == "GET":
         category = request.GET.get('category-selected', False)
@@ -248,6 +285,8 @@ def get_incidents_by_category_and_day_chart_data(request):
     return JsonResponse(context)
 
 
+@login_required
+@permission_required('incidents.view_incident', raise_exception=True)
 def get_incidents_by_category_chart_data(request):
     if request.method == "GET":
         category = request.GET.get('category-selected', False)
@@ -283,6 +322,8 @@ def get_incidents_by_category_chart_data(request):
     return JsonResponse(context)
 
 
+@login_required
+@permission_required('incidents.use_own_camera', raise_exception=True)
 def get_covid_database(request):
     try:
         media_dir_root = settings.MEDIA_ROOT
@@ -389,6 +430,8 @@ def get_covid_database(request):
     return JsonResponse(context)
 
 
+@login_required
+@permission_required('incidents.view_incident', raise_exception=True)
 def get_incidents_summary_charts(request):
     incident_categories = IncidentCategory.objects.all().exclude(id=1)
 
@@ -459,6 +502,8 @@ def get_incidents_summary_charts(request):
     return JsonResponse(context)
 
 
+@login_required
+@permission_required('incidents.use_own_camera', raise_exception=True)
 def camera_request(request, id):
     context = {
         'camera_id': id,
@@ -551,6 +596,8 @@ def camera_request(request, id):
     return JsonResponse(context)
 
 
+@login_required
+@permission_required('incidents.view_incidents', raise_exception=True)
 def get_last_unchecked_incidents(request):
     if request.method == 'GET' and 'count' in request.GET:
         incidents_unchecked = Incident.objects.filter(Q(camera__security_user=request.user) & Q(is_reviewed=False)).order_by('-date_time')[0:int(request.GET['count'])]
@@ -577,6 +624,8 @@ def get_last_unchecked_incidents(request):
     return JsonResponse(context)
 
 
+@login_required
+@permission_required('incidents.use_own_camera', raise_exception=True)
 def camera_instance(request, id):
     camera = get_object_or_404(Camera, id=id, security_user=request.user, is_blocked=False)
 
@@ -587,6 +636,7 @@ def camera_instance(request, id):
     return render(request, 'cameras/camera_instance.html', context)
 
 
+@login_required
 def generate_fake_data(request):
     if request.user.role.name != 'admin':
         raise PermissionDenied()
@@ -632,6 +682,8 @@ def generate_fake_data(request):
     return render(request, 'incidents/secret.html', context)
 
 
+@login_required
+@permission_required('incidents.view_camera', raise_exception=True)
 def list_cameras_page(request):
     search = request.GET.get('search', False)
 
@@ -658,6 +710,8 @@ def list_cameras_page(request):
     return render(request, 'cameras/list.html', context)
 
 
+@login_required
+@permission_required('incidents.view_camera', raise_exception=True)
 def get_camera_page(request, id):
     context = {
         'camera': get_object_or_404(Camera, id=id)
@@ -665,6 +719,8 @@ def get_camera_page(request, id):
     return render(request, 'cameras/view.html', context)
 
 
+@login_required
+@permission_required('incidents.add_camera', raise_exception=True)
 def register_camera_page(request):
     if request.method == "POST":
         camera_form = CameraCreationForm(request.POST)
@@ -681,6 +737,8 @@ def register_camera_page(request):
     return render(request, 'cameras/register.html', context)
 
 
+@login_required
+@permission_required('incidents.change_camera', raise_exception=True)
 def edit_camera_page(request, id):
     camera = get_object_or_404(Camera, id=id)
     if request.method == "POST":
@@ -697,12 +755,16 @@ def edit_camera_page(request, id):
     return render(request, 'cameras/edit.html', context)
 
 
+@login_required
+@permission_required('incidents.delete_camera', raise_exception=True)
 def delete_camera_request(request, id):
     #worker = get_object_or_404(Worker, id=id)
     #worker.delete()
     return redirect('incidents:list_cameras')
 
 
+@login_required
+@permission_required('incidents.change_camera', raise_exception=True)
 def block_camera_request(request, action, id):
     camera = get_object_or_404(Camera, id=id)
     camera.is_blocked = True if action == 'true' else False
