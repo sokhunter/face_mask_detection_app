@@ -2,7 +2,7 @@ from django.contrib.auth import views
 from django.urls import include, path
 from accounts.forms import LoginForm
 
-from accounts.user_views import (activate_account_after_changing_email_page, delete_user_request,
+from accounts.user_views import (delete_user_request,
                                  edit_user_page, get_user_page,
                                  list_users_page, logout_request,
                                  my_profile_page, recover_password_page,
@@ -25,9 +25,6 @@ urlpatterns = [
 
     path('recover/', recover_password_page, name='recover'),
     path('reset/<uidb64>/<token>/', reset_password_page, name='reset_password'),
-    path('activate_account/<uidb64>/<token>/',
-         activate_account_after_changing_email_page, name='activate_account'),
-
     path('my_profile/', my_profile_page, name='my_profile'),
 
     path('workers/', list_workers_page, name='list_workers'),
