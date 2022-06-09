@@ -7,7 +7,7 @@
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <div class="flex flex-col my-5 gap-3">
-            <img src="{% static '/media/profile_photos/default.png' %}" id="upload_photo_display" alt="no profile photo" height="180px"
+            <img src="{% get_media_prefix %}profile_photos/default.png" id="upload_photo_display" alt="no profile photo" height="180px"
                 width="180px" class="mx-auto rounded-md border border-gray-400 shadow">
             <button type="button" id="upload_photo"
                 class="mx-auto w-40 rounded-md border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
