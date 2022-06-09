@@ -97,9 +97,9 @@
                     </div>
                     <div class="grid grid-cols-1 mx-8 md:mx-36 lg:mx-8 xl:mx-12 my-2 hidden"
                          id="recommendation-additional">
-                        <a class="mt-2">Muchas gracias por seguir las indicaciones.</a>
-                        <a class="mt-2">Recomendaciones adicionales</a>
-                        <div class="flex flex-col mt-2">
+                        <a class="mt-4">Muchas gracias por seguir las indicaciones.</a>
+                        <a class="mt-4">Recomendaciones adicionales</a>
+                        <div class="flex flex-col mt-4">
                             <div class="flex flex-col">
                                 <div class="bg-indigo-500">
                                     <h1 class="text-white text-center font-bold">RECOMENDADAS PARA SANITARIOS,
@@ -110,14 +110,14 @@
                                     <h2 class="text-center">Su eficacia es del 92% y el 98% respectivamente.</h2>
                                     <div class="flex flex-row divide-x divide-gray-800">
                                         <div>
-                                            <img class="" src="{% static 'media/kn95.jpg' %}" alt="kn95">
+                                            <img class="" src="{% get_media_prefix %}kn95.jpg" alt="kn95">
                                             <h1 class="text-indigo-500 text-center font-bold">KN95</h1>
                                             <h2 class="text-center">Protege hasta el 92%</h2>
                                         </div>
                                         <div>
-                                            <img class="" src="{% static 'media/n95.jpg' %}" alt="kn95">
+                                            <img class="" src="{% get_media_prefix %}n95.jpg" alt="n95">
                                             <h1 class="text-indigo-500 text-center font-bold">N95</h1>
-                                            <h2 class="text-center">Protege hasta el 95%</h2>
+                                            <h2 class="text-center">Protege hasta el 98%</h2>
                                         </div>
                                     </div>
                                 </div>
@@ -131,16 +131,30 @@
                                 <div class="">
                                     <h2 class="text-center">Protegen a los demás. Muy útiles para evitar contagios desde
                                         personas asintomáticas</h2>
-                                    <div class="flex flex-row divide-x divide-gray-800">
+                                    <div class="flex flex-row place-content-center">
                                         <div>
-                                            <img class="" src="{% static 'media/quirurgica.jpg' %}" alt="kn95">
+                                            <img class="mx-auto" src="{% get_media_prefix %}quirurgica.jpg" alt="quirurgica">
                                             <h1 class="text-indigo-500 text-center font-bold">QUIRÚRGICAS</h1>
                                             <h2 class="text-center">No son reutilizables</h2>
                                         </div>
+                                    </div>
+                                    <br>
+                                </div>
+                            </div>
+                            <div class="flex flex-col">
+                                <div class="bg-indigo-500">
+                                    <h1 class="text-white text-center font-bold">SOLO SI NO TIENE ALGUNOS DE LOS
+                                        ANTERIORES</h1>
+                                </div>
+                                <div class="">
+                                    <h2 class="text-center">Protegen a los demás. Su eficacia no es tan elevada como las
+                                        higiénicas y quirúrgicas</h2>
+                                    <div class="flex flex-row">
                                         <div>
-                                            <img class="" src="{% static 'media/tela.jpg' %}" alt="kn95">
+                                            <img class="mx-auto" src="{% get_media_prefix %}tela.jpg" alt="tela">
                                             <h1 class="text-indigo-500 text-center font-bold">TELA</h1>
-                                            <h2 class="text-center">Son reutilizables</h2>
+                                            <h2 class="text-center">Pueden reutilizarse sin son lavables: a más de 60 °C
+                                                con detergente o lejía diluida en agua (1:50)</h2>
                                         </div>
                                     </div>
                                     <br>
@@ -198,7 +212,7 @@
             let dataMINSA;
 
             const recommendationList = ["Recuerde que el uso de una mascarilla KN95 o doble mascarilla es obligatorio en espacios cerrados. Por favor, asegúrese de cumplir con una de estas indicaciones para poder ingresar.",
-                "Por su seguridad y la de los demás, es importante que la mascarilla cubra por completo su " + "nariz, boca y barbilla".bold() +". Por favor, asegúrese de acomodarla correctamente.",
+                "Por su seguridad y la de los demás, es importante que la mascarilla cubra por completo su " + "nariz, boca y barbilla".bold() + ". Por favor, asegúrese de acomodarla correctamente.",
                 "Las mascarillas N95 filtran hasta el 95% de las partículas aéreas."]
 
             let fecha = new Date(Date.now())
