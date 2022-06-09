@@ -29,6 +29,14 @@ class Camera(models.Model):
     security_user = models.ForeignKey(User, on_delete=models.CASCADE)
     is_blocked = models.BooleanField(_('Bloqueado'), default=False)
 
+    class Meta:
+        permissions = [
+            (
+                "use_own_camera",
+                "El usuario de seguridad puede utilizar sus cámaras registradas"
+            )
+        ]
+
     def __str__(self):
         return str(self.id) + ' - ' + self.address
 

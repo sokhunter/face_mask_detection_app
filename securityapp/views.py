@@ -6,7 +6,9 @@ from incidents.models import IncidentCategory, Camera
 from django.utils import timezone
 from datetime import datetime
 from django.shortcuts import redirect
+from django.contrib.auth.decorators import login_required
 
+@login_required
 def home_page(request):
     if not request.user.is_authenticated:
         # return render(request, 'incidents/dashboard.html')
