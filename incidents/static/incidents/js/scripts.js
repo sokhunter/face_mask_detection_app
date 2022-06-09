@@ -228,42 +228,6 @@ $(function () {
         }
     });
 
-    var $chart3_2 = $("#incidents-by-category-bar-chart-2");
-    $.ajax({
-        url: $chart3_2.data("url"),
-        success: function (data) {
-            var ctx = $chart3_2[0].getContext("2d");
-            var datasets = []
-
-            for (let i = 0; i < data.data.length; ++i) {
-                datasets.push({
-                    label: data.data_labels[i],
-                    backgroundColor: colors[data.data_colors[i]],
-                    data: data.data[i]
-                });
-            }
-
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: data.labels,
-                    datasets: datasets
-                },
-                options: {
-                    responsive: true,
-                    legend: {
-                        display: true,
-                    },
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-        }
-    });
-
     var $chart4 = $("#incidents-by-category-doughnut-chart");
     $.ajax({
         url: $chart4.data("url"),
