@@ -2,7 +2,6 @@
 {% load static %}
 {% block content %}
     {% if request.user.is_authenticated %}
-
         {% if invalid_date_range %}
             <div x-data="{ 'showModal': true }" @keydown.escape="showModal = false">
                 <!-- Modal -->
@@ -232,5 +231,6 @@
 {% block optional_scripts %}
 <script src="{% static 'incidents/js/moment.min.js' %}"></script>
 <script src="{% static 'incidents/js/daterangepicker.js' %}"></script>
+<script src="{% static 'incidents/js/dateselectormain.js' %}"></script>
 <script src="{% static 'incidents/js/scripts.js' %}"></script>
 {% endblock %}
