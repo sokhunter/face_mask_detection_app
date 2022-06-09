@@ -17,7 +17,7 @@ from django.http.response import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.files.base import ContentFile
-from django.core.files.storage import FileSystemStorage
+from django.core.files.storage import default_storage
 from django.core.exceptions import PermissionDenied
 from django.utils import timezone, formats
 from django.contrib.auth.decorators import login_required, permission_required
@@ -326,13 +326,10 @@ def get_incidents_by_category_chart_data(request):
 @permission_required('incidents.use_own_camera', raise_exception=True)
 def get_covid_database(request):
     try:
-        media_dir_root = settings.MEDIA_ROOT
-        context_file_path = Path(media_dir_root + '\\context')
-        cached_data_file_path = Path(media_dir_root + '\\cached_data.csv')
+        context_file_path = 'context'
+        cached_data_file_path = 'cached_data.csv'
 
-        fs = FileSystemStorage()
-
-        with fs.open(context_file_path, 'r') as f:
+        with default_storage.open(context_file_path, 'r') as f:
             content = f.readlines()
 
         date_now = timezone.make_naive(timezone.localtime(timezone.now()).replace(hour=0, minute=0, second=0, microsecond=0))
@@ -400,11 +397,11 @@ def get_covid_database(request):
             data.append(str(round(deaths_month * 100 if deaths_last_month == 0 else ((((deaths_month / deaths_last_month)) - 1) * 100), 2)))
             data.append(str(round(deaths_year * 100 if deaths_last_year == 0 else ((((deaths_year / deaths_last_year)) - 1) * 100), 2)))
 
-            with fs.open(context_file_path, 'w') as f:
+            with default_storage.open(context_file_path, 'w') as f:
                 f.truncate()
                 f.write(date_now.strftime('%Y%m%d'))
 
-            with fs.open(cached_data_file_path, 'w') as f:
+            with default_storage.open(cached_data_file_path, 'w') as f:
                 f.truncate()
                 f.writelines([','.join(storage_csv_headers), '\n', ','.join(data)])
     except:
@@ -414,7 +411,7 @@ def get_covid_database(request):
         'data': {}
     }
 
-    with fs.open(cached_data_file_path, 'r') as f:
+    with default_storage.open(cached_data_file_path, 'r') as f:
         csvreader = csv.reader(f)
         headers = next(csvreader)
         line = []
