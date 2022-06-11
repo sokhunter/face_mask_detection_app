@@ -234,6 +234,7 @@ def edit_user_page(request, id):
                 user = user_form.save(False)
                 if user_form.cleaned_data['worker']:
                     user.worker = user_form.cleaned_data['worker']
+                user.is_active = not user_form.cleaned_data['is_active']
                 user.save()
                 if user_form.cleaned_data['role'] == "admin":
                     security_group.user_set.remove(user)
@@ -323,6 +324,16 @@ def camera_selector(request):
     }
 
     return render(request, 'accounts/users/camera_selector.html', context)
+
+
+@login_required
+@permission_required('accounts.change_user', raise_exception=True)
+def block_user_request(request, action, id):
+    user = get_object_or_404(User, id=id)
+    # user.is_blocked = True if action == 'true' else False
+    user.is_active = True if action == 'true' else False
+    user.save()
+    return redirect('accounts:list_users')
 
 
 @login_required
