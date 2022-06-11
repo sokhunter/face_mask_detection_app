@@ -71,17 +71,19 @@ class UserEditForm(ModelForm):
         label=_('Rol'), choices=ROLES, initial='class')
     worker = forms.ModelChoiceField(label=_('Colaborador'),
                                     queryset=Worker.objects.filter(user=None), initial='class')
+    is_active = forms.BooleanField(label=_('Bloqueado'), initial=False, required=False)
 
     def __init__(self, worker, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['worker'] = forms.ModelChoiceField(label=_('Colaborador'),
                                                        queryset=Worker.objects.filter(Q(user=None) | Q(id=worker.id)), initial='class', empty_label=None)
+        self.fields['is_active'] = forms.BooleanField(label=_('Bloqueado'), initial=(not self.instance.is_active), required=False)
 
     class Meta:
         model = User
         fields = []
 
-    field_order = ['role', 'worker']
+    field_order = ['role', 'worker', 'is_active']
 
 
 class UserCreationForm(UserCreationForm):
