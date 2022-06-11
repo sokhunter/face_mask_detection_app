@@ -6,8 +6,6 @@ from django.conf import settings
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 
-from pathlib import Path
-
 from datetime import datetime, timedelta
 
 from django.core.exceptions import ObjectDoesNotExist
