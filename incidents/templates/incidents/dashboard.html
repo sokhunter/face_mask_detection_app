@@ -178,7 +178,7 @@
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:flex gap-5 mt-5">
             <div class="lg:w-1/3 bg-white p-3 rounded-lg shadow">
-                <p class="text-base text-center font-medium">Cantidad de incidencias</p>
+                <p class="text-base text-center font-medium">Cantidad de detecciones</p>
                 <p class="text-sm text-center">
                     {% if start_year == end_year %}
                         {% if start_month == end_month%}
@@ -202,7 +202,7 @@
                         data-url="{% url 'incidents:get_incidents' %}?start-date={{ start_date|date:"d/m/Y H:i" }}&end-date={{ end_date|date:"d/m/Y H:i" }}&camera-selected={{ camera_selected }}&category-selected={{ category_selected }}"></canvas>
             </div>
             <div class="lg:w-1/3 bg-white p-3 rounded-lg shadow">
-                <p class="text-base text-center font-medium">Cantidad de incidencias por colaborador</p>
+                <p class="text-base text-center font-medium">Cantidad de detecciones por colaborador</p>
                 <p class="text-sm text-center">
                     {% if start_year == end_year %}
                         {% if start_month == end_month%}
@@ -226,28 +226,30 @@
                         data-url="{% url 'incidents:get_incidents_by_worker' %}?start-date={{ start_date|date:"d/m/Y H:i" }}&end-date={{ end_date|date:"d/m/Y H:i" }}&camera-selected={{ camera_selected }}&category-selected={{ category_selected }}"></canvas>
             </div>
             <div class="lg:w-1/3 bg-white p-3 rounded-lg shadow md:mx-20 md:w-3/4 md:col-span-2 lg:mx-0">
-                <p class="text-base text-center font-medium">Últimas incidencias</p>
+                <p class="text-base text-center font-medium">Últimas Detecciones</p>
                 <div class="flex flex-col gap-5 my-3 overflow-y-scroll h-2/3 p-3">
                     {% for incident in incidents %}
-                        <div class="flex items-center">
-                            <div class="flex-shrink-0 h-10 w-10">
-                                <img class="h-10 w-10 rounded-full" src="{{ incident.worker.photo.url }}"
-                                     alt="profile photo" height="40px">
+                        {% if incident.incident_category.name|lower == "sin mascarilla"%}
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 h-10 w-10">
+                                    <img class="h-10 w-10 rounded-full" src="{{ incident.worker.photo.url }}"
+                                        alt="profile photo" height="40px">
+                                </div>
+                                <div class="ml-4">
+                                    <p class="text-sm font-normal text-gray-800 leading-5">
+                                        <a class="font-semibold"> {{ incident.worker.names }} {{ incident.worker.surnames }} </a>
+                                        incidencia por
+                                        <a class="font-semibold text-{{ incident.incident_category.color }}-500"> {{ incident.incident_category.name|lower }} </a>
+                                    </p>
+                                    <p class="text-sm text-gray-500 leading-5">
+                                        {{ incident.date_time }}
+                                    </p>
+                                </div>
                             </div>
-                            <div class="ml-4">
-                                <p class="text-sm font-normal text-gray-800 leading-5">
-                                    <a class="font-semibold"> {{ incident.worker.names }} {{ incident.worker.surnames }} </a>
-                                    incidencia por
-                                    <a class="font-semibold text-{{ incident.incident_category.color }}-500"> {{ incident.incident_category.name|lower }} </a>
-                                </p>
-                                <p class="text-sm text-gray-500 leading-5">
-                                    {{ incident.date_time }}
-                                </p>
-                            </div>
-                        </div>
+                        {% endif %}
                     {% endfor %}
                 </div>
-                <div class="flex justify-center mt-4">
+                <div class="flex justify-center">
                     <a type='button' href="{% url 'incidents:list_incidents' %}"
                        class='w-40 inline-flex justify-center rounded-full border border-transparent shadow-sm px-4 py-1 bg-indigo-200 text-sm font-medium text-indigo-800 hover:text-white hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'>Ver
                         todo</a>

@@ -18,10 +18,10 @@
       </nav>
 {% endblock %}
 {% block content %}
-<div class = "bg-white shadow-lg rounded-3xl mx-auto p-5 mt-2 w-2/3 ">
+<div class = "bg-white shadow-lg rounded-3xl mx-auto p-5 mt-2 w-4/5 ">
     <div class="mx-4 md:mx-auto md:w-1/2 min-w-max">
         <h1 class="text-2xl text-gray-900 mx-4 -mt-2 md:mx-0 md:mt-0 font-semibold">Mi Perfil</h1>
-        <div class="bg-white shadow rounded-3xl p-5 mt-2">
+        <div class="bg-white shadow p-1 lg:shadow rounded-3xl lg:p-5 mt-2">
             <div class="flex">
                 <div class="flex-shrink-0 h-24 w-24">
                     {% if user.worker.photo.url %}
@@ -108,70 +108,69 @@
             </div>
         </div>
     </div>
-    <div class="mx-auto w-1/2 min-w-max">
-        <div class="mx-auto w-2/3 mt-10 min-w-max">
-            <div class="flex flex-col md:flex-row justify-center gap-12">
-                <div class="bg-white shadow rounded-3xl p-5 w-full">
-                    <h1 class="text-gray-800 font-semibold text-xl">Información Personal</h1>
-                    <form method="post" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        <label for="profile_form.phone_number.html_name"
-                               class="block text-base font-normal text-gray-600 mt-3">Celular</label>
-                        <input type="text" name="{{ profile_form.phone_number.html_name }}"
-                               id="{{ profile_form.phone_number.id_for_label }}"
-                               value="{{ profile_form.phone_number.value }}"
-                               class="mb-2 mt-1 w-full text-sm border border-gray-300 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-indigo-500 py-1.5 px-3 shadow rounded-full"/>
-                        <div class="text-base font-normal text-red-600">
-                            {{ profile_form.phone_number.errors }}
-                        </div>
-                        <label for="profile_form.photo.html_name"
-                               class="block text-base font-normal text-gray-600 mt-3">Foto</label>
-                        <input type="{{ profile_form.photo.field.widget.input_type }}"
-                               name="{{ profile_form.photo.html_name }}"
-                               id="{{ profile_form.photo.id_for_label }}"
-                               class="w-4/5"/>
-                        <div class="text-base font-normal text-red-600">
-                            {{ profile_form.photo.errors }}
-                        </div>
-                        <div class="flex justify-center mt-5">
-                            <button type='submit' name="profile-form"
-                                    class='w-40 inline-flex justify-center rounded-full border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'>
+
+    <div class="mx-auto md:w-1/2 mt-10">
+        <div class="flex flex-col md:flex-row justify-center gap-12">
+            <div class="bg-white shadow p-1 lg:shadow rounded-3xl lg:p-5 mt-2">
+                <h1 class="text-gray-800 font-semibold text-xl">Información Personal</h1>
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <label for="profile_form.phone_number.html_name"
+                            class="block text-base font-normal text-gray-600 mt-3">Celular</label>
+                    <input type="text" name="{{ profile_form.phone_number.html_name }}"
+                            id="{{ profile_form.phone_number.id_for_label }}"
+                            value="{{ profile_form.phone_number.value }}"
+                            class="mb-2 mt-1 w-4/5 text-sm border border-gray-300 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-indigo-500 py-1.5 px-3 shadow rounded-full"/>
+                    <div class="text-base font-normal text-red-600">
+                        {{ profile_form.phone_number.errors }}
+                    </div>
+                    <label for="profile_form.photo.html_name"
+                            class="block text-base font-normal text-gray-600 mt-3">Foto</label>
+                    <input type="{{ profile_form.photo.field.widget.input_type }}"
+                            name="{{ profile_form.photo.html_name }}"
+                            id="{{ profile_form.photo.id_for_label }}"
+                            class="w-4/5"/>
+                    <div class="text-base font-normal text-red-600">
+                        {{ profile_form.photo.errors }}
+                    </div>
+                    <div class="flex justify-center mt-5">
+                        <button type='submit' name="profile-form"
+                                class='w-40 inline-flex justify-center rounded-full border border-transparent shadow-sm px-4 py-2 bg-indigo-600 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'>
+                            Guardar
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div class="bg-white shadow p-1 lg:shadow rounded-3xl lg:p-5 mt-2">
+                <h1 class="text-gray-800 font-semibold text-xl">Cambiar Contraseña</h1>
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <label for="password_form.new_password1.html_name"
+                            class="block text-base font-normal text-gray-600 mt-3">Contraseña</label>
+                    <input type="password" name="{{ password_form.new_password1.html_name }}"
+                            id="{{ password_form.new_password1.id_for_label }}"
+                            class="mb-2 mt-1 w-4/5 text-sm border border-gray-300 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-indigo-500 py-1.5 px-3 shadow rounded-full"/>
+                    <div class="text-base font-normal text-red-600">
+                        {{ password_form.new_password1.errors }}
+                    </div>
+                    <label for="password_form.new_password2.html_name"
+                            class="block text-base font-normal text-gray-600 mt-3">Repetir Contraseña</label>
+                    <input type="password" name="{{ password_form.new_password2.html_name }}"
+                            id="{{ password_form.new_password2.id_for_label }}"
+                            class="mb-2 mt-1 w-4/5 text-sm border border-gray-300 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-indigo-500 py-1.5 px-3 shadow rounded-full"/>
+                    <div class="text-base font-normal text-red-600">
+                        {{ password_form.new_password2.errors }}
+                    </div>
+                    <div class="flex justify-center mt-5">
+                        <div class="flex justify-center">
+                            <button type='submit' name="password-form"
+                                    class='w-40 inline-flex justify-center rounded-full border border-transparent shadow-sm px-4 py-2 bg-indigo-600
+                        text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'>
                                 Guardar
                             </button>
                         </div>
-                    </form>
-                </div>
-                <div class="bg-white shadow rounded-3xl p-5 w-full">
-                    <h1 class="text-gray-800 font-semibold text-xl">Cambiar Contraseña</h1>
-                    <form method="post" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        <label for="password_form.new_password1.html_name"
-                               class="block text-base font-normal text-gray-600 mt-3">Contraseña</label>
-                        <input type="password" name="{{ password_form.new_password1.html_name }}"
-                               id="{{ password_form.new_password1.id_for_label }}"
-                               class="mb-2 mt-1 w-full text-sm border border-gray-300 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-indigo-500 py-1.5 px-3 shadow rounded-full"/>
-                        <div class="text-base font-normal text-red-600">
-                            {{ password_form.new_password1.errors }}
-                        </div>
-                        <label for="password_form.new_password2.html_name"
-                               class="block text-base font-normal text-gray-600 mt-3">Repetir Contraseña</label>
-                        <input type="password" name="{{ password_form.new_password2.html_name }}"
-                               id="{{ password_form.new_password2.id_for_label }}"
-                               class="mb-2 mt-1 w-full text-sm border border-gray-300 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-indigo-500 py-1.5 px-3 shadow rounded-full"/>
-                        <div class="text-base font-normal text-red-600">
-                            {{ password_form.new_password2.errors }}
-                        </div>
-                        <div class="flex justify-center mt-5">
-                            <div class="flex justify-center">
-                                <button type='submit' name="password-form"
-                                        class='w-40 inline-flex justify-center rounded-full border border-transparent shadow-sm px-4 py-2 bg-indigo-600
-                            text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'>
-                                    Guardar
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
+                    </div>
+                </form>
             </div>
         </div>
     </div>

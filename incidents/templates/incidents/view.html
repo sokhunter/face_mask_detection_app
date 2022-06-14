@@ -24,13 +24,13 @@
       </nav>
 {% endblock %}
 {% block content %}
-<div class = "bg-white shadow-lg rounded-3xl mx-auto p-5 mt-2 w-2/3 ">
+<div class = "bg-white shadow-lg rounded-3xl mx-auto p-5 mt-2 w-4/5 ">
 <div class="w-4/5 mx-auto">
-    <h1 class="text-2xl lg:mx-28 xl:mx-36 text-gray-900 font-semibold -mt-1">Incidencia / Incidencia #{{ incident.id|stringformat:"04d" }}
+    <h1 class="text-2xl lg:mx-28 xl:mx-36 text-gray-900 font-semibold -mt-1 text-center">Incidencia #{{ incident.id|stringformat:"04d" }}
     </h1>
-    <div class="bg-white lg:mx-28 xl:mx-36 shadow rounded-3xl p-5 mt-3">
-        <div class="flex flex-col md:grid md:grid-cols-2 gap-x-14 gap-y-6">
-            <div class="w-full whitespace-nowrap px-5">
+ 
+        <div class="w-full lg:w-1/2 mx-auto relative flex flex-col md:grid md:grid-cols-2 md:gap-x-14 gap-y-2">
+            <div class="mx-auto w-full md:w-2/3 whitespace-nowrap">
                 <label class="block text-base font-normal text-gray-600">Colaborador</label>
                 <div class="flex items-center mt-1">
                     <div class="flex-shrink-0 h-10 w-10">
@@ -49,15 +49,15 @@
                     </div>
                 </div>
             </div>
-            <div class="w-full whitespace-nowrap px-5">
+            <div class="mx-auto w-full md:w-2/3 whitespace-nowrap">
                 <label class="block text-base font-normal text-gray-600">Documento</label>
                 <div class="font-semibold leading-10">{{incident.worker.document}} ({{incident.worker.document_type}})</div>
             </div>
-            <div class="w-full whitespace-nowrap px-5">
+            <div class="mx-auto w-full md:w-2/3 whitespace-nowrap">
                 <label class="block text-base font-normal text-gray-600">Fecha y Hora</label>
                 <div class="text-sm text-gray-500">{{incident.date_time}}</div>
             </div>
-            <div class="w-full whitespace-nowrap px-5">
+            <div class="mx-auto w-full md:w-2/3 whitespace-nowrap">
                 <label class="block text-base font-normal text-gray-600">Categoría</label>
                 <div class="flex items-center gap-2">
                     {% if incident.incident_category.color == 'green' %}
@@ -83,11 +83,15 @@
                 </div>
             </div>
         </div>
-        <div class="flex flex-col mx-auto w-80 mt-10">
+        <div class="flex flex-col mx-auto mt-10 items-center">
             <label class="block text-base font-normal text-gray-600 mx-auto">Imagen de la incidencia</label>
             <img src="{{incident.image.url}}" alt="incident image"
-                class="rounded-md border border-gray-400 shadow w-80 h-80 mt-1">
-    </div>
+                class="rounded-md border-gray-400 shadow mt-1 object-scale-down">
+        </div>
+        <div class="flex justify-center md:justify-around gap-6 md:gap-0 my-8 md:mt-10">
+            <a type="button" href="{% url 'incidents:list_incidents' %}"
+                class='w-40 text-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-gray-600 text-base font-medium text-white hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500'>Regresar</a>
+        </div>
 </div>
 </div>
 {% endblock content %}
