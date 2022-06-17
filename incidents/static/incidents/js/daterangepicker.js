@@ -908,7 +908,7 @@
                 if (!this.timePicker24Hour)
                     i_in_24 = selected.hour() >= 12 ? (i == 12 ? 12 : i + 12) : (i == 12 ? 0 : i);
 
-                var time = this.startDate.clone().hour(i_in_24);
+                var time = selected.clone().hour(i_in_24);
                 var disabled = false;
                 if (minDate && time.minute(59).isBefore(minDate))
                     disabled = true;
@@ -934,10 +934,10 @@
 
             for (var i = 0; i < 60; i += this.timePickerIncrement) {
                 var padded = i < 10 ? '0' + i : i;
-                var time = this.startDate.clone().minute(i);
+                var time = selected.clone().minute(i);
 
                 var disabled = false;
-                if (minDate && this.startDate.hour() === this.endDate.hour() && time.second(59).isBefore(minDate))
+                if (minDate && time.second(59).isBefore(minDate))
                     disabled = true;
                 if (maxDate && time.second(0).isAfter(maxDate))
                     disabled = true;
@@ -962,10 +962,10 @@
 
                 for (var i = 0; i < 60; i++) {
                     var padded = i < 10 ? '0' + i : i;
-                    var time = this.startDate.clone().second(i);
+                    var time = selected.clone().second(i);
 
                     var disabled = false;
-                    if (minDate && this.startDate.hour() === this.endDate.hour() && this.startDate.minute() === this.endDate.minute() && time.isBefore(minDate))
+                    if (minDate && time.isBefore(minDate))
                         disabled = true;
                     if (maxDate && time.isAfter(maxDate))
                         disabled = true;
@@ -1479,10 +1479,8 @@
                 this.setStartDate(start);
                 if (this.singleDatePicker) {
                     this.endDate = this.startDate.clone();
-                } else if (this.endDate &&
-                           ((this.endDate.hour() * 3600 + this.endDate.minute() * 60 + this.endDate.second()) <
-                            (this.startDate.hour() * 3600 + this.startDate.minute() * 60 + this.startDate.second()))) {
-                    this.endDate.set({hour: this.startDate.hour(), minute: this.startDate.minute(), second: this.startDate.second})
+                } else if (this.endDate && this.endDate.format('YYYY-MM-DD') == start.format('YYYY-MM-DD') && this.endDate.isBefore(start)) {
+                    this.setEndDate(start.clone());
                 }
             } else if (this.endDate) {
                 var end = this.endDate.clone();

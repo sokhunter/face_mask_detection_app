@@ -73,10 +73,7 @@ def list_incidents_page(request):
     date_start_to_validate = timezone.make_aware(datetime.combine(datetime.strptime(start_date, '%d/%m/%Y %H:%M').date(), datetime.min.time()))
     date_end_to_validate = timezone.make_aware(datetime.combine(datetime.strptime(end_date, '%d/%m/%Y %H:%M').date(), datetime.min.time()))
 
-    invalid_date_range = False
-
     if date_start_to_validate > date_end_to_validate:
-        invalid_date_range = True
         start_date = default_start_date
         end_date = default_end_date
 
@@ -95,14 +92,11 @@ def list_incidents_page(request):
     except EmptyPage:
         incidents = paginator.page(paginator.num_pages)
 
-    start_date = fstart_date.strftime('%d/%m/%Y %H:%M') if fstart_date is not None else ''
-    end_date = fend_date.strftime('%d/%m/%Y %H:%M') if fend_date is not None else ''
-
     context = {
         'incidents': incidents,
-        'start_date': start_date,
-        'end_date': end_date,
-        'max_date': datetime.combine(date_now, datetime.max.time()).strftime('%d/%m/%Y %H:%M')
+        'start_date': fstart_date,
+        'end_date': fend_date,
+        'max_date': datetime.combine(date_now, datetime.max.time())
     }
 
     return render(request, 'incidents/list.html', context)
@@ -118,11 +112,12 @@ def list_incidents_page_csv(request):
 
     incidents, _, _ = get_incidents_by_request(request, "GET")
 
+    response.write(u'\ufeff'.encode('utf8'))
     writer = csv.writer(response)
-    writer.writerow(['Nombre del colaborador', 'Correo del colaborador', 'Categoria', 'Fecha y hora'])
+    writer.writerow(['Tipo de documento', 'Número de documento', 'Nombre del colaborador', 'Correo del colaborador', 'Categoria', 'Fecha y hora'])
 
     for incident in incidents:
-        writer.writerow([incident.worker.names + ' ' + incident.worker.surnames, incident.worker.email, incident.incident_category.name, timezone.localtime(incident.date_time).strftime('%d/%m/%Y %H:%M')])
+        writer.writerow([incident.worker.get_document_type_display(), incident.worker.document, incident.worker.names + ' ' + incident.worker.surnames, incident.worker.email, incident.incident_category.name, timezone.localtime(incident.date_time).strftime('%d/%m/%Y %H:%M')])
 
     return response
 
