@@ -155,6 +155,8 @@ def register_workers(request):
     return redirect('accounts:list_workers')
 
 
+@login_required
+@permission_required('accounts.add_worker', raise_exception=True)
 def download_worker_registry_excel_template(request):
     with default_storage.open('Formato.xlsx', 'rb') as f:
         response = HttpResponse(
