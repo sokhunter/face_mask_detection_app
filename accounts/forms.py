@@ -39,6 +39,22 @@ class WorkerEditForm(ModelForm):
         self.fields['document_type'] = forms.ChoiceField(
             label=_('Tipo de Documento'), choices=Worker.DOCUMENT_TYPES)
 
+    def save(self, commit=True):
+        worker = super(WorkerEditForm, self).save(commit=False)
+        worker_old = Worker.objects.get(id=worker.id)
+
+        active_status_changed = worker.is_active != worker_old.is_active
+
+        if worker.user is not None and not worker.is_active and active_status_changed:
+            worker.user.is_active = worker.is_active
+
+        if commit:
+            worker.save()
+            if worker.user is not None and not worker.is_active and active_status_changed:
+                worker.user.save()
+
+        return worker
+
 
 class LoginForm(AuthenticationForm):
     captcha = ReCaptchaField()
