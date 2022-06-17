@@ -10,7 +10,8 @@ from accounts.user_views import (block_user_request, delete_user_request,
                                  camera_selector)
 from accounts.worker_views import (delete_worker_request, edit_worker_page,
                                    get_worker_page, list_workers_page,
-                                   register_worker_page)
+                                   register_worker_page, register_workers,
+                                   download_worker_registry_excel_template)
 
 app_name = 'accounts'
 urlpatterns = [
@@ -30,6 +31,8 @@ urlpatterns = [
     path('workers/', list_workers_page, name='list_workers'),
     path('workers/view/<int:id>/', get_worker_page, name='get_worker'),
     path('workers/register/', register_worker_page, name='register_worker'),
+    path('workers/register_multiple/', register_workers, name='register_workers'),
+    path('workers/register_multiple_template/', download_worker_registry_excel_template, name='multiple_register_template'),
     path('workers/edit/<int:id>/', edit_worker_page, name='edit_worker'),
     path('workers/delete/<int:id>/', delete_worker_request, name='delete_worker'),
 

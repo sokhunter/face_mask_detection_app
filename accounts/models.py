@@ -13,14 +13,20 @@ if connection.introspection.table_names():
 
 
 class Worker(models.Model):
+    DOCUMENT_TYPES = (
+        ("dni", _("DNI")),
+        ("ruc", _("RUC")),
+        ("carnet de extranjero", _("Carnet de Extranjero")),
+    )
+
     names = models.CharField(_('Nombres'), max_length=50)
     surnames = models.CharField(_('Apellidos'), max_length=50)
     email = models.EmailField(_('Correo Electrónico'),
                               max_length=50, unique=True)
     phone_number = models.CharField(_('Teléfono'), max_length=11)
-    document = models.CharField(_('Documento'), max_length=10, unique=True)
+    document = models.CharField(_('Documento'), max_length=11, unique=True)
     document_type = models.CharField(
-        _('Tipo de Documento'), max_length=25)
+        _('Tipo de Documento'), max_length=25, choices=DOCUMENT_TYPES)
     photo = models.ImageField(_('Foto'),
                               blank=True, upload_to='profile_photos', default='profile_photos/default.png')
     date_joined = models.DateTimeField(_('Fecha de Registro'), blank=True)
@@ -67,6 +73,7 @@ class UserManager(BaseUserManager):
     def create_superuser(self, username, password, **extra_fields):
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_active', True)
+        extra_fields.setdefault('is_superuser', True)
 
         if extra_fields.get('is_staff') is not True:
             raise ValueError(_('Superuser must have is_staff=True.'))
