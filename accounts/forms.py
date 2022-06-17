@@ -14,11 +14,6 @@ ROLES = (
     ("admin", _("Admin")),
     ("security", _("Seguridad")),
 )
-DOCUMENT_TYPES = (
-    ("dni", _("DNI")),
-    ("ruc", _("RUC")),
-    ("carnet de extranjero", _("Carnet de Extranjero")),
-)
 
 
 class WorkerCreationForm(ModelForm):
@@ -30,7 +25,7 @@ class WorkerCreationForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(WorkerCreationForm, self).__init__(*args, **kwargs)
         self.fields['document_type'] = forms.ChoiceField(
-            label=_('Tipo de Documento'), choices=DOCUMENT_TYPES)
+            label=_('Tipo de Documento'), choices=Worker.DOCUMENT_TYPES)
 
 
 class WorkerEditForm(ModelForm):
@@ -42,7 +37,7 @@ class WorkerEditForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super(WorkerEditForm, self).__init__(*args, **kwargs)
         self.fields['document_type'] = forms.ChoiceField(
-            label=_('Tipo de Documento'), choices=DOCUMENT_TYPES)
+            label=_('Tipo de Documento'), choices=Worker.DOCUMENT_TYPES)
 
 
 class LoginForm(AuthenticationForm):

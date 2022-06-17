@@ -51,7 +51,6 @@
                 </div>
             </div>
         {% endif %}
-
         <div class="h-1/5">
             <div class="grid grid-cols-1 md:grid-cols-2 mx-5 xl:flex gap-5" id="incidents-summary-charts"
                  data-url="{% url 'incidents:get_incidents_summary_charts' %}">
@@ -117,11 +116,17 @@
                     </div>
                 </div>
             </div>
-            <div class="flex flex-col md:grid md:grid-cols-2 gap-x-8 lg:gap-x-4 gap-y-3 lg:flex lg:flex-row w-4/5 lg:w-4/5 xl:w-3/5 mt-5 justify-center mx-auto">
+            <div class="flex flex-col md:grid md:grid-cols-2 gap-x-8 lg:gap-x-4 gap-y-3 lg:flex lg:flex-row w-5/5 lg:w-5/5 xl:w-4/5 mt-5 justify-center mx-auto">
                 <input type="hidden" id="end-date">
                 <input type="hidden" id="start-date">
                 <input class="lg:w-4/5 xl:w-1/2 bg-white border border-gray-300 text-gray-900 sm:text-sm rounded-lg shadow duration-150 focus:border-transparent focus:outline-none focus:ring focus:ring-indigo-500 block w-full px-3 py-1.5"
-                        data-max-date="{{ max_date|date:"d/m/Y H:i" }}" data-start-date="{{ start_date|date:"d/m/Y H:i" }}" data-end-date="{{ end_date|date:"d/m/Y H:i" }}" id="date-range-picker" style="min-width: 255px">
+                        data-max-date="{{ max_date|date:"d/m/Y" }}" data-start-date="{{ start_date|date:"d/m/Y" }}" data-end-date="{{ end_date|date:"d/m/Y" }}" id="date-range-picker" style="width: 185px">
+                <div class="flex gap-x-4">
+                    <p style="text-align: right">Desde las</p>
+                    <input id="time-from" value="{{ start_date|date:"H:i" }}" placeholder="Hora desde" style="width: 100px" class="timePicker lg:w-4/5 xl:w-1/2 bg-white border border-gray-300 text-gray-900 sm:text-sm rounded-lg shadow duration-150 focus:border-transparent focus:outline-none focus:ring focus:ring-indigo-500 block w-full px-3 py-1.5">
+                    <p style="text-align: right">hasta las</p>
+                    <input id="time-to" value="{{ end_date|date:"H:i" }}" placeholder="Hora hasta" style="width: 100px" class="timePicker lg:w-4/5 xl:w-1/2 bg-white border border-gray-300 text-gray-900 sm:text-sm rounded-lg shadow duration-150 focus:border-transparent focus:outline-none focus:ring focus:ring-indigo-500 block w-full px-3 py-1.5">    
+                </div>
                 <select id="camera" style="min-width: 200px"
                         class="border border-gray-300 w-full focus:border-transparent focus:outline-none focus:ring-2 focus:ring-indigo-500 py-1.5 px-3 shadow rounded-md">
                     <option value="all" {% if camera_selected|slugify == "all"|slugify %}selected{% endif %}>Seleccionar
@@ -217,18 +222,28 @@
         </div>
         <script>
             function reload() {
+                let time_from = document.getElementById('time-from').value
+                let time_to = document.getElementById('time-to').value
+
+                if (!time_from || !time_to || time_from.includes('M') || time_from.includes('H')
+                    || time_to.includes('M') || time_to.includes('H')) {
+                    alert("Por favor, llene los campos de hora");
+                    return;
+                }
+
                 let start_date = document.getElementById('start-date').value
                 let end_date = document.getElementById('end-date').value
                 let camera_selected = document.getElementById('camera').value
                 let category_selected = document.getElementById('category').value
 
-                window.location.href = "{% url 'home' %}?start-date=" + start_date + "&end-date=" + end_date + "&camera-selected=" + camera_selected + "&category-selected=" + category_selected;
+                window.location.href = "{% url 'home' %}?start-date=" + start_date + ' ' + time_from + "&end-date=" + end_date + ' ' + time_to + "&camera-selected=" + camera_selected + "&category-selected=" + category_selected;
             }
         </script>
     {% endif %}
 {% endblock content %}
 
 {% block optional_scripts %}
+<script src="{% static 'incidents/js/jquery.inputmask.min.js' %}"></script>
 <script src="{% static 'incidents/js/moment.min.js' %}"></script>
 <script src="{% static 'incidents/js/daterangepicker.js' %}"></script>
 <script src="{% static 'incidents/js/dateselectormain.js' %}"></script>
