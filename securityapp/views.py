@@ -66,6 +66,24 @@ def home_page(request):
 
     start_date = fstart_date if fstart_date is not None else ''
     end_date = fend_date if fend_date is not None else ''
+    
+    #DESCRIPCIONES DE LOS CARDS EN EL DASHBOARD (ESPAÑOL)
+
+    import locale
+    locale.setlocale(locale.LC_ALL, ("es_ES", "UTF-8"))
+
+    start_year= (start_date).strftime('%Y')
+    start_month= (start_date).strftime('%B')
+    start_day= (start_date).strftime('%d')
+    start_hour= (start_date).strftime('%H:%M')
+    #start_hour= (start_date).strftime('%I:%M %p')
+
+    end_year= (end_date).strftime('%Y')
+    end_month= (end_date).strftime('%B')
+    end_day= (end_date).strftime('%d')
+    end_hour= (end_date).strftime('%H:%M')
+    #end_hour= (end_date).strftime('%I:%M %p')
+
 
     context = {
         'start_date': start_date,
@@ -76,6 +94,14 @@ def home_page(request):
         'category_selected': category,
         'camera_selected': camera,
         'invalid_date_range': invalid_date_range,
+        'start_year':start_year,
+        'start_month':start_month,
+        'start_day':start_day,
+        'start_hour':start_hour,
+        'end_year':end_year,
+        'end_month':end_month,
+        'end_day':end_day,
+        'end_hour':end_hour,
         'max_date': datetime.combine(date_now, datetime.max.time())
     }
 

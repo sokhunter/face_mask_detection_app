@@ -1,5 +1,23 @@
 {% extends "index.html" %}
 {% load static %}
+{% block br %}
+    <nav class="flex" aria-label="Breadcrumb">
+        <ol class="inline-flex items-center space-x-1 md:space-x-3">
+        <li class="inline-flex items-center">
+            <a href="{% url 'home' %}" class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
+            <svg class="mr-2 w-4 h-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg>
+            Home
+            </a>
+        </li>
+        <li aria-current="page">
+            <div class="flex items-center">
+              <svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
+              <span class="ml-1 text-sm font-medium text-gray-500 md:ml-2 dark:text-gray-400">Dashboard</span>
+            </div>
+          </li>
+        </ol>
+    </nav>
+{% endblock %}
 {% block content %}
     {% if request.user.is_authenticated %}
         {% if invalid_date_range %}
@@ -160,42 +178,78 @@
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 lg:flex gap-5 mt-5">
             <div class="lg:w-1/3 bg-white p-3 rounded-lg shadow">
-                <p class="text-base text-center font-medium">Cantidad de incidencias</p>
-                <p class="text-sm text-center">{% if start_date %}Del {{ start_date }}{% endif %}{% if end_date %} Hasta
-                    el {{ end_date }}{% endif %}</p>
+                <p class="text-base text-center font-medium">Cantidad de detecciones</p>
+                <p class="text-sm text-center">
+                    {% if start_year == end_year %}
+                        {% if start_month == end_month%}
+                            {% if start_day == end_day%}
+                                El {{start_day}} de {{start_month}} de {{start_year}} desde las {{start_hour}} hasta las {{end_hour}}
+                            {% else %}
+                                Del {{start_day}} al {{end_day}} de {{start_month}} de {{start_year}} desde las {{start_hour}} hasta las {{end_hour}}
+                            {% endif %}
+                        {% else %}
+                            {% if start_day == end_day%}
+                                Del {{start_day}} de {{start_month}} al {{end_day}} de {{end_month}} de {{start_year}} desde las {{start_hour}} hasta las {{end_hour}}
+                            {% else %}
+                                Del {{start_day}} de {{start_month}} al {{end_day}} de {{end_month}} de {{start_year}} desde las {{start_hour}} hasta las {{end_hour}}
+                            {% endif %}
+                        {% endif%}
+                    {% else %}
+                        Del {{start_day}} de {{start_month}} de {{start_year}} al {{end_day}} de {{end_month}} de {{end_year}} desde las {{start_hour}} hasta las {{end_hour}}
+                    {% endif%}
+                </p>
                 <canvas id="incidents-chart"
                         data-url="{% url 'incidents:get_incidents' %}?start-date={{ start_date|date:"d/m/Y H:i" }}&end-date={{ end_date|date:"d/m/Y H:i" }}&camera-selected={{ camera_selected }}&category-selected={{ category_selected }}"></canvas>
             </div>
             <div class="lg:w-1/3 bg-white p-3 rounded-lg shadow">
-                <p class="text-base text-center font-medium">Cantidad de incidencias por colaborador</p>
-                <p class="text-sm text-center">{% if start_date %}Del {{ start_date }}{% endif %}{% if end_date %} Hasta
-                    el {{ end_date }}{% endif %}</p>
+                <p class="text-base text-center font-medium">Cantidad de detecciones por colaborador</p>
+                <p class="text-sm text-center">
+                    {% if start_year == end_year %}
+                        {% if start_month == end_month%}
+                            {% if start_day == end_day%}
+                                El {{start_day}} de {{start_month}} de {{start_year}} desde las {{start_hour}} hasta las {{end_hour}}
+                            {% else %}
+                                Del {{start_day}} al {{end_day}} de {{start_month}} de {{start_year}} desde las {{start_hour}} hasta las {{end_hour}}
+                            {% endif %}
+                        {% else %}
+                            {% if start_day == end_day%}
+                                Del {{start_day}} de {{start_month}} al {{end_day}} de {{end_month}} de {{start_year}} desde las {{start_hour}} hasta las {{end_hour}}
+                            {% else %}
+                                Del {{start_day}} de {{start_month}} al {{end_day}} de {{end_month}} de {{start_year}} desde las {{start_hour}} hasta las {{end_hour}}
+                            {% endif %}
+                        {% endif%}
+                    {% else %}
+                        Del {{start_day}} de {{start_month}} de {{start_year}} al {{end_day}} de {{end_month}} de {{end_year}} desde las {{start_hour}} hasta las {{end_hour}}
+                    {% endif%}
+                </p>
                 <canvas id="incidents-by-worker-chart"
                         data-url="{% url 'incidents:get_incidents_by_worker' %}?start-date={{ start_date|date:"d/m/Y H:i" }}&end-date={{ end_date|date:"d/m/Y H:i" }}&camera-selected={{ camera_selected }}&category-selected={{ category_selected }}"></canvas>
             </div>
-            <div class="lg:w-1/3 h-72 bg-white p-3 rounded-lg shadow md:mx-20 md:w-3/4 md:col-span-2 lg:mx-0">
-                <p class="text-base text-center font-medium">Últimas incidencias</p>
+            <div class="lg:w-1/3 bg-white p-3 rounded-lg shadow md:mx-20 md:w-3/4 md:col-span-2 lg:mx-0">
+                <p class="text-base text-center font-medium">Últimas Detecciones</p>
                 <div class="flex flex-col gap-5 my-3 overflow-y-scroll h-2/3 p-3">
                     {% for incident in incidents %}
-                        <div class="flex items-center">
-                            <div class="flex-shrink-0 h-10 w-10">
-                                <img class="h-10 w-10 rounded-full" src="{{ incident.worker.photo.url }}"
-                                     alt="profile photo" height="40px">
+                        {% if incident.incident_category.name|lower == "sin mascarilla"%}
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 h-10 w-10">
+                                    <img class="h-10 w-10 rounded-full" src="{{ incident.worker.photo.url }}"
+                                        alt="profile photo" height="40px">
+                                </div>
+                                <div class="ml-4">
+                                    <p class="text-sm font-normal text-gray-800 leading-5">
+                                        <a class="font-semibold"> {{ incident.worker.names }} {{ incident.worker.surnames }} </a>
+                                        incidencia por
+                                        <a class="font-semibold text-{{ incident.incident_category.color }}-500"> {{ incident.incident_category.name|lower }} </a>
+                                    </p>
+                                    <p class="text-sm text-gray-500 leading-5">
+                                        {{ incident.date_time }}
+                                    </p>
+                                </div>
                             </div>
-                            <div class="ml-4">
-                                <p class="text-sm font-normal text-gray-800 leading-5">
-                                    <a class="font-semibold"> {{ incident.worker.names }} {{ incident.worker.surnames }} </a>
-                                    incidencia por
-                                    <a class="font-semibold text-{{ incident.incident_category.color }}-500"> {{ incident.incident_category.name|lower }} </a>
-                                </p>
-                                <p class="text-sm text-gray-500 leading-5">
-                                    {{ incident.date_time }}
-                                </p>
-                            </div>
-                        </div>
+                        {% endif %}
                     {% endfor %}
                 </div>
-                <div class="flex justify-center mt-4">
+                <div class="flex justify-center">
                     <a type='button' href="{% url 'incidents:list_incidents' %}"
                        class='w-40 inline-flex justify-center rounded-full border border-transparent shadow-sm px-4 py-1 bg-indigo-200 text-sm font-medium text-indigo-800 hover:text-white hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'>Ver
                         todo</a>
@@ -205,8 +259,25 @@
         <div class="grid grid-cols-1 lg:flex gap-5 mt-5">
             <div class="lg:w-3/5 hidden md:block bg-white p-3 rounded-lg shadow">
                 <p class="text-base text-center font-medium">Cantidad de incidencias por categoría</p>
-                <p class="text-sm text-center">{% if start_date %}Del {{ start_date }}{% endif %}{% if end_date %} Hasta
-                    el {{ end_date }}{% endif %}</p>
+                <p class="text-sm text-center">
+                    {% if start_year == end_year %}
+                        {% if start_month == end_month%}
+                            {% if start_day == end_day%}
+                                El {{start_day}} de {{start_month}} de {{start_year}} desde las {{start_hour}} hasta las {{end_hour}}
+                            {% else %}
+                                Del {{start_day}} al {{end_day}} de {{start_month}} de {{start_year}} desde las {{start_hour}} hasta las {{end_hour}}
+                            {% endif %}
+                        {% else %}
+                            {% if start_day == end_day%}
+                                Del {{start_day}} de {{start_month}} al {{end_day}} de {{end_month}} de {{start_year}} desde las {{start_hour}} hasta las {{end_hour}}
+                            {% else %}
+                                Del {{start_day}} de {{start_month}} al {{end_day}} de {{end_month}} de {{start_year}} desde las {{start_hour}} hasta las {{end_hour}}
+                            {% endif %}
+                        {% endif%}
+                    {% else %}
+                        Del {{start_day}} de {{start_month}} de {{start_year}} al {{end_day}} de {{end_month}} de {{end_year}} desde las {{start_hour}} hasta las {{end_hour}}
+                    {% endif%}
+                </p>
                 <canvas id="incidents-by-category-bar-chart"
                         data-url="{% url 'incidents:get_incidents_by_category_and_day' %}?start-date={{ start_date|date:"d/m/Y H:i" }}&end-date={{ end_date|date:"d/m/Y H:i" }}&camera-selected={{ camera_selected }}&category-selected={{ category_selected }}"
                         height="100%"></canvas>
@@ -214,8 +285,25 @@
             </div>
             <div class="md:w-3/4 lg:w-2/5 md:mx-20 lg:mx-0 bg-white p-3 rounded-lg shadow">
                 <p class="text-base text-center font-medium">Cantidad de incidencias por categoría</p>
-                <p class="text-sm text-center">{% if start_date %}Del {{ start_date }}{% endif %}{% if end_date %} Hasta
-                    el {{ end_date }}{% endif %}</p>
+                <p class="text-sm text-center">
+                    {% if start_year == end_year %}
+                        {% if start_month == end_month%}
+                            {% if start_day == end_day%}
+                                El {{start_day}} de {{start_month}} de {{start_year}} desde las {{start_hour}} hasta las {{end_hour}}
+                            {% else %}
+                                Del {{start_day}} al {{end_day}} de {{start_month}} de {{start_year}} desde las {{start_hour}} hasta las {{end_hour}}
+                            {% endif %}
+                        {% else %}
+                            {% if start_day == end_day%}
+                                Del {{start_day}} de {{start_month}} al {{end_day}} de {{end_month}} de {{start_year}} desde las {{start_hour}} hasta las {{end_hour}}
+                            {% else %}
+                                Del {{start_day}} de {{start_month}} al {{end_day}} de {{end_month}} de {{start_year}} desde las {{start_hour}} hasta las {{end_hour}}
+                            {% endif %}
+                        {% endif%}
+                    {% else %}
+                        Del {{start_day}} de {{start_month}} de {{start_year}} al {{end_day}} de {{end_month}} de {{end_year}} desde las {{start_hour}} hasta las {{end_hour}}
+                    {% endif%}
+                </p>
                 <canvas id="incidents-by-category-doughnut-chart" class="mt-3"
                         data-url="{% url 'incidents:get_incidents_by_category' %}?start-date={{ start_date|date:"d/m/Y H:i" }}&end-date={{ end_date|date:"d/m/Y H:i" }}&camera-selected={{ camera_selected }}&category-selected={{ category_selected }}"></canvas>
             </div>
