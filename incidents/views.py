@@ -118,10 +118,9 @@ def list_incidents_page(request):
         'incidents': incidents,
         'start_date': fstart_date,
         'end_date': fend_date,
-        'max_date': datetime.combine(date_now, datetime.max.time())
+        'max_date': datetime.combine(date_now, datetime.max.time()),
         'incident_categories': incident_categories,
         'category_selected': category,
-        'invalid_date_range': invalid_date_range,
         'cameras': cameras,
         'camera_selected': camera,
     }

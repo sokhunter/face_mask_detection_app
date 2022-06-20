@@ -1,340 +1,408 @@
 {% extends "index.html" %}
+{% load static %}
 {% block br %}
     <nav class="flex" aria-label="Breadcrumb">
         <ol class="inline-flex items-center space-x-1 md:space-x-3">
-        <li class="inline-flex items-center">
-            <a href="{% url 'home' %}" class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
-            <svg class="mr-2 w-4 h-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg>
-            Home
-            </a>
-        </li>
-        <li aria-current="page">
-            <div class="flex items-center">
-            <svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>
-            <span class="ml-1 text-sm font-medium text-gray-500 md:ml-2 dark:text-gray-400">Incidencias</span>
-            </div>
-        </li>
+            <li class="inline-flex items-center">
+                <a href="{% url 'home' %}"
+                   class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white">
+                    <svg class="mr-2 w-4 h-4" fill="currentColor" viewBox="0 0 20 20"
+                         xmlns="http://www.w3.org/2000/svg">
+                        <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path>
+                    </svg>
+                    Home
+                </a>
+            </li>
+            <li aria-current="page">
+                <div class="flex items-center">
+                    <svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20"
+                         xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd"
+                              d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                              clip-rule="evenodd"></path>
+                    </svg>
+                    <span class="ml-1 text-sm font-medium text-gray-500 md:ml-2 dark:text-gray-400">Incidencias</span>
+                </div>
+            </li>
         </ol>
     </nav>
 {% endblock %}
 {% block content %}
-<!-- This example requires Tailwind CSS v2.0+ -->
-<div class = "bg-white shadow rounded-3xl mx-auto p-5 mt-2 w-4/5 ">
-<div class="flex flex-col md:flex-row justify-between">
-    <h1 class="text-2xl text-gray-900 font-semibold  text-center">Lista de Incidencias</h1>
-    <div class="flex justify-center gap-2 mx-3">
-        <a href="{% url 'incidents:list_incidents_page_csv'%}?start-date={{ start_date }}&end-date={{ end_date }}&camera-selected={{ camera_selected }}&category-selected={{ category_selected }}" class="ring-offset-2 rounded-full focus:ring focus:ring-indigo-500">
-            <div class="bg-indigo-600 h-10 w-10 rounded-full flex justify-center hover:bg-indigo-500">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white self-center" fill="none"
-                    viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7"
-                        d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                </svg>
+    <!-- This example requires Tailwind CSS v2.0+ -->
+    <div class="bg-white shadow rounded-3xl mx-auto p-5 mt-2 w-4/5 ">
+        <div class="flex flex-col md:flex-row justify-between">
+            <h1 class="text-2xl text-gray-900 font-semibold  text-center">Lista de Incidencias</h1>
+            <div class="flex justify-center gap-2 mx-3">
+                <a href="{% url 'incidents:list_incidents_page_csv' %}?start-date={{ start_date|date:"d/m/Y H:i" }}&end-date={{ end_date|date:"d/m/Y H:i" }}&camera-selected={{ camera_selected }}&category-selected={{ category_selected }}"
+                   class="ring-offset-2 rounded-full focus:ring focus:ring-indigo-500">
+                    <div class="bg-indigo-600 h-10 w-10 rounded-full flex justify-center hover:bg-indigo-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white self-center" fill="none"
+                             viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.7"
+                                  d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                        </svg>
+                    </div>
+                </a>
+                <p class="self-center text-sm text-gray-600 md:block hidden transition-all ease-in duration-500">
+                    Descargar en CSV</p>
             </div>
-        </a>
-        <p class="self-center text-sm text-gray-600 md:block hidden transition-all ease-in duration-500">Descargar en CSV</p>
-    </div>
-</div>
-<div class="flex flex-col md:flex-row justify-between mt-2">
-    <p class="text-sm text-gray-400 m-2 text-center">Mostrando <span class="text-sm text-gray-700">{{ incidents.start_index }}-{{ incidents.end_index }}</span> de <span
-            class="text-sm text-gray-700">{{ incidents.paginator.count }}</span></p>
+        </div>
+        <div class="flex flex-col md:flex-row justify-between mt-2">
+            <p class="text-sm text-gray-400 m-2 text-center">Mostrando <span
+                    class="text-sm text-gray-700">{{ incidents.start_index }}-{{ incidents.end_index }}</span> de <span
+                    class="text-sm text-gray-700">{{ incidents.paginator.count }}</span></p>
+            <form id="searchForm" method="post" class="flex flex-col">
+                {% csrf_token %}
+                <div class="flex flex-col md:grid md:grid-cols-2 gap-x-8 lg:gap-x-4 gap-y-3 lg:flex lg:flex-row w-4/5 lg:w-4/5 xl:w-3/5 justify-center mx-auto">
+                    <input type="hidden" name="end-date" id="end-date">
+                    <input type="hidden" name="start-date" id="start-date">
+                    <input class="lg:w-4/5 xl:w-1/2 bg-white border border-gray-300 text-gray-900 sm:text-sm rounded-lg shadow duration-150 focus:border-transparent focus:outline-none focus:ring focus:ring-indigo-500 block w-full px-3 py-1.5"
+                           data-max-date="{{ max_date|date:"d/m/Y" }}" data-start-date="{{ start_date|date:"d/m/Y" }}"
+                           data-end-date="{{ end_date|date:"d/m/Y" }}" id="date-range-picker" style="width: 185px">
+                    <select id="camera" style="min-width: 200px"
+                            class="border border-gray-300 w-full focus:border-transparent focus:outline-none focus:ring-2 focus:ring-indigo-500 py-1.5 px-3 shadow rounded-md">
+                        <option value="all" {% if camera_selected|slugify == "all"|slugify %}selected{% endif %}>
+                            Seleccionar
+                            cámara / Todas
+                        </option>
+                        {% for camera in cameras %}
+                            <option value="{{ camera.id }}"
+                                    {% if camera_selected|slugify == camera.id|slugify %}selected{% endif %}>{{ camera.address }}</option>
+                        {% endfor %}
+                    </select>
+                    <select id="category" style="min-width: 200px"
+                            class="border border-gray-300 w-full focus:border-transparent focus:outline-none focus:ring-2 focus:ring-indigo-500 py-1.5 px-3 shadow rounded-md">
+                        <option value="all" {% if category_selected == "all" %}selected{% endif %}>Seleccionar categoría
+                            /
+                            Todas
+                        </option>
+                        {% for category in incident_categories %}
+                            <option value="{{ category.id }}"
+                                    {% if category_selected|slugify == category.id|slugify %}selected{% endif %}>{{ category.name }}</option>
+                            s
+                        {% endfor %}
+                    </select>
+                    <button type="submit"
+                            class="mx-auto w-20 md:w-28 lg:w-56 xl:w-48 h-10 flex justify-center md:col-span-2 items-center bg-indigo-600 rounded-lg shadow-sm hover:bg-indigo-500 focus:bg-indigo-700 duration-150 focus:ring focus:ring-indigo-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" viewBox="0 0 20 20"
+                             fill="currentColor">
+                            <path fill-rule="evenodd"
+                                  d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                                  clip-rule="evenodd"/>
+                        </svg>
+                    </button>
+                </div>
+            </form>
+        </div>
 
-        {% csrf_token %}
-</div>
-<div class="flex flex-col md:grid md:grid-cols-2 gap-x-8 lg:gap-x-4 gap-y-3 lg:flex lg:flex-row w-4/5 lg:w-4/5 xl:w-3/5 justify-center mx-auto">
-    <input type="hidden" name="end-date" id="end-date">
-    <input type="hidden" name="start-date" id="start-date">
-    <input class="lg:w-4/5 xl:w-1/2 bg-white border border-gray-300 text-gray-900 sm:text-sm rounded-lg shadow duration-150 focus:border-transparent focus:outline-none focus:ring focus:ring-indigo-500 block w-full px-3 py-1.5"
-            data-max-date="{{ max_date }}" data-start-date="{{ start_date }}" data-end-date="{{ end_date }}" id="date-range-picker" style="min-width: 200px">
-    <select id="camera" style="min-width: 200px"
-                class="border border-gray-300 w-full focus:border-transparent focus:outline-none focus:ring-2 focus:ring-indigo-500 py-1.5 px-3 shadow rounded-md">
-            <option value="all" {% if camera_selected|slugify == "all"|slugify %}selected{% endif %}>Seleccionar
-                cámara / Todas
-            </option>
-            {% for camera in cameras %}
-                <option value="{{ camera.id }}"
-                        {% if camera_selected|slugify == camera.id|slugify %}selected{% endif %}>{{ camera.address }}</option>
-            {% endfor %}
-        </select>
-        <select id="category" style="min-width: 200px"
-                class="border border-gray-300 w-full focus:border-transparent focus:outline-none focus:ring-2 focus:ring-indigo-500 py-1.5 px-3 shadow rounded-md">
-            <option value="all" {% if category_selected == "all" %}selected{% endif %}>Seleccionar categoría /
-                Todas
-            </option>
-            {% for category in incident_categories %}
-                <option value="{{ category.id }}"
-                        {% if category_selected|slugify == category.id|slugify %}selected{% endif %}>{{ category.name }}</option>s
-            {% endfor %}
-    </select>
-    <button type="button"  onclick="reload2()"
-        class="mx-auto w-20 md:w-28 lg:w-56 xl:w-48 h-10 flex justify-center md:col-span-2 items-center bg-indigo-600 rounded-lg shadow-sm hover:bg-indigo-500 focus:bg-indigo-700 duration-150 focus:ring focus:ring-indigo-500">
-        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white" viewBox="0 0 20 20"
-            fill="currentColor">
-            <path fill-rule="evenodd"
-                d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-                clip-rule="evenodd" />
-        </svg>
-    </button>
-</div>
-
-<div class="flex flex-col mt-3">
-    <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
-        <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
-            <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
-                <table class="min-w-full divide-y divide-gray-200">
-                    <thead class="bg-white border-b-2 border-indigo-500">
-                        <tr>
-                            <th scope="col"
-                                class="px-6 py-3 text-left text-xs font-medium text-indigo-500 uppercase tracking-wider">
-                                Colaborador
-                            </th>
-                            <th scope="col"
-                                class="px-6 py-3 text-left text-xs font-medium text-indigo-500 uppercase tracking-wider">
-                                Categoría
-                            </th>
-                            <th scope="col"
-                                class="px-6 py-3 text-left text-xs font-medium text-indigo-500 uppercase tracking-wider">
-                                Fecha y Hora
-                            </th>
-                            <th scope="col"
-                                class="px-6 py-3 text-right text-xs font-medium text-indigo-500 uppercase tracking-wider">
-                                Opciones
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody class="bg-white divide-y divide-gray-200">
-                        {% for incident in incidents %}
-                        <tr>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="flex items-center">
-                                    <div class="flex-shrink-0 h-10 w-10">
-                                        {% if incident.worker.photo.url %}
-                                        <img class="h-10 w-10 rounded-full" src="{{incident.worker.photo.url}}"
-                                            alt="profile photo" height="40px">
-                                        {% endif %}
-                                    </div>
-                                    <div class="ml-4">
-                                        <div class="text-sm font-medium text-gray-900 leading-none">
-                                            {{incident.worker.names}}&nbsp;{{incident.worker.surnames}}
-                                        </div>
-                                        <div class="text-sm text-gray-500 leading-none">
-                                            {{incident.worker.email}}
-                                        </div>
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="flex items-center gap-2">
-                                    {% if incident.incident_category.color == 'green' %}
-                                    <div class="w-6 h-6 bg-green-500 rounded-full">
-                                    </div>
-                                    {% elif incident.incident_category.color == 'blue' %}
-                                    <div class="w-6 h-6 bg-blue-600 rounded-full">
-                                    </div>
-                                    {% elif incident.incident_category.color == 'yellow' %}
-                                    <div class="w-6 h-6 bg-yellow-400 rounded-full">
-                                    </div>
-                                    {% elif incident.incident_category.color == 'red' %}
-                                    <div class="w-6 h-6 bg-red-600 rounded-full">
-                                    </div>
-                                    {% endif %}
-                                    <div class="text-sm text-gray-900 font-medium">
-                                        {{incident.incident_category.name}}
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-500">{{incident.date_time}}</div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="flex gap-2 justify-end">
-                                    <a href="{% url 'incidents:get_incident' id=incident.id %}"
-                                        class="text-gray-900 hover:text-gray-700"><svg
-                                            xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
-                                            viewBox="0 0 24 24" stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
-                                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
-                                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                        </svg></a>
-                                    <div x-data="{ 'showModal': false }" @keydown.escape="showModal = false">
-                                        <!-- Trigger for Modal -->
-                                        <button type="button" @click="showModal = true"
-                                            class="text-red-600 hover:text-red-500">
-                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
-                                                viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
-                                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                            </svg>
-                                        </button>
-
-                                        <!-- Modal -->
-                                        <div class="fixed inset-0 z-30 flex items-center justify-center overflow-auto bg-black bg-opacity-75 transition-opacity"
-                                            x-show="showModal" x-transition:enter="transition ease-out duration-300"
-                                            x-transition:enter-start="transform opacity-0"
-                                            x-transition:enter-end="transform opacity-100"
-                                            x-transition:leave="transition ease-in duration-200"
-                                            x-transition:leave-start="transform opacity-100"
-                                            x-transition:leave-end="transform opacity-0" style="display: none;">
-                                            <!-- Modal inner -->
-                                            <span class="hidden sm:inline-block sm:align-middle sm:h-screen"
-                                                aria-hidden="true">&#8203;</span>
-                                            <div class="inline-block align-bottom bg-white rounded-lg text-left shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
-                                                @click.away="showModal = false"
-                                                x-transition:enter="transition ease-out duration-300"
-                                                x-transition:enter-start="transform opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
-                                                x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
-                                                x-transition:leave="transition ease-in duration-200"
-                                                x-transition:leave-start="transform opacity-100 translate-y-0 sm:scale-100"
-                                                x-transition:leave-end="transform opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
-                                                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                                                    <div class="sm:flex sm:items-start">
-                                                        <div
-                                                            class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-                                                            <svg class="h-6 w-6 text-red-600"
-                                                                xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                                viewBox="0 0 24 24" stroke="currentColor"
-                                                                aria-hidden="true">
-                                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                                    stroke-width="2"
-                                                                    d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-                                                            </svg>
-                                                        </div>
-                                                        <div class="mt-3 text-left sm:mt-0 sm:ml-4 whitespace-normal">
-                                                            <h3 class="text-lg leading-6 font-medium text-gray-900"
-                                                                id="modal-title">
-                                                                Eliminar incidencia
-                                                            </h3>
-                                                            <p class="text-sm text-gray-500 mt-2">
-                                                                ¿Está seguro de eliminar la incidencia?
-                                                                <br>
-                                                                Los datos de la incidencia se perderán para siempre.
-                                                            </p>
-                                                        </div>
-                                                    </div>
+        <div class="flex flex-col mt-3">
+            <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+                <div class="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
+                    <div class="shadow overflow-hidden border-b border-gray-200 sm:rounded-lg">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-white border-b-2 border-indigo-500">
+                            <tr>
+                                <th scope="col"
+                                    class="px-6 py-3 text-left text-xs font-medium text-indigo-500 uppercase tracking-wider">
+                                    Colaborador
+                                </th>
+                                <th scope="col"
+                                    class="px-6 py-3 text-left text-xs font-medium text-indigo-500 uppercase tracking-wider">
+                                    Categoría
+                                </th>
+                                <th scope="col"
+                                    class="px-6 py-3 text-left text-xs font-medium text-indigo-500 uppercase tracking-wider">
+                                    Fecha y Hora
+                                </th>
+                                <th scope="col"
+                                    class="px-6 py-3 text-right text-xs font-medium text-indigo-500 uppercase tracking-wider">
+                                    Opciones
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                            {% for incident in incidents %}
+                                <tr>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="flex-shrink-0 h-10 w-10">
+                                                {% if incident.worker.photo.url %}
+                                                    <img class="h-10 w-10 rounded-full"
+                                                         src="{{ incident.worker.photo.url }}"
+                                                         alt="profile photo" height="40px">
+                                                {% endif %}
+                                            </div>
+                                            <div class="ml-4">
+                                                <div class="text-sm font-medium text-gray-900 leading-none">
+                                                    {{ incident.worker.names }}&nbsp;{{ incident.worker.surnames }}
                                                 </div>
-                                                <div class="bg-gray-50 px-4 py-3 sm:px-6 flex flex-col md:flex-row-reverse">
-                                                    <a type="button"
-                                                        href="{% url 'incidents:delete_incident' id=incident.id %}"
-                                                        class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
-                                                        Eliminar
-                                                    </a>
-                                                    <button @click="showModal = false"
-                                                        class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
-                                                        Cancelar
-                                                    </button>
+                                                <div class="text-sm text-gray-500 leading-none">
+                                                    {{ incident.worker.email }}
                                                 </div>
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center gap-2">
+                                            {% if incident.incident_category.color == 'green' %}
+                                                <div class="w-6 h-6 bg-green-500 rounded-full">
+                                                </div>
+                                            {% elif incident.incident_category.color == 'blue' %}
+                                                <div class="w-6 h-6 bg-blue-600 rounded-full">
+                                                </div>
+                                            {% elif incident.incident_category.color == 'yellow' %}
+                                                <div class="w-6 h-6 bg-yellow-400 rounded-full">
+                                                </div>
+                                            {% elif incident.incident_category.color == 'red' %}
+                                                <div class="w-6 h-6 bg-red-600 rounded-full">
+                                                </div>
+                                            {% endif %}
+                                            <div class="text-sm text-gray-900 font-medium">
+                                                {{ incident.incident_category.name }}
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="text-sm text-gray-500">{{ incident.date_time }}</div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex gap-2 justify-end">
+                                            <a href="{% url 'incidents:get_incident' id=incident.id %}"
+                                               class="text-gray-900 hover:text-gray-700">
+                                                <svg
+                                                        xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                                                        viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                          stroke-width="1"
+                                                          d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                          stroke-width="1"
+                                                          d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                                                </svg>
+                                            </a>
+                                            <div x-data="{ 'showModal': false }" @keydown.escape="showModal = false">
+                                                <!-- Trigger for Modal -->
+                                                <button type="button" @click="showModal = true"
+                                                        class="text-red-600 hover:text-red-500">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none"
+                                                         viewBox="0 0 24 24" stroke="currentColor">
+                                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                                              stroke-width="1"
+                                                              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                                                    </svg>
+                                                </button>
+
+                                                <!-- Modal -->
+                                                <div class="fixed inset-0 z-30 flex items-center justify-center overflow-auto bg-black bg-opacity-75 transition-opacity"
+                                                     x-show="showModal"
+                                                     x-transition:enter="transition ease-out duration-300"
+                                                     x-transition:enter-start="transform opacity-0"
+                                                     x-transition:enter-end="transform opacity-100"
+                                                     x-transition:leave="transition ease-in duration-200"
+                                                     x-transition:leave-start="transform opacity-100"
+                                                     x-transition:leave-end="transform opacity-0"
+                                                     style="display: none;">
+                                                    <!-- Modal inner -->
+                                                    <span class="hidden sm:inline-block sm:align-middle sm:h-screen"
+                                                          aria-hidden="true">&#8203;</span>
+                                                    <div class="inline-block align-bottom bg-white rounded-lg text-left shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
+                                                         @click.away="showModal = false"
+                                                         x-transition:enter="transition ease-out duration-300"
+                                                         x-transition:enter-start="transform opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+                                                         x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100"
+                                                         x-transition:leave="transition ease-in duration-200"
+                                                         x-transition:leave-start="transform opacity-100 translate-y-0 sm:scale-100"
+                                                         x-transition:leave-end="transform opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
+                                                        <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                                                            <div class="sm:flex sm:items-start">
+                                                                <div
+                                                                        class="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
+                                                                    <svg class="h-6 w-6 text-red-600"
+                                                                         xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                                         viewBox="0 0 24 24" stroke="currentColor"
+                                                                         aria-hidden="true">
+                                                                        <path stroke-linecap="round"
+                                                                              stroke-linejoin="round"
+                                                                              stroke-width="2"
+                                                                              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                                                                    </svg>
+                                                                </div>
+                                                                <div class="mt-3 text-left sm:mt-0 sm:ml-4 whitespace-normal">
+                                                                    <h3 class="text-lg leading-6 font-medium text-gray-900"
+                                                                        id="modal-title">
+                                                                        Eliminar incidencia
+                                                                    </h3>
+                                                                    <p class="text-sm text-gray-500 mt-2">
+                                                                        ¿Está seguro de eliminar la incidencia?
+                                                                        <br>
+                                                                        Los datos de la incidencia se perderán para
+                                                                        siempre.
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="bg-gray-50 px-4 py-3 sm:px-6 flex flex-col md:flex-row-reverse">
+                                                            <a type="button"
+                                                               href="{% url 'incidents:delete_incident' id=incident.id %}"
+                                                               class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 sm:ml-3 sm:w-auto sm:text-sm">
+                                                                Eliminar
+                                                            </a>
+                                                            <button @click="showModal = false"
+                                                                    class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                                                                Cancelar
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
-</div>
-<div class="flex justify-between mt-5">
-    <nav aria-label="Page navigation">
-        {% if incidents.has_other_pages %}
-        <ul class="inline-flex gap-2">
-            {% if incidents.has_previous %}
-            <li>
-                <a href="?page={{ incidents.previous_page_number }}&start-date={{ start_date }}&end-date={{ end_date }}&camera-selected={{ camera_selected }}&category-selected={{ category_selected }}">
-                    <button
-                    class="bg-white flex items-center justify-center w-10 h-10 text-indigo-600 duration-150 rounded-full focus:ring focus:ring-indigo-500 hover:bg-indigo-50 shadow">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd"
-                            d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                            clip-rule="evenodd"/>
-                    </svg>
-                    </button>
-                </a>
-            </li>
-            {% else %}
-            <li disabled>
-                <button
-                    class="bg-white flex items-center justify-center w-10 h-10 text-indigo-600 duration-150 rounded-full focus:ring focus:ring-indigo-500 hover:bg-indigo-50 shadow">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd"
-                            d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
-                            clip-rule="evenodd"/>
-                    </svg>
-                </button>
-            </li>
-            {% endif %}
-
-            {% for i in incidents.paginator.page_range %}
-                {% if incidents.paginator.num_pages > 3 %}
-                        {% if incidents.has_previous and i == incidents.previous_page_number and incidents.previous_page_number != 1 %}
-                        <li><a href="?page={{ 1 }}&start-date={{ start_date }}&end-date={{ end_date }}&camera-selected={{ camera_selected }}&category-selected={{ category_selected }}"><button
-                            class="w-10 h-10 bg-white text-indigo-600 duration-150 rounded-full focus:ring focus:ring-indigo-500 hover:bg-indigo-50 shadow">{{ 1 }}</button></a>
+        <div class="flex justify-between mt-5">
+            <nav aria-label="Page navigation">
+                {% if incidents.has_other_pages %}
+                    <ul class="inline-flex gap-2">
+                    {% if incidents.has_previous %}
+                        <li>
+                            <a href="?page={{ incidents.previous_page_number }}&start-date={{ start_date|date:"d/m/Y H:i" }}&end-date={{ end_date|date:"d/m/Y H:i" }}&camera-selected={{ camera_selected }}&category-selected={{ category_selected }}">
+                                <button
+                                        class="bg-white flex items-center justify-center w-10 h-10 text-indigo-600 duration-150 rounded-full focus:ring focus:ring-indigo-500 hover:bg-indigo-50 shadow">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20"
+                                         fill="currentColor">
+                                        <path fill-rule="evenodd"
+                                              d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                                              clip-rule="evenodd"/>
+                                    </svg>
+                                </button>
+                            </a>
                         </li>
-                        {% endif %}
-                        {% if incidents.has_previous and i == incidents.previous_page_number%}
-                        <li><a href="?page={{ i }}&start-date={{ start_date }}&end-date={{ end_date }}&camera-selected={{ camera_selected }}&category-selected={{ category_selected }}"><button
-                            class="w-10 h-10 bg-white text-indigo-600 duration-150 rounded-full focus:ring focus:ring-indigo-500 hover:bg-indigo-50 shadow md:block hidden transition-all ease-in duration-500">{{ i }}</button></a>
-                        </li>
-                        {% endif %}
-                        {% if incidents.number == i  %}
-                        <li><button
-                            class="w-10 h-10 bg-indigo-600 text-white duration-150 border border-r-0 border-indigo-600 rounded-full focus:shadow-outline shadow">{{ i }}</button>
-                        </li>
-                        {% endif %}
-                        {% if incidents.has_next and i == incidents.next_page_number %}
-                        <li><a href="?page={{ i }}&start-date={{ start_date }}&end-date={{ end_date }}&camera-selected={{ camera_selected }}&category-selected={{ category_selected }}"><button
-                            class="w-10 h-10 bg-white text-indigo-600 duration-150 rounded-full focus:ring focus:ring-indigo-500 hover:bg-indigo-50 shadow md:block hidden transition-all ease-in duration-500">{{ i }}</button></a>
-                        </li>
-                        {% endif %}
-                        {% if incidents.has_next and i == incidents.next_page_number and incidents.next_page_number != incidents.paginator.num_pages %}
-                        <li><a href="?page={{ incidents.paginator.num_pages }}&start-date={{ start_date }}&end-date={{ end_date }}&camera-selected={{ camera_selected }}&category-selected={{ category_selected }}"><button
-                            class="w-10 h-10 bg-white text-indigo-600 duration-150 rounded-full focus:ring focus:ring-indigo-500 hover:bg-indigo-50 shadow">{{ incidents.paginator.num_pages }}</button></a>
-                        </li>
-                        {% endif %}
-                {% else %}
-                    {% if incidents.number == i %}
-                    <li><button
-                        class="w-10 h-10 bg-indigo-600 text-white duration-150 border border-r-0 border-indigo-600 rounded-full focus:shadow-outline shadow">{{ i }}</button>
-                    </li>
                     {% else %}
-                    <li><a href="?page={{ i }}&start-date={{ start_date }}&end-date={{ end_date }}&camera-selected={{ camera_selected }}&category-selected={{ category_selected }}"><button
-                        class="w-10 h-10 bg-white text-indigo-600 duration-150 rounded-full focus:ring focus:ring-indigo-500 hover:bg-indigo-50 shadow">{{ i }}</button></a>
-                    </li>
+                        <li disabled>
+                            <button
+                                    class="bg-white flex items-center justify-center w-10 h-10 text-indigo-600 duration-150 rounded-full focus:ring focus:ring-indigo-500 hover:bg-indigo-50 shadow">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20"
+                                     fill="currentColor">
+                                    <path fill-rule="evenodd"
+                                          d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z"
+                                          clip-rule="evenodd"/>
+                                </svg>
+                            </button>
+                        </li>
+                    {% endif %}
+
+                    {% for i in incidents.paginator.page_range %}
+                        {% if incidents.paginator.num_pages > 3 %}
+                            {% if incidents.has_previous and i == incidents.previous_page_number and incidents.previous_page_number != 1 %}
+                                <li>
+                                    <a href="?page={{ 1 }}&start-date={{ start_date|date:"d/m/Y H:i" }}&end-date={{ end_date|date:"d/m/Y H:i" }}&camera-selected={{ camera_selected }}&category-selected={{ category_selected }}">
+                                        <button
+                                                class="w-10 h-10 bg-white text-indigo-600 duration-150 rounded-full focus:ring focus:ring-indigo-500 hover:bg-indigo-50 shadow">{{ 1 }}</button>
+                                    </a>
+                                </li>
+                            {% endif %}
+                            {% if incidents.has_previous and i == incidents.previous_page_number %}
+                                <li>
+                                    <a href="?page={{ i }}&start-date={{ start_date|date:"d/m/Y H:i" }}&end-date={{ end_date|date:"d/m/Y H:i" }}&camera-selected={{ camera_selected }}&category-selected={{ category_selected }}">
+                                        <button
+                                                class="w-10 h-10 bg-white text-indigo-600 duration-150 rounded-full focus:ring focus:ring-indigo-500 hover:bg-indigo-50 shadow md:block hidden transition-all ease-in duration-500">{{ i }}</button>
+                                    </a>
+                                </li>
+                            {% endif %}
+                            {% if incidents.number == i %}
+                                <li>
+                                    <button
+                                            class="w-10 h-10 bg-indigo-600 text-white duration-150 border border-r-0 border-indigo-600 rounded-full focus:shadow-outline shadow">{{ i }}</button>
+                                </li>
+                            {% endif %}
+                            {% if incidents.has_next and i == incidents.next_page_number %}
+                                <li>
+                                    <a href="?page={{ i }}start-date={{ start_date|date:"d/m/Y H:i" }}&end-date={{ end_date|date:"d/m/Y H:i" }}&camera-selected={{ camera_selected }}&category-selected={{ category_selected }}">
+                                        <button
+                                                class="w-10 h-10 bg-white text-indigo-600 duration-150 rounded-full focus:ring focus:ring-indigo-500 hover:bg-indigo-50 shadow md:block hidden transition-all ease-in duration-500">{{ i }}</button>
+                                    </a>
+                                </li>
+                            {% endif %}
+                            {% if incidents.has_next and i == incidents.next_page_number and incidents.next_page_number != incidents.paginator.num_pages %}
+                                <li>
+                                    <a href="?page={{ incidents.paginator.num_pages }}&start-date={{ start_date|date:"d/m/Y H:i" }}&end-date={{ end_date|date:"d/m/Y H:i" }}&camera-selected={{ camera_selected }}&category-selected={{ category_selected }}">
+                                        <button
+                                                class="w-10 h-10 bg-white text-indigo-600 duration-150 rounded-full focus:ring focus:ring-indigo-500 hover:bg-indigo-50 shadow">{{ incidents.paginator.num_pages }}</button>
+                                    </a>
+                                </li>
+                            {% endif %}
+                        {% else %}
+                            {% if incidents.number == i %}
+                                <li>
+                                    <button
+                                            class="w-10 h-10 bg-indigo-600 text-white duration-150 border border-r-0 border-indigo-600 rounded-full focus:shadow-outline shadow">{{ i }}</button>
+                                </li>
+                            {% else %}
+                                <li>
+                                    <a href="?page={{ i }}&start-date={{ start_date|date:"d/m/Y H:i" }}&end-date={{ end_date|date:"d/m/Y H:i" }}&camera-selected={{ camera_selected }}&category-selected={{ category_selected }}">
+                                        <button
+                                                class="w-10 h-10 bg-white text-indigo-600 duration-150 rounded-full focus:ring focus:ring-indigo-500 hover:bg-indigo-50 shadow">{{ i }}</button>
+                                    </a>
+                                </li>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+
+                    {% if incidents.has_next %}
+                        <li>
+                            <a href="?page={{ incidents.next_page_number }}&start-date={{ start_date|date:"d/m/Y H:i" }}&end-date={{ end_date|date:"d/m/Y H:i" }}&camera-selected={{ camera_selected }}&category-selected={{ category_selected }}">
+                                <button
+                                        class="bg-white flex items-center justify-center w-10 h-10 text-indigo-600 duration-150 rounded-full focus:ring focus:ring-indigo-500 hover:bg-indigo-50 shadow">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20"
+                                         fill="currentColor">
+                                        <path fill-rule="evenodd"
+                                              d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                                              clip-rule="evenodd"/>
+                                    </svg>
+                                </button>
+                            </a>
+                        </li>
+                    {% else %}
+                        <li disabled>
+                            <button
+                                    class="bg-white flex items-center justify-center w-10 h-10 text-indigo-600 duration-150 rounded-full focus:ring focus:ring-indigo-500 hover:bg-indigo-50 shadow">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20"
+                                     fill="currentColor">
+                                    <path fill-rule="evenodd"
+                                          d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
+                                          clip-rule="evenodd"/>
+                                </svg>
+                            </button>
+                        </li>
                     {% endif %}
                 {% endif %}
-            {% endfor %}
-
-            {% if incidents.has_next %}
-            <li>
-                <a href="?page={{ incidents.next_page_number }}&start-date={{ start_date }}&end-date={{ end_date }}&camera-selected={{ camera_selected }}&category-selected={{ category_selected }}">
-                    <button
-                        class="bg-white flex items-center justify-center w-10 h-10 text-indigo-600 duration-150 rounded-full focus:ring focus:ring-indigo-500 hover:bg-indigo-50 shadow">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd"
-                                d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                                clip-rule="evenodd"/>
-                        </svg>
-                    </button>
-                </a>
-            </li>
-            {% else %}
-            <li disabled>
-                <button
-                    class="bg-white flex items-center justify-center w-10 h-10 text-indigo-600 duration-150 rounded-full focus:ring focus:ring-indigo-500 hover:bg-indigo-50 shadow">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd"
-                            d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                            clip-rule="evenodd"/>
-                    </svg>
-                </button>
-            </li>
-            {% endif %}
-        {% endif %}
-    </nav>
+            </nav>
+        </div>
+    </div>
     <script>
+        document.getElementById("searchForm").onsubmit = function () {
+            let time_from = document.getElementById('time-from').value
+            let time_to = document.getElementById('time-to').value
+            let camera_selected = document.getElementById('camera').value
+            let category_selected = document.getElementById('category').value
+
+            if (!time_from || !time_to || time_from.includes('M') || time_from.includes('H')
+                || time_to.includes('M') || time_to.includes('H')) {
+                alert("Por favor, llene los campos de hora");
+                return false;
+            }
+
+            document.getElementById('start-date').value = document.getElementById('start-date').value + ' ' + time_from
+            document.getElementById('end-date').value = document.getElementById('end-date').value + ' ' + time_to
+            window.location.href = "{% url 'incidents:list_incidents' %}?start-date=" + time_from + "&end-date=" + time_to + "&camera-selected=" + camera_selected + "&category-selected=" + category_selected;
+        }
+
         function reload2() {
             let start_date = document.getElementById('start-date').value
             let end_date = document.getElementById('end-date').value
@@ -344,6 +412,11 @@
             window.location.href = "{% url 'incidents:list_incidents' %}?start-date=" + start_date + "&end-date=" + end_date + "&camera-selected=" + camera_selected + "&category-selected=" + category_selected;
         }
     </script>
-</div>
-</div>
 {% endblock content %}
+
+{% block optional_scripts %}
+    <script src="{% static 'incidents/js/moment.min.js' %}"></script>
+    <script src="{% static 'incidents/js/daterangepicker.js' %}"></script>
+    <script src="{% static 'incidents/js/dateselectormain.js' %}"></script>
+    <script src="{% static 'incidents/js/inputmask.min.js' %}"></script>
+{% endblock %}
