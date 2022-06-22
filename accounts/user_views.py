@@ -188,7 +188,7 @@ class RegisterAdminView(CreateView):
 def list_users_page(request):
     search = request.GET.get('search', False)
 
-    users = User.objects.all()
+    users = User.objects.filter(is_superuser=False)
 
     if search:
         users = users.filter(username__icontains=search)

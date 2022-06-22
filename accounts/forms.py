@@ -70,10 +70,7 @@ class LoginForm(AuthenticationForm):
                 raise self.get_invalid_login_error()
 
             if user.check_password(password) and not user.is_active:
-                raise ValidationError(
-                    self.error_messages['inactive'],
-                    code='inactive',
-                )
+                raise ValidationError("La cuenta {} está bloqueada".format(user.username))
             else:
                 self.user_cache = authenticate(self.request, username=username, password=password)
                 if self.user_cache is None:
@@ -117,9 +114,9 @@ class UserEditForm(ModelForm):
 
     class Meta:
         model = User
-        fields = []
+        fields = ['username']
 
-    field_order = ['role', 'worker', 'is_active']
+    field_order = ['role', 'worker', 'username', 'is_active']
 
 
 class UserCreationForm(UserCreationForm):
