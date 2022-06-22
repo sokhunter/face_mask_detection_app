@@ -32,7 +32,7 @@ if connection.introspection.table_names():
 def list_workers_page(request):
     search = request.GET.get('search', False)
 
-    workers = Worker.objects.all()
+    workers = Worker.objects.filter(user__is_superuser=False)
 
     if search:
         workers = workers.annotate(search_str=Concat('names', V(' '), 'surnames')).filter(Q(search_str__icontains=search) | Q(document=search))

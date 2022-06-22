@@ -123,9 +123,9 @@
                         data-max-date="{{ max_date|date:"d/m/Y" }}" data-start-date="{{ start_date|date:"d/m/Y" }}" data-end-date="{{ end_date|date:"d/m/Y" }}" id="date-range-picker" style="width: 185px">
                 <div class="flex gap-x-4">
                     <p style="text-align: right">Desde las</p>
-                    <input id="time-from" value="{{ start_date|date:"H:i" }}" placeholder="Hora desde" style="width: 100px" class="timePicker lg:w-4/5 xl:w-1/2 bg-white border border-gray-300 text-gray-900 sm:text-sm rounded-lg shadow duration-150 focus:border-transparent focus:outline-none focus:ring focus:ring-indigo-500 block w-full px-3 py-1.5">
+                    <input id="time-from" value="{{ start_date|date:"H:i" }}" placeholder="HH:MM" style="width: 100px" class="timePicker lg:w-4/5 xl:w-1/2 bg-white border border-gray-300 text-gray-900 sm:text-sm rounded-lg shadow duration-150 focus:border-transparent focus:outline-none focus:ring focus:ring-indigo-500 block w-full px-3 py-1.5">
                     <p style="text-align: right">hasta las</p>
-                    <input id="time-to" value="{{ end_date|date:"H:i" }}" placeholder="Hora hasta" style="width: 100px" class="timePicker lg:w-4/5 xl:w-1/2 bg-white border border-gray-300 text-gray-900 sm:text-sm rounded-lg shadow duration-150 focus:border-transparent focus:outline-none focus:ring focus:ring-indigo-500 block w-full px-3 py-1.5">    
+                    <input id="time-to" value="{{ end_date|date:"H:i" }}" placeholder="HH:MM" style="width: 100px" class="timePicker lg:w-4/5 xl:w-1/2 bg-white border border-gray-300 text-gray-900 sm:text-sm rounded-lg shadow duration-150 focus:border-transparent focus:outline-none focus:ring focus:ring-indigo-500 block w-full px-3 py-1.5">    
                 </div>
                 <select id="camera" style="min-width: 200px"
                         class="border border-gray-300 w-full focus:border-transparent focus:outline-none focus:ring-2 focus:ring-indigo-500 py-1.5 px-3 shadow rounded-md">
