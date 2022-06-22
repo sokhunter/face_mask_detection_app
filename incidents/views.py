@@ -85,9 +85,7 @@ def list_incidents_page(request):
 
     incidents, fstart_date, fend_date = get_incidents_by_date_range(request, start_date, end_date, camera, category)
     
-
     incident_categories = IncidentCategory.objects.all()
-
 
     # Obtener Camaras
     if request.user.role.name == 'admin':

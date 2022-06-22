@@ -59,7 +59,13 @@
                     <input class="lg:w-4/5 xl:w-1/2 bg-white border border-gray-300 text-gray-900 sm:text-sm rounded-lg shadow duration-150 focus:border-transparent focus:outline-none focus:ring focus:ring-indigo-500 block w-full px-3 py-1.5"
                            data-max-date="{{ max_date|date:"d/m/Y" }}" data-start-date="{{ start_date|date:"d/m/Y" }}"
                            data-end-date="{{ end_date|date:"d/m/Y" }}" id="date-range-picker" style="width: 185px">
-                    <select id="camera" style="min-width: 200px"
+                    <div class="flex gap-x-2">
+                        <p style="text-align: right">Desde las</p>
+                        <input id="time-from" value="{{ start_date|date:"H:i" }}" placeholder="HH:MM" style="width: 75px" class="timePicker lg:w-4/5 xl:w-1/2 bg-white border border-gray-300 text-gray-900 sm:text-sm rounded-lg shadow duration-150 focus:border-transparent focus:outline-none focus:ring focus:ring-indigo-500 block w-full px-3 py-1.5">
+                        <p style="text-align: right">hasta las</p>
+                        <input id="time-to" value="{{ end_date|date:"H:i" }}" placeholder="HH:MM" style="width: 75px" class="timePicker lg:w-4/5 xl:w-1/2 bg-white border border-gray-300 text-gray-900 sm:text-sm rounded-lg shadow duration-150 focus:border-transparent focus:outline-none focus:ring focus:ring-indigo-500 block w-full px-3 py-1.5">    
+                    </div>
+                    <select id="camera" style="min-width: 200px" name="camera-selected"
                             class="border border-gray-300 w-full focus:border-transparent focus:outline-none focus:ring-2 focus:ring-indigo-500 py-1.5 px-3 shadow rounded-md">
                         <option value="all" {% if camera_selected|slugify == "all"|slugify %}selected{% endif %}>
                             Seleccionar
@@ -70,7 +76,7 @@
                                     {% if camera_selected|slugify == camera.id|slugify %}selected{% endif %}>{{ camera.address }}</option>
                         {% endfor %}
                     </select>
-                    <select id="category" style="min-width: 200px"
+                    <select id="category" style="min-width: 200px" name="category-selected"
                             class="border border-gray-300 w-full focus:border-transparent focus:outline-none focus:ring-2 focus:ring-indigo-500 py-1.5 px-3 shadow rounded-md">
                         <option value="all" {% if category_selected == "all" %}selected{% endif %}>Seleccionar categoría
                             /
