@@ -10,7 +10,8 @@ import string
 from flask import Flask, redirect, render_template, request
 from PIL import Image
 
-from inference import get_prediction
+from inference import (get_max_area_pred, get_prediction_mdyolo,
+                       get_prediction_mtyolo)
 
 app = Flask(__name__)
 
@@ -29,7 +30,7 @@ def predict():
         img_bytes = file.read()
         letters = string.ascii_lowercase
 
-        results = get_prediction(img_bytes)
+        results = get_prediction_mdyolo(img_bytes)
         results.render()  # updates results.imgs with boxes and labels
         for img in results.imgs:
             img_base64 = Image.fromarray(img)
