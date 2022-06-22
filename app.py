@@ -71,8 +71,28 @@ def predictREST():
         base64_string = request.json["base64String"]
         base64_data = base64_string.split(',')
         img_data = base64.b64decode(base64_data[1])
-        results = get_prediction(img_data)
-        data = results.pandas().xyxy[0].to_json(orient="records")
+        results = get_prediction_mdyolo(img_data)
+        if len(results) != 0:
+            md_max_area_pred = get_max_area_pred(results)
+            if md_max_area_pred['name'] != 'Without_Mask':
+                mt_results = get_prediction_mtyolo(img_data)
+                if len(mt_results) != 0:
+                    mt_max_area_pred = get_max_area_pred(mt_results)
+                    mt_mask_pred = mt_max_area_pred['name']
+                    if mt_mask_pred != 'Nomask':
+                        md_max_area_pred['maskType'] = mt_mask_pred
+                        data = md_max_area_pred.to_json()
+                    else:
+                        md_max_area_pred['maskType'] = 'unidentified'
+                        data = md_max_area_pred.to_json()
+                else:
+                    md_max_area_pred['maskType'] = 'unidentified'
+                    data = md_max_area_pred.to_json()
+            else:
+                md_max_area_pred['maskType'] = ''
+                data = md_max_area_pred.to_json()
+        else:
+            data = results.pandas().xyxy[0].to_json(orient="records")
         return data
 
 
