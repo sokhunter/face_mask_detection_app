@@ -210,7 +210,7 @@ def get_incidents_chart_data(request):
         current_date += timedelta(days=1)
 
     context = {
-        'max_incidents': 3,
+        'max_incidents': 10,
         'data': data,
         'labels': labels,
     }
@@ -232,11 +232,12 @@ def get_incidents_by_worker_chart_data(request):
     labels = []
 
     for worker in workers:
-        data.append(counter[worker])
-        labels.append(worker.names + ' ' + worker.surnames)
+        if counter[worker] > 0:
+            data.append(counter[worker])
+            labels.append(worker.names + ' ' + worker.surnames)
 
     context = {
-        'max_incidents': 2,
+        'max_incidents': 10,
         'data': data,
         'labels': labels,
     }
