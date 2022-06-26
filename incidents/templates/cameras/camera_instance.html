@@ -290,13 +290,13 @@
                 let numberData = info[1];
                 switch (info[0]) {
                     case 'CONTAGIONS_INCREASE_FROM_LAST_MONTH':
-                        infoString = `El número de contagios ha incrementado en ${numberData} el último mes.`
+                        infoString = `El número de contagios ha incrementado en ${numberData}% el último mes.`
                         break;
                     case 'CONTAGIONS_INCREASE_FROM_LAST_WEEK':
-                        infoString = `El número de contagios ha incrementado en ${numberData} la última semana.`
+                        infoString = `El número de contagios ha incrementado en ${numberData}% la última semana.`
                         break;
                     case 'CONTAGIONS_INCREASE_FROM_LAST_YEAR':
-                        infoString = `El número de contagios ha incrementado en ${numberData} el último año.`
+                        infoString = `El número de contagios ha incrementado en ${numberData}% el último año.`
                         break;
                     case 'CONTAGIONS_LAST_MONTH':
                         infoString = `En el último mes se identificaron ${numberData} nuevos casos de COVID-19.`
@@ -317,13 +317,13 @@
                         infoString = `Este año se identificaron ${numberData} nuevos casos de COVID-19.`
                         break;
                     case 'DEATHS_INCREASE_FROM_LAST_MONTH':
-                        infoString = `El número de muertes por COVID-19 ha incrementado en ${numberData} el último mes.`
+                        infoString = `El número de muertes por COVID-19 ha incrementado en ${numberData}% el último mes.`
                         break;
                     case 'DEATHS_INCREASE_FROM_LAST_WEEK':
-                        infoString = `El número de muertes por COVID-19 ha incrementado en ${numberData} la última semana.`
+                        infoString = `El número de muertes por COVID-19 ha incrementado en ${numberData}% la última semana.`
                         break;
                     case 'DEATHS_INCREASE_FROM_LAST_YEAR':
-                        infoString = `El número de muertes por COVID-19 ha incrementado en ${numberData} el último año.`
+                        infoString = `El número de muertes por COVID-19 ha incrementado en ${numberData}% el último año.`
                         break;
                     case 'DEATHS_LAST_MONTH':
                         infoString = `En el último mes se confirmaron ${numberData} fallecimientos a causa de la COVID-19.`
@@ -363,6 +363,9 @@
                 recommendationDayText.innerHTML = recommendationList[getRndInteger(0, recommendationList.length - 1)]
                 if (dataMINSA) {
                     let rand = getRndInteger(0, 18)
+                    while(dataMINSA[rand][1] <= 0) {
+                        let rand = getRndInteger(0, 18)
+                    }
                     dataText.innerHTML = convertData(dataMINSA[rand])
                 }
             }, 30000)
