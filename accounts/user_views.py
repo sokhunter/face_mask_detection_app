@@ -1,7 +1,10 @@
 import copy
 import logging
 from datetime import date
-
+import codecs
+import json
+from pathlib import Path
+from django.template.loader import render_to_string
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth import (authenticate, get_user_model, login, logout,
@@ -103,13 +106,19 @@ def recover_password_page(request):
             user = settings.EMAIL_QUERY(User, to_email)
             token = default_token_generator.make_token(user)
             uid = urlsafe_base64_encode(force_bytes(user.pk))
+            base_path = Path(__file__).parent
+            file_path = (base_path / "../templates/mails/recover_password_email.html").resolve()
+            file = codecs.open(str(file_path), "r", "utf-8")
             send_mail(
                 'Recuperación de Contraseña',
                 'Entre a este enlace para cambiar su contraseña: http://127.0.0.1:8000' +
                 reverse('accounts:reset_password', kwargs={
-                        'uidb64': uid, 'token': token}),
+                    'uidb64': uid, 'token': token}),
                 from_email,
                 [to_email],
+                html_message=file.read().format(link='http://127.0.0.1:8000' + reverse('accounts:reset_password',
+                                                                                       kwargs={'uidb64': uid,
+                                                                                               'token': token})),
                 fail_silently=False,
             )
             messages.success(
@@ -130,7 +139,7 @@ def reset_password_page(request, uidb64, token):
     except:
         return render(request, 'accounts/reset_password.html', {'success': False})
     if default_token_generator.check_token(user, token) == False:
-        pass#return render(request, 'accounts/reset_password.html', {'success': False})
+        pass  # return render(request, 'accounts/reset_password.html', {'success': False})
     if request.method == "POST":
         password_form = SetPasswordForm(user, request.POST)
         if password_form.is_valid():
@@ -143,7 +152,8 @@ def reset_password_page(request, uidb64, token):
         password_form = SetPasswordForm(user=user)
 
     for form_field in password_form.visible_fields():
-        form_field.field.widget.attrs['class'] = 'my-1 w-full text-sm border border-gray-300 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-indigo-500 py-1.5 px-3 shadow rounded-md'
+        form_field.field.widget.attrs[
+            'class'] = 'my-1 w-full text-sm border border-gray-300 focus:border-transparent focus:outline-none focus:ring-2 focus:ring-indigo-500 py-1.5 px-3 shadow rounded-md'
 
     context = {
         'password_form': password_form,
@@ -251,7 +261,8 @@ def edit_user_page(request, id):
                     request, 'Se actualizó las configuraciones del usuario')
                 return redirect('accounts:get_user', id=id)
         if 'password-form' in request.POST:
-            user_form = UserEditForm(instance=user, initial={'worker': user.worker, 'role': user.role}, worker=user.worker)
+            user_form = UserEditForm(instance=user, initial={'worker': user.worker, 'role': user.role},
+                                     worker=user.worker)
             password_form = SetPasswordForm(user, request.POST)
             if password_form.is_valid():
                 user_saved = password_form.save()
