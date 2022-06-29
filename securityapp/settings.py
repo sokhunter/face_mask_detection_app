@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'axes',
     'accounts',
     'incidents',
+    'appconfig',
 ]
 
 ASGI_APPLICATION = 'securityapp.asgi.application'

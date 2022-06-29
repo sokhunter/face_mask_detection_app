@@ -42,9 +42,15 @@ class Camera(models.Model):
 
 
 class Incident(models.Model):
+    MASK_TYPES = (
+        ("temp1", _("TEMP1")),
+        ("temp2", _("TEMP2")),
+    )
+
     worker = models.ForeignKey(Worker, on_delete=models.CASCADE)
     incident_category = models.ForeignKey(
         IncidentCategory, on_delete=models.CASCADE)
+    mask_type = models.CharField(choices=MASK_TYPES, max_length=25, default='temp1')
     camera = models.ForeignKey(Camera, on_delete=models.CASCADE)
     image = models.ImageField(_('Imagen de la Incidencia'),
                               blank=True, upload_to='incident_images')
